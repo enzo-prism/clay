@@ -1,0 +1,356 @@
+{
+  "buildings": [
+    {
+      "id": "foraging_hut",
+      "model3d": "KenneySelected/Models/suburban_building-type-a.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "quarry",
+      "model3d": "KenneySelected/Models/suburban_building-type-b.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "granary",
+      "model3d": "KenneySelected/Models/suburban_building-type-c.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "stockpile",
+      "model3d": "KenneySelected/Models/suburban_building-type-d.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "palisade",
+      "model3d": "KenneySelected/Models/suburban_fence-1x2.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "lookout",
+      "model3d": "KenneySelected/Models/suburban_building-type-e.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "farm",
+      "model3d": "KenneySelected/Models/suburban_building-type-f.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "irrigation_channel",
+      "model3d": "KenneySelected/Models/suburban_building-type-g.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "silo",
+      "model3d": "KenneySelected/Models/suburban_building-type-h.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "trade_post",
+      "model3d": "KenneySelected/Models/suburban_building-type-i.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "partnership_office",
+      "model3d": "KenneySelected/Models/suburban_building-type-j.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "watchtower",
+      "model3d": "KenneySelected/Models/suburban_building-type-k.obj",
+      "scale": 0.8,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 6
+    },
+    {
+      "id": "smelter",
+      "model3d": "KenneySelected/Models/industrial_building-a.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "academy",
+      "model3d": "KenneySelected/Models/industrial_building-b.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "foundry",
+      "model3d": "KenneySelected/Models/industrial_building-c.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "depot",
+      "model3d": "KenneySelected/Models/industrial_building-d.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "embassy",
+      "model3d": "KenneySelected/Models/industrial_building-e.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "fortified_wall",
+      "model3d": "KenneySelected/Models/industrial_building-f.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "workshop",
+      "model3d": "KenneySelected/Models/industrial_building-g.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "generator",
+      "model3d": "KenneySelected/Models/industrial_building-h.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "grid_node",
+      "model3d": "KenneySelected/Models/industrial_building-i.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "market_exchange",
+      "model3d": "KenneySelected/Models/industrial_building-j.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "vault",
+      "model3d": "KenneySelected/Models/industrial_building-k.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "security_center",
+      "model3d": "KenneySelected/Models/industrial_building-l.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "logistics_hub",
+      "model3d": "KenneySelected/Models/industrial_building-m.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "automation_foundry",
+      "model3d": "KenneySelected/Models/industrial_building-n.obj",
+      "scale": 0.5,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "solar_array_field",
+      "model3d": "KenneySelected/Models/commercial_building-a.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "planetary_battery",
+      "model3d": "KenneySelected/Models/commercial_building-b.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "planetary_relay",
+      "model3d": "KenneySelected/Models/commercial_building-c.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "orbital_platform",
+      "model3d": "KenneySelected/Models/commercial_building-d.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "shield_grid",
+      "model3d": "KenneySelected/Models/commercial_building-e.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "control_node",
+      "model3d": "KenneySelected/Models/commercial_building-f.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "stellar_collector_node",
+      "model3d": "KenneySelected/Models/commercial_building-skyscraper-a.obj",
+      "scale": 0.7,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 8
+    },
+    {
+      "id": "relay_nexus",
+      "model3d": "KenneySelected/Models/commercial_building-skyscraper-b.obj",
+      "scale": 0.7,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 8
+    },
+    {
+      "id": "galactic_archive",
+      "model3d": "KenneySelected/Models/commercial_building-skyscraper-c.obj",
+      "scale": 0.7,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 8
+    },
+    {
+      "id": "stellar_vault",
+      "model3d": "KenneySelected/Models/commercial_building-g.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "shield_protocol_array",
+      "model3d": "KenneySelected/Models/commercial_building-h.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "relay_fabricator",
+      "model3d": "KenneySelected/Models/commercial_building-i.obj",
+      "scale": 0.9,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 7
+    },
+    {
+      "id": "galactic_relay_node",
+      "model3d": "KenneySelected/Models/commercial_building-skyscraper-d.obj",
+      "scale": 0.7,
+      "rotation": 0,
+      "yOffset": 0,
+      "cameraDistance": 8
+    }
+  ],
+  "resources": [
+    {
+      "id": "food",
+      "icon2d": "KenneySelected/Icons/food.png"
+    },
+    {
+      "id": "materials",
+      "icon2d": "KenneySelected/Icons/materials.png"
+    },
+    {
+      "id": "knowledge",
+      "icon2d": "KenneySelected/Icons/knowledge.png"
+    },
+    {
+      "id": "influence",
+      "icon2d": "KenneySelected/Icons/influence.png"
+    },
+    {
+      "id": "energy",
+      "icon2d": "KenneySelected/Icons/energy.png"
+    },
+    {
+      "id": "credits",
+      "icon2d": "KenneySelected/Icons/credits.png"
+    }
+  ],
+  "ui": {
+    "panel": "KenneySelected/UI/ui_panel.png",
+    "panelElevated": "KenneySelected/UI/ui_panel_elevated.png",
+    "buttonPrimary": "KenneySelected/UI/ui_button_primary.png",
+    "buttonSecondary": "KenneySelected/UI/ui_button_secondary.png",
+    "chip": "KenneySelected/UI/ui_chip.png",
+    "progressTrack": "KenneySelected/UI/ui_progress_track.png",
+    "progressFill": "KenneySelected/UI/ui_progress_fill.png",
+    "toggleOn": "KenneySelected/UI/ui_toggle_on.png",
+    "toggleOff": "KenneySelected/UI/ui_toggle_off.png",
+    "tabSelected": "KenneySelected/UI/ui_tab_selected.png",
+    "tabUnselected": "KenneySelected/UI/ui_tab_unselected.png",
+    "hudBar": "KenneySelected/UI/ui_hud_bar.png"
+  }
+}

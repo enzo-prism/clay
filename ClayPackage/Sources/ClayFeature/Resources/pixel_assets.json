@@ -1,0 +1,1497 @@
+{
+  "resourceIcons": {
+    "food": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 0
+    },
+    "materials": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 1
+    },
+    "knowledge": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 2
+    },
+    "influence": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 3
+    },
+    "energy": {
+      "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Pile.png"
+    },
+    "credits": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/PersonInCoat00-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 2
+    }
+  },
+  "eventIcons": {
+    "market": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 0
+    },
+    "contract": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 1
+    },
+    "diplomacy": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/PersonInCoat01-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 1
+    },
+    "decision": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/PersonInCoat00-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 0
+    },
+    "discovery": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/Snowman-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 1
+    },
+    "raid": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/Snowman-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 2
+    },
+    "infrastructure": {
+      "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Pile.png"
+    },
+    "system": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 2
+    },
+    "dispatch": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/PersonInCoat00-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 2
+    },
+    "construction": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 3
+    },
+    "project": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/World/Snowball-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      },
+      "frameIndex": 3
+    },
+    "era": {
+      "sheet": {
+        "path": "Pixel/Winter-Pixel-Pack/Actors/Reindeer-Standing-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      },
+      "frameIndex": 0
+    }
+  },
+  "actionSprites": {
+    "work": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Work-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Work-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 1,
+        "rows": 1,
+        "frameCount": 1
+      }
+    },
+    "dispatch": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Dispatch-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Dispatch-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 1,
+        "rows": 1,
+        "frameCount": 1
+      }
+    },
+    "foraging_hut": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/foraging_hut_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "quarry": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/quarry_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "granary": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/granary_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "stockpile": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/stockpile_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "palisade": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/palisade_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "lookout": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/lookout_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "farm": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/farm_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "irrigation_channel": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/irrigation_channel_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "silo": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/silo_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "trade_post": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/trade_post_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "partnership_office": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/partnership_office_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "watchtower": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/watchtower_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "smelter": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/smelter_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "academy": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/academy_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "foundry": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/foundry_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "depot": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/depot_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "embassy": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/embassy_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "fortified_wall": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/fortified_wall_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "workshop": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/workshop_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "generator": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/generator_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "grid_node": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/grid_node_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "market_exchange": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/market_exchange_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "vault": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/vault_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "security_center": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/security_center_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "logistics_hub": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/logistics_hub_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "automation_foundry": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/automation_foundry_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "solar_array_field": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/solar_array_field_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "planetary_battery": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/planetary_battery_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "planetary_relay": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/planetary_relay_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "orbital_platform": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/orbital_platform_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "shield_grid": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/shield_grid_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "control_node": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/control_node_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "stellar_collector_node": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/stellar_collector_node_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "relay_nexus": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/relay_nexus_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "galactic_archive": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/galactic_archive_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "stellar_vault": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/stellar_vault_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "shield_protocol_array": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/shield_protocol_array_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "relay_fabricator": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/relay_fabricator_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    },
+    "galactic_relay_node": {
+      "frames": [],
+      "fps": 3,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/BaseBuildings/galactic_relay_node_sheet.png",
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "columns": 4,
+        "rows": 1,
+        "frameCount": 4
+      }
+    }
+  },
+  "characterSprites": {
+    "worker": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Worker-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Worker-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "citizen_blue": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/CitizenBlue-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/CitizenBlue-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "citizen_gray": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/CitizenGray-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/CitizenGray-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "snowman_walk": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Scholar-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Scholar-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "engineer": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Engineer-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Engineer-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "medic": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Medic-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Medic-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "envoy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Envoy-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Envoy-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "scout": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Scout-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Scout-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "builder": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Builder-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Builder-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "miner": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Miner-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Miner-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "artisan": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Artisan-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Artisan-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "courier": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Courier-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Courier-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "ranger": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Ranger-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Ranger-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "cook": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Cook-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Cook-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "mechanic": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Mechanic-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Mechanic-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "navigator": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Navigator-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Navigator-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "guard": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Guard-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Guard-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "herbalist": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Herbalist-Moving-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Herbalist-Idle-Sheet.png",
+        "frameWidth": 16,
+        "frameHeight": 16,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_vector_prime_neutral": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVectorPrime-Neutral-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVectorPrime-Neutral-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_vector_prime_ally": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVectorPrime-Ally-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVectorPrime-Ally-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_vector_prime_enemy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVectorPrime-Enemy-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVectorPrime-Enemy-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_aegis_node_neutral": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaAegisNode-Neutral-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaAegisNode-Neutral-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_aegis_node_ally": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaAegisNode-Ally-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaAegisNode-Ally-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_aegis_node_enemy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaAegisNode-Enemy-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaAegisNode-Enemy-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_quantum_forge_neutral": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaQuantumForge-Neutral-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaQuantumForge-Neutral-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_quantum_forge_ally": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaQuantumForge-Ally-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaQuantumForge-Ally-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_quantum_forge_enemy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaQuantumForge-Enemy-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaQuantumForge-Enemy-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_neuralis_neutral": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaNeuralis-Neutral-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaNeuralis-Neutral-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_neuralis_ally": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaNeuralis-Ally-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaNeuralis-Ally-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_neuralis_enemy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaNeuralis-Enemy-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaNeuralis-Enemy-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_helios_arc_neutral": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaHeliosArc-Neutral-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaHeliosArc-Neutral-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_helios_arc_ally": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaHeliosArc-Ally-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaHeliosArc-Ally-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_helios_arc_enemy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaHeliosArc-Enemy-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaHeliosArc-Enemy-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_void_runner_neutral": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVoidRunner-Neutral-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVoidRunner-Neutral-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_void_runner_ally": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVoidRunner-Ally-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVoidRunner-Ally-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    },
+    "metahuman_void_runner_enemy": {
+      "frames": [],
+      "fps": 6,
+      "scale": 1.0,
+      "sheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVoidRunner-Enemy-Moving-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 6,
+        "rows": 1,
+        "frameCount": 6
+      },
+      "idleSheet": {
+        "path": "Pixel/Generated/Metahumans/MetaVoidRunner-Enemy-Idle-Sheet.png",
+        "frameWidth": 32,
+        "frameHeight": 32,
+        "columns": 3,
+        "rows": 1,
+        "frameCount": 3
+      }
+    }
+  }
+}
