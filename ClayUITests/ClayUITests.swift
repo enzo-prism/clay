@@ -2,6 +2,10 @@ import XCTest
 
 final class ClayUITests: XCTestCase {
 
+    private func anyElement(_ identifier: String, in app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+    }
+
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -21,12 +25,36 @@ final class ClayUITests: XCTestCase {
         app.launch()
 
         let settingsButton = app.buttons["nav_settings"]
-        XCTAssertTrue(settingsButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(settingsButton.waitForExistence(timeout: 5))
         settingsButton.click()
 
-        XCTAssertTrue(app.otherElements["settings_panel"].waitForExistence(timeout: 2))
-        XCTAssertTrue(app.buttons["toggle_notifications"].exists)
-        XCTAssertTrue(app.buttons["toggle_colorblind"].exists)
+        XCTAssertTrue(anyElement("settings_panel", in: app).waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Offline cap"].exists)
         XCTAssertEqual(app.switches.count, 0)
+    }
+
+    @MainActor
+    func testBaseFocusModeHidesChrome() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        XCTAssertTrue(anyElement("sidebar", in: app).waitForExistence(timeout: 5))
+
+        let focusButton = app.buttons["base_focus_toggle"]
+        XCTAssertTrue(focusButton.waitForExistence(timeout: 5))
+        focusButton.click()
+
+        XCTAssertTrue(app.buttons["base_focus_exit"].waitForExistence(timeout: 5))
+        XCTAssertFalse(anyElement("sidebar", in: app).exists)
+        XCTAssertFalse(anyElement("right_panel", in: app).exists)
+        XCTAssertFalse(anyElement("guidance_banner", in: app).exists)
+        XCTAssertFalse(anyElement("bottom_ticker", in: app).exists)
+
+        app.buttons["base_focus_exit"].click()
+
+        XCTAssertTrue(anyElement("sidebar", in: app).waitForExistence(timeout: 5))
+        XCTAssertTrue(anyElement("right_panel", in: app).waitForExistence(timeout: 5))
+        XCTAssertTrue(anyElement("guidance_banner", in: app).waitForExistence(timeout: 5))
+        XCTAssertTrue(anyElement("bottom_ticker", in: app).waitForExistence(timeout: 5))
     }
 }

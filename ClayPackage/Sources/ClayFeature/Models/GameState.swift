@@ -184,6 +184,7 @@ public struct SettingsState: Codable {
     public var colorblindMode: Bool
     public var use3DPreviews: Bool
     public var guidanceLevel: GuidanceLevel
+    public var animatedBackgroundsEnabled: Bool
 
     enum CodingKeys: String, CodingKey {
         case offlineCapDays
@@ -191,14 +192,23 @@ public struct SettingsState: Codable {
         case colorblindMode
         case use3DPreviews
         case guidanceLevel
+        case animatedBackgroundsEnabled
     }
 
-    public init(offlineCapDays: Int, notificationsEnabled: Bool, colorblindMode: Bool, use3DPreviews: Bool, guidanceLevel: GuidanceLevel) {
+    public init(
+        offlineCapDays: Int,
+        notificationsEnabled: Bool,
+        colorblindMode: Bool,
+        use3DPreviews: Bool,
+        guidanceLevel: GuidanceLevel,
+        animatedBackgroundsEnabled: Bool = true
+    ) {
         self.offlineCapDays = offlineCapDays
         self.notificationsEnabled = notificationsEnabled
         self.colorblindMode = colorblindMode
         self.use3DPreviews = use3DPreviews
         self.guidanceLevel = guidanceLevel
+        self.animatedBackgroundsEnabled = animatedBackgroundsEnabled
     }
 
     public init(from decoder: Decoder) throws {
@@ -208,6 +218,7 @@ public struct SettingsState: Codable {
         self.colorblindMode = try container.decodeIfPresent(Bool.self, forKey: .colorblindMode) ?? false
         self.use3DPreviews = try container.decodeIfPresent(Bool.self, forKey: .use3DPreviews) ?? true
         self.guidanceLevel = try container.decodeIfPresent(GuidanceLevel.self, forKey: .guidanceLevel) ?? .high
+        self.animatedBackgroundsEnabled = try container.decodeIfPresent(Bool.self, forKey: .animatedBackgroundsEnabled) ?? true
     }
 }
 

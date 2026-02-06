@@ -191,6 +191,12 @@ public final class GameEngine: ObservableObject {
         }
     }
 
+    public func setAnimatedBackgroundsEnabled(_ enabled: Bool) {
+        mutateUI {
+            updateSettings { $0.animatedBackgroundsEnabled = enabled }
+        }
+    }
+
     public func setGuidanceLevel(_ level: GuidanceLevel) {
         mutateUI {
             updateSettings { $0.guidanceLevel = level }
@@ -2645,7 +2651,7 @@ public final class GameEngine: ObservableObject {
             gridSize: 20,
             pendingTimeTravelWarning: false,
             timeTravelClampUntil: nil,
-            settings: SettingsState(offlineCapDays: 7, notificationsEnabled: true, colorblindMode: false, use3DPreviews: true, guidanceLevel: .high)
+            settings: SettingsState(offlineCapDays: 7, notificationsEnabled: true, colorblindMode: false, use3DPreviews: true, guidanceLevel: .high, animatedBackgroundsEnabled: true)
         )
     }
     

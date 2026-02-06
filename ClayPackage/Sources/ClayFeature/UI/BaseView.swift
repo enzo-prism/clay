@@ -1,15 +1,18 @@
 import SwiftUI
 
 struct BaseView: View {
+    @Binding var isBaseFocusMode: Bool
     @EnvironmentObject private var engine: GameEngine
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selectedBuildId: String? = nil
     @State private var selectedBuilding: BuildingInstance? = nil
     @State private var overlayMode: BaseOverlayMode = .none
     @State private var centerTrigger: Int = 0
+    @State private var isBuildPaletteCollapsed: Bool = false
     /// When `true`, the inspector stays visible even with no selection.
     /// When `false`, it behaves like a contextual inspector that only shows while something is selected.
     @State private var inspectorPinned: Bool = false
+    @State private var inspectorHidden: Bool = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -42,13 +45,28 @@ struct BaseView: View {
         }
         .onAppear { centerTrigger += 1 }
         .onExitCommand {
+            if isBaseFocusMode {
+                setBaseFocusMode(false)
+                return
+            }
+            if selectedBuildId != nil {
+                selectedBuildId = nil
+                return
+            }
+            if selectedBuilding != nil {
+                selectedBuilding = nil
+                return
+            }
             if shouldShowInspector {
-                closeInspector()
+                hideInspector()
             }
         }
         .onChange(of: selectedBuildId) { newValue in
             if newValue != nil {
                 selectedBuilding = nil
+                if !isBaseFocusMode {
+                    isBuildPaletteCollapsed = true
+                }
             }
         }
         .onChange(of: selectedBuilding?.id) { newId in
@@ -62,13 +80,42 @@ struct BaseView: View {
     }
 
     private var shouldShowInspector: Bool {
-        inspectorPinned || selectedBuildId != nil || selectedBuilding != nil
+        !isBaseFocusMode && !inspectorHidden && (inspectorPinned || selectedBuildId != nil || selectedBuilding != nil)
     }
 
-    private func closeInspector() {
+    private func hideInspector() {
         inspectorPinned = false
-        selectedBuildId = nil
-        selectedBuilding = nil
+        inspectorHidden = true
+    }
+
+    private func setBaseFocusMode(_ isEnabled: Bool) {
+        if reduceMotion {
+            isBaseFocusMode = isEnabled
+        } else {
+            withAnimation(.easeInOut(duration: 0.18)) {
+                isBaseFocusMode = isEnabled
+            }
+        }
+    }
+
+    private func collapseBuildPalette() {
+        if reduceMotion {
+            isBuildPaletteCollapsed = true
+        } else {
+            withAnimation(.easeInOut(duration: 0.18)) {
+                isBuildPaletteCollapsed = true
+            }
+        }
+    }
+
+    private func expandBuildPalette() {
+        if reduceMotion {
+            isBuildPaletteCollapsed = false
+        } else {
+            withAnimation(.easeInOut(duration: 0.18)) {
+                isBuildPaletteCollapsed = false
+            }
+        }
     }
 
     @ViewBuilder
@@ -79,30 +126,48 @@ struct BaseView: View {
                 .clipShape(RoundedRectangle(cornerRadius: ClayMetrics.radius))
                 .overlay(
                     RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
-                        .stroke(ClayTheme.stroke.opacity(0.55), lineWidth: 1)
-                )
+	                        .stroke(ClayTheme.stroke.opacity(0.55), lineWidth: 1)
+	                )
 
-            VStack(spacing: 10) {
-                baseHudBar()
-                if let message = engine.projectAdvisorMessage() {
-                    HintBanner(message: message, tone: .info)
-                        .padding(.horizontal, 12)
+                if isBaseFocusMode {
+                    VStack(spacing: 0) {
+                        HStack(spacing: 0) {
+                            Spacer(minLength: 0)
+                            focusControlsBar()
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    .padding(12)
+                } else {
+                    VStack(spacing: 10) {
+                        baseHudBar()
+                        if let message = engine.projectAdvisorMessage() {
+                            HintBanner(message: message, tone: .info)
+                                .padding(.horizontal, 12)
+                        }
+                        Spacer(minLength: 0)
+                        if isBuildPaletteCollapsed {
+                            HStack(spacing: 10) {
+                                buildPaletteCollapsedHandle()
+                                Spacer(minLength: 0)
+                            }
+                        } else {
+                            BuildPaletteView(selectedBuildId: $selectedBuildId, onCollapse: collapseBuildPalette)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 12)
                 }
-                Spacer(minLength: 0)
-                BuildPaletteView(selectedBuildId: $selectedBuildId)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 12)
-        }
-    }
+	        }
+	    }
 
-    private func inspectorPanel() -> some View {
-        BaseDockPanel(
-            selectedBuildId: selectedBuildId,
-            selectedBuilding: selectedBuilding,
-            onClose: closeInspector
-        )
-    }
+	    private func inspectorPanel() -> some View {
+	        BaseDockPanel(
+	            selectedBuildId: selectedBuildId,
+	            selectedBuilding: selectedBuilding,
+	            onClose: hideInspector
+	        )
+	    }
 
     @ViewBuilder
     private func baseHudBar() -> some View {
@@ -157,31 +222,33 @@ struct BaseView: View {
         .help("Center the base view")
     }
 
-    private func baseHudWideLayout() -> some View {
-        HStack(spacing: 10) {
-            baseTitleBlock()
-            Spacer(minLength: 12)
+	    private func baseHudWideLayout() -> some View {
+	        HStack(spacing: 10) {
+	            baseTitleBlock()
+	            Spacer(minLength: 12)
             buildModeStatus()
                 .layoutPriority(1)
             Spacer(minLength: 12)
-            overlayControls()
-                .layoutPriority(1)
-            centerButton()
-            inspectorToggle()
-        }
-    }
+	            overlayControls()
+	                .layoutPriority(1)
+	            centerButton()
+	            inspectorToggle()
+                focusToggle()
+	        }
+	    }
 
-    private func baseHudCompactLayout() -> some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 10) {
-                baseTitleBlock()
-                Spacer(minLength: 12)
-                centerButton()
-                inspectorToggle()
-            }
-            HStack(spacing: 10) {
-                buildModeStatus()
-                    .frame(maxWidth: 320, alignment: .leading)
+	    private func baseHudCompactLayout() -> some View {
+	        VStack(spacing: 8) {
+	            HStack(spacing: 10) {
+	                baseTitleBlock()
+	                Spacer(minLength: 12)
+	                centerButton()
+	                inspectorToggle()
+                    focusToggle()
+	            }
+	            HStack(spacing: 10) {
+	                buildModeStatus()
+	                    .frame(maxWidth: 320, alignment: .leading)
                     .layoutPriority(1)
                 Spacer(minLength: 12)
                 overlayControls()
@@ -190,26 +257,122 @@ struct BaseView: View {
         }
     }
 
-    private func inspectorToggle() -> some View {
-        ClayButton(isEnabled: true, active: shouldShowInspector) {
-            if shouldShowInspector {
-                closeInspector()
-            } else {
-                inspectorPinned = true
+	    private func inspectorToggle() -> some View {
+	        ClayButton(isEnabled: true, active: shouldShowInspector) {
+	            if shouldShowInspector {
+	                hideInspector()
+	            } else {
+                    inspectorHidden = false
+                    if selectedBuildId == nil && selectedBuilding == nil {
+                        inspectorPinned = true
+                    }
+	            }
+	        } label: {
+	            HStack(spacing: 6) {
+	                KenneyIconView(path: "KenneySelected/Icons/icon_menu.png", size: 12, tint: shouldShowInspector ? ClayTheme.accentText : ClayTheme.muted)
+	                Text(shouldShowInspector ? "Hide" : "Inspect")
             }
+	        }
+	        .help("Toggle Build/Inspect panel")
+	    }
+
+    private func focusToggle() -> some View {
+        ClayButton(isEnabled: true, active: true) {
+            setBaseFocusMode(true)
         } label: {
             HStack(spacing: 6) {
-                KenneyIconView(path: "KenneySelected/Icons/icon_menu.png", size: 12, tint: shouldShowInspector ? ClayTheme.accentText : ClayTheme.muted)
-                Text(shouldShowInspector ? "Hide" : "Inspect")
+                KenneyIconView(path: "KenneySelected/Icons/icon_target.png", size: 12, tint: ClayTheme.accentText)
+                Text("Focus")
             }
         }
-        .help("Toggle Build/Inspect panel")
+        .help("Hide side panels for a focused base view")
+        .accessibilityIdentifier("base_focus_toggle")
     }
 
-    private func overlayControls() -> some View {
+    private func buildPaletteCollapsedHandle() -> some View {
+        ClayButton(isEnabled: true, active: true) {
+            expandBuildPalette()
+        } label: {
+            HStack(spacing: 6) {
+                KenneyIconView(path: "KenneySelected/Icons/icon_wrench.png", size: 12, tint: ClayTheme.accentText)
+                Text("Build")
+            }
+        }
+        .help("Expand build palette")
+        .accessibilityIdentifier("build_palette_expand")
+    }
+
+    private func focusControlsBar() -> some View {
         HStack(spacing: 8) {
-            SegmentedControl(segments: overlaySegments, selection: $overlayMode) { mode, isSelected in
+            ClayButton(isEnabled: true, active: true) {
+                setBaseFocusMode(false)
+            } label: {
                 HStack(spacing: 6) {
+                    KenneyIconView(path: "KenneySelected/Icons/icon_home.png", size: 12, tint: ClayTheme.accentText)
+                    Text("Exit Focus")
+                }
+            }
+            .accessibilityIdentifier("base_focus_exit")
+
+            ClayButton(isEnabled: true, active: true) {
+                centerTrigger += 1
+            } label: {
+                HStack(spacing: 6) {
+                    KenneyIconView(path: "KenneySelected/Icons/icon_target.png", size: 12, tint: ClayTheme.accentText)
+                    Text("Center")
+                }
+            }
+
+            ClayButton(isEnabled: true, active: true) {
+                setBaseFocusMode(false)
+                inspectorHidden = false
+                inspectorPinned = true
+            } label: {
+                HStack(spacing: 6) {
+                    KenneyIconView(path: "KenneySelected/Icons/icon_menu.png", size: 12, tint: ClayTheme.accentText)
+                    Text("Inspect")
+                }
+            }
+
+            ClayButton(isEnabled: true, active: true) {
+                setBaseFocusMode(false)
+                expandBuildPalette()
+            } label: {
+                HStack(spacing: 6) {
+                    KenneyIconView(path: "KenneySelected/Icons/icon_wrench.png", size: 12, tint: ClayTheme.accentText)
+                    Text("Build")
+                }
+            }
+
+            if selectedBuildId != nil {
+                ClayButton(isEnabled: true, active: true) {
+                    selectedBuildId = nil
+                } label: {
+                    Text("Cancel")
+                }
+            }
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [ClayTheme.panelElevated.opacity(0.98), ClayTheme.panel.opacity(0.9)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
+                .stroke(ClayTheme.stroke.opacity(0.55), lineWidth: 1)
+        )
+    }
+	
+	    private func overlayControls() -> some View {
+	        HStack(spacing: 8) {
+	            SegmentedControl(segments: overlaySegments, selection: $overlayMode) { mode, isSelected in
+	                HStack(spacing: 6) {
                     KenneyIconView(
                         path: overlayIcon(for: mode),
                         size: 12,

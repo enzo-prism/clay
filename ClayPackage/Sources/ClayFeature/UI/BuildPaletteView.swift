@@ -4,6 +4,7 @@ struct BuildPaletteView: View {
     @EnvironmentObject private var engine: GameEngine
     @EnvironmentObject private var toastCenter: ToastCenter
     @Binding var selectedBuildId: String?
+    let onCollapse: () -> Void
     @State private var hoveredId: String? = nil
     @State private var searchText: String = ""
     @State private var selectedCategory: String = "all"
@@ -15,7 +16,8 @@ struct BuildPaletteView: View {
                 title: "BUILD",
                 countText: "\(filteredIds.count)/\(unlockedIds.count)",
                 searchText: $searchText,
-                selectedSort: $selectedSort
+                selectedSort: $selectedSort,
+                onCollapse: onCollapse
             )
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -237,6 +239,7 @@ private struct BuildCatalogHeader: View {
     let countText: String
     @Binding var searchText: String
     @Binding var selectedSort: BuildSort
+    let onCollapse: () -> Void
 
     var body: some View {
         HStack(spacing: 10) {
@@ -262,6 +265,16 @@ private struct BuildCatalogHeader: View {
                     .padding(.horizontal, 6)
             }
             BuildSearchField(text: $searchText)
+            Button(action: onCollapse) {
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(ClayTheme.muted)
+                    .frame(width: 26, height: 26)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help("Collapse build palette")
+            .accessibilityIdentifier("build_palette_collapse")
         }
     }
 }

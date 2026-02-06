@@ -4,43 +4,46 @@ struct RightPanelView: View {
     @EnvironmentObject private var engine: GameEngine
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                SoftCard(title: "Next Actions") {
-                    GuidanceCenterView(maxItems: 4)
-                }
-                SoftCard(title: "Timers") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        if engine.state.activeProjects.isEmpty && engine.state.dispatches.isEmpty {
-                            Text("No active timers.")
-                                .font(ClayFonts.data(10))
-                                .foregroundColor(ClayTheme.muted)
-                        } else {
-                            if !engine.state.activeProjects.isEmpty {
-                                Text("Projects")
-                                    .font(ClayFonts.display(9, weight: .semibold))
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    SoftCard(title: "Next Actions") {
+                        GuidanceCenterView(maxItems: 4)
+                    }
+                    SoftCard(title: "Timers") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            if engine.state.activeProjects.isEmpty && engine.state.dispatches.isEmpty {
+                                Text("No active timers.")
+                                    .font(ClayFonts.data(10))
                                     .foregroundColor(ClayTheme.muted)
-                                ForEach(engine.state.activeProjects) { project in
-                                    ActiveProjectRow(project: project)
+                            } else {
+                                if !engine.state.activeProjects.isEmpty {
+                                    Text("Projects")
+                                        .font(ClayFonts.display(9, weight: .semibold))
+                                        .foregroundColor(ClayTheme.muted)
+                                    ForEach(engine.state.activeProjects) { project in
+                                        ActiveProjectRow(project: project)
+                                    }
                                 }
-                            }
-                            if !engine.state.dispatches.isEmpty {
-                                Text("Dispatches")
-                                    .font(ClayFonts.display(9, weight: .semibold))
-                                    .foregroundColor(ClayTheme.muted)
-                                ForEach(engine.state.dispatches) { dispatch in
-                                    ActiveDispatchMiniRow(dispatch: dispatch)
+                                if !engine.state.dispatches.isEmpty {
+                                    Text("Dispatches")
+                                        .font(ClayFonts.display(9, weight: .semibold))
+                                        .foregroundColor(ClayTheme.muted)
+                                    ForEach(engine.state.dispatches) { dispatch in
+                                        ActiveDispatchMiniRow(dispatch: dispatch)
+                                    }
                                 }
                             }
                         }
                     }
+                    SoftCard(title: "Alerts") {
+                        AlertsPanel()
+                    }
                 }
-                SoftCard(title: "Alerts") {
-                    AlertsPanel()
-                }
+                .padding(.vertical, 4)
             }
-            .padding(.vertical, 4)
         }
+        .accessibilityIdentifier("right_panel")
         .padding(12)
         .frame(width: 260)
         .background(
@@ -178,17 +181,22 @@ struct ActiveProjectRow: View {
     @State private var pulse = false
     
     var body: some View {
-        let definition = engine.content.projectsById[project.projectId]
-        let title = definition?.name ?? project.projectId
+        let titleModel = timerTitleModel
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 6) {
-                PixelSpriteView(spriteId: "work", size: 12)
-                Text(title)
-                    .font(ClayFonts.display(11, weight: .semibold))
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .minimumScaleFactor(0.75)
-                    .allowsTightening(true)
+                PixelSpriteView(spriteId: titleModel.spriteId, size: 12)
+                VStack(alignment: .leading, spacing: 1) {
+                    if let kind = titleModel.kindLabel {
+                        Text(kind.uppercased())
+                            .font(ClayFonts.display(8, weight: .semibold))
+                            .foregroundColor(ClayTheme.muted)
+                            .claySingleLine(minScale: 0.7)
+                    }
+                    Text(titleModel.title)
+                        .font(ClayFonts.display(11, weight: .semibold))
+                        .clayTwoLines(minScale: 0.8)
+                }
+                .layoutPriority(1)
                 Spacer(minLength: 0)
             }
             SimpleProgressBar(value: progressValue, isActive: true)
@@ -217,6 +225,42 @@ struct ActiveProjectRow: View {
                 pulse = true
             }
         }
+    }
+
+    private struct TimerTitleModel {
+        let title: String
+        let kindLabel: String?
+        let spriteId: String
+    }
+
+    private var timerTitleModel: TimerTitleModel {
+        if let definition = engine.content.projectsById[project.projectId] {
+            return TimerTitleModel(title: definition.name, kindLabel: nil, spriteId: "work")
+        }
+
+        if project.projectId.hasPrefix("build:") {
+            let buildingId = String(project.projectId.dropFirst("build:".count))
+            let buildingName = engine.content.buildingsById[buildingId]?.name ?? prettyTitle(from: buildingId)
+            return TimerTitleModel(title: buildingName, kindLabel: "Build", spriteId: buildingId)
+        }
+
+        if project.projectId.hasPrefix("upgrade:") {
+            let buildingId = String(project.projectId.dropFirst("upgrade:".count))
+            let buildingName = engine.content.buildingsById[buildingId]?.name ?? prettyTitle(from: buildingId)
+            return TimerTitleModel(title: buildingName, kindLabel: "Upgrade", spriteId: buildingId)
+        }
+
+        return TimerTitleModel(title: prettyTitle(from: project.projectId), kindLabel: nil, spriteId: "work")
+    }
+
+    private func prettyTitle(from raw: String) -> String {
+        let cleaned = raw
+            .replacingOccurrences(of: ":", with: " ")
+            .replacingOccurrences(of: "_", with: " ")
+            .replacingOccurrences(of: "-", with: " ")
+        let parts = cleaned.split(separator: " ").map { String($0) }
+        if parts.isEmpty { return raw }
+        return parts.map { $0.capitalized }.joined(separator: " ")
     }
     
     private var progressValue: Double {

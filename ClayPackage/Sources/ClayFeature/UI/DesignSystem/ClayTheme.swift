@@ -1,8 +1,8 @@
 import SwiftUI
 
 enum ClayTheme {
-    static let bg = Color(hex: "#1D1F1B")
-    static let bg2 = Color(hex: "#242824")
+    static let bg = Color.black
+    static let bg2 = Color.black
     static let panel = Color(hex: "#2C312C")
     static let panelElevated = Color(hex: "#343A33")
     static let stroke = Color(hex: "#424A41")

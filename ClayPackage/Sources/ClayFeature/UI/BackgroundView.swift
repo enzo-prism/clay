@@ -1,33 +1,53 @@
 import SwiftUI
 
 struct BackgroundView: View {
+    @EnvironmentObject private var engine: GameEngine
     @Environment(\.eraTheme) private var eraTheme
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
+        let url = BackgroundVideoAsset.url(forEraId: engine.state.eraId)
+        let canPlay = engine.state.settings.animatedBackgroundsEnabled && !reduceMotion && scenePhase == .active
+
         ZStack {
-            LinearGradient(colors: [eraTheme.backgroundTop, eraTheme.backgroundBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
-            RadialGradient(colors: [eraTheme.accent.opacity(0.08), .clear], center: .top, startRadius: 40, endRadius: 420)
-                .blendMode(.screen)
-            NoiseOverlay()
-        }
-        .ignoresSafeArea()
-    }
-}
+            LinearGradient(
+                colors: [eraTheme.backgroundTop, eraTheme.backgroundBottom],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
 
-private struct NoiseOverlay: View {
-    var body: some View {
-        Canvas { context, size in
-            let step: CGFloat = 7
-            for x in stride(from: 0, to: size.width, by: step) {
-                for y in stride(from: 0, to: size.height, by: step) {
-                    if (Int(x + y) % 3) == 0 {
-                        let rect = CGRect(x: x, y: y, width: 1.5, height: 1.5)
-                        context.fill(Path(rect), with: .color(Color.white.opacity(0.04)))
-                    }
-                }
+            if let url, canPlay {
+                LoopingVideoView(url: url, isPlaying: canPlay)
+                    .id(url)
+                    .transition(.opacity)
+                    .opacity(0.28)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
             }
+
+            // Keep text readable even if the clip comes out brighter than expected.
+            LinearGradient(
+                colors: [Color.black.opacity(0.55), Color.black.opacity(0.78)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            .blendMode(.multiply)
+            .allowsHitTesting(false)
+
+            RadialGradient(
+                gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.86)]),
+                center: .center,
+                startRadius: 120,
+                endRadius: 900
+            )
+            .ignoresSafeArea()
+            .allowsHitTesting(false)
         }
-        .blendMode(.softLight)
-        .opacity(0.5)
+        .animation(.easeInOut(duration: 0.35), value: canPlay)
+        .animation(.easeInOut(duration: 0.35), value: url)
+        .allowsHitTesting(false)
     }
 }
