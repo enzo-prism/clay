@@ -29,6 +29,12 @@ struct ClayApp: App {
                 Button("Settings") { NotificationCenter.default.post(name: .claySwitchTab, object: ClayTab.settings) }
                     .keyboardShortcut(",", modifiers: [.command])
             }
+            CommandMenu("View") {
+                Button("Toggle Base Focus Mode") {
+                    NotificationCenter.default.post(name: .clayToggleBaseFocus, object: nil)
+                }
+                .keyboardShortcut("f", modifiers: [.command, .option])
+            }
         }
     }
 }

@@ -55,6 +55,7 @@ struct SidebarView: View {
 
             SidebarQuickActions(actions: quickActions)
         }
+        .accessibilityIdentifier("sidebar")
         .padding(12)
         .frame(width: sidebarWidth)
         .background(

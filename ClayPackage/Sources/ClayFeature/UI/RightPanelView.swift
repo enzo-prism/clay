@@ -4,43 +4,46 @@ struct RightPanelView: View {
     @EnvironmentObject private var engine: GameEngine
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                SoftCard(title: "Next Actions") {
-                    GuidanceCenterView(maxItems: 4)
-                }
-                SoftCard(title: "Timers") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        if engine.state.activeProjects.isEmpty && engine.state.dispatches.isEmpty {
-                            Text("No active timers.")
-                                .font(ClayFonts.data(10))
-                                .foregroundColor(ClayTheme.muted)
-                        } else {
-                            if !engine.state.activeProjects.isEmpty {
-                                Text("Projects")
-                                    .font(ClayFonts.display(9, weight: .semibold))
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    SoftCard(title: "Next Actions") {
+                        GuidanceCenterView(maxItems: 4)
+                    }
+                    SoftCard(title: "Timers") {
+                        VStack(alignment: .leading, spacing: 8) {
+                            if engine.state.activeProjects.isEmpty && engine.state.dispatches.isEmpty {
+                                Text("No active timers.")
+                                    .font(ClayFonts.data(10))
                                     .foregroundColor(ClayTheme.muted)
-                                ForEach(engine.state.activeProjects) { project in
-                                    ActiveProjectRow(project: project)
+                            } else {
+                                if !engine.state.activeProjects.isEmpty {
+                                    Text("Projects")
+                                        .font(ClayFonts.display(9, weight: .semibold))
+                                        .foregroundColor(ClayTheme.muted)
+                                    ForEach(engine.state.activeProjects) { project in
+                                        ActiveProjectRow(project: project)
+                                    }
                                 }
-                            }
-                            if !engine.state.dispatches.isEmpty {
-                                Text("Dispatches")
-                                    .font(ClayFonts.display(9, weight: .semibold))
-                                    .foregroundColor(ClayTheme.muted)
-                                ForEach(engine.state.dispatches) { dispatch in
-                                    ActiveDispatchMiniRow(dispatch: dispatch)
+                                if !engine.state.dispatches.isEmpty {
+                                    Text("Dispatches")
+                                        .font(ClayFonts.display(9, weight: .semibold))
+                                        .foregroundColor(ClayTheme.muted)
+                                    ForEach(engine.state.dispatches) { dispatch in
+                                        ActiveDispatchMiniRow(dispatch: dispatch)
+                                    }
                                 }
                             }
                         }
                     }
+                    SoftCard(title: "Alerts") {
+                        AlertsPanel()
+                    }
                 }
-                SoftCard(title: "Alerts") {
-                    AlertsPanel()
-                }
+                .padding(.vertical, 4)
             }
-            .padding(.vertical, 4)
         }
+        .accessibilityIdentifier("right_panel")
         .padding(12)
         .frame(width: 260)
         .background(

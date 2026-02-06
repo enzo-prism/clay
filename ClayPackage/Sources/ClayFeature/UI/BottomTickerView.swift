@@ -30,6 +30,7 @@ struct BottomTickerView: View {
 
             Spacer(minLength: 0)
         }
+        .accessibilityIdentifier("bottom_ticker")
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
         .contentShape(Rectangle())
