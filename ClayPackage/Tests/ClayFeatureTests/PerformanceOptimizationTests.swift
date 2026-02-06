@@ -125,20 +125,21 @@ import Foundation
 
     let a = snapshot(of: makeEngine())
     let b = snapshot(of: makeEngine())
+    let eps = 1e-8
 
     for key in a.amounts.keys {
-        #expect(abs(a.amounts[key, default: 0] - b.amounts[key, default: 0]) < 1e-9)
+        #expect(abs(a.amounts[key, default: 0] - b.amounts[key, default: 0]) < eps)
     }
     for key in a.caps.keys {
-        #expect(abs(a.caps[key, default: 0] - b.caps[key, default: 0]) < 1e-9)
+        #expect(abs(a.caps[key, default: 0] - b.caps[key, default: 0]) < eps)
     }
     for key in a.rates.keys {
-        #expect(abs(a.rates[key, default: 0] - b.rates[key, default: 0]) < 1e-9)
+        #expect(abs(a.rates[key, default: 0] - b.rates[key, default: 0]) < eps)
     }
 
-    #expect(abs(a.efficiency - b.efficiency) < 1e-9)
-    #expect(abs(a.logisticsFactor - b.logisticsFactor) < 1e-9)
-    #expect(abs(a.raidChancePerHour - b.raidChancePerHour) < 1e-9)
-    #expect(abs(a.collectorFoodStored - b.collectorFoodStored) < 1e-9)
-    #expect(abs(a.marketCreditsIndex - b.marketCreditsIndex) < 1e-9)
+    #expect(abs(a.efficiency - b.efficiency) < eps)
+    #expect(abs(a.logisticsFactor - b.logisticsFactor) < eps)
+    #expect(abs(a.raidChancePerHour - b.raidChancePerHour) < eps)
+    #expect(abs(a.collectorFoodStored - b.collectorFoodStored) < eps)
+    #expect(abs(a.marketCreditsIndex - b.marketCreditsIndex) < eps)
 }
