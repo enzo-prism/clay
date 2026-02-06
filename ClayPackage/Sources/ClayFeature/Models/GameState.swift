@@ -172,24 +172,33 @@ public struct AlertState: Codable {
     public var lastTriggeredAtById: [String: Date]
 }
 
+public enum GuidanceLevel: String, Codable, CaseIterable, Hashable {
+    case high
+    case balanced
+    case minimal
+}
+
 public struct SettingsState: Codable {
     public var offlineCapDays: Int
     public var notificationsEnabled: Bool
     public var colorblindMode: Bool
     public var use3DPreviews: Bool
+    public var guidanceLevel: GuidanceLevel
 
     enum CodingKeys: String, CodingKey {
         case offlineCapDays
         case notificationsEnabled
         case colorblindMode
         case use3DPreviews
+        case guidanceLevel
     }
 
-    public init(offlineCapDays: Int, notificationsEnabled: Bool, colorblindMode: Bool, use3DPreviews: Bool) {
+    public init(offlineCapDays: Int, notificationsEnabled: Bool, colorblindMode: Bool, use3DPreviews: Bool, guidanceLevel: GuidanceLevel) {
         self.offlineCapDays = offlineCapDays
         self.notificationsEnabled = notificationsEnabled
         self.colorblindMode = colorblindMode
         self.use3DPreviews = use3DPreviews
+        self.guidanceLevel = guidanceLevel
     }
 
     public init(from decoder: Decoder) throws {
@@ -198,6 +207,7 @@ public struct SettingsState: Codable {
         self.notificationsEnabled = try container.decodeIfPresent(Bool.self, forKey: .notificationsEnabled) ?? true
         self.colorblindMode = try container.decodeIfPresent(Bool.self, forKey: .colorblindMode) ?? false
         self.use3DPreviews = try container.decodeIfPresent(Bool.self, forKey: .use3DPreviews) ?? true
+        self.guidanceLevel = try container.decodeIfPresent(GuidanceLevel.self, forKey: .guidanceLevel) ?? .high
     }
 }
 
@@ -230,7 +240,7 @@ public struct EventLogEntry: Codable, Identifiable {
 }
 
 public struct GameState: Codable {
-    public static let currentVersion = 6
+    public static let currentVersion = 7
     public var saveVersion: Int
     public var lastSavedAt: Date
     public var lastTickAt: Date
@@ -256,6 +266,8 @@ public struct GameState: Codable {
     public var securityBonus: Double
     public var logisticsBonus: Double
     public var risk: RiskState
+    public var cohesion: Double
+    public var biosphere: Double
     public var market: MarketState
     public var logistics: LogisticsState
     public var policyState: PolicyState
@@ -303,6 +315,8 @@ public struct GameState: Codable {
         case securityBonus
         case logisticsBonus
         case risk
+        case cohesion
+        case biosphere
         case market
         case logistics
         case policyState
@@ -351,6 +365,8 @@ public struct GameState: Codable {
         securityBonus: Double,
         logisticsBonus: Double,
         risk: RiskState,
+        cohesion: Double,
+        biosphere: Double,
         market: MarketState,
         logistics: LogisticsState,
         policyState: PolicyState,
@@ -397,6 +413,8 @@ public struct GameState: Codable {
         self.securityBonus = securityBonus
         self.logisticsBonus = logisticsBonus
         self.risk = risk
+        self.cohesion = cohesion
+        self.biosphere = biosphere
         self.market = market
         self.logistics = logistics
         self.policyState = policyState
@@ -446,6 +464,8 @@ public struct GameState: Codable {
         securityBonus = try container.decode(Double.self, forKey: .securityBonus)
         logisticsBonus = try container.decodeIfPresent(Double.self, forKey: .logisticsBonus) ?? 0
         risk = try container.decode(RiskState.self, forKey: .risk)
+        cohesion = try container.decodeIfPresent(Double.self, forKey: .cohesion) ?? 0.6
+        biosphere = try container.decodeIfPresent(Double.self, forKey: .biosphere) ?? 0.6
         market = try container.decodeIfPresent(MarketState.self, forKey: .market) ?? MarketState(priceIndexByResource: [:], lastUpdatedAt: Date())
         logistics = try container.decodeIfPresent(LogisticsState.self, forKey: .logistics) ?? LogisticsState(logisticsCapacity: 0, logisticsDemand: 0, logisticsFactor: 1)
         policyState = try container.decodeIfPresent(PolicyState.self, forKey: .policyState) ?? PolicyState(activePoliciesBySlot: [:], cooldownsByPolicyId: [:])

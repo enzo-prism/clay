@@ -21,7 +21,7 @@ enum FontRegistry {
 }
 
 enum ClayFonts {
-    private static let scale: CGFloat = 1.3
+    private static let scale: CGFloat = 1.4
 
     static func display(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
         Font.custom("Space Grotesk", size: size * scale).weight(weight)

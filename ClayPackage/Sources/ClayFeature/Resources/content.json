@@ -58,7 +58,7 @@
   "buildings": [
     {
       "id": "foraging_hut",
-      "name": "Foraging Hut",
+      "name": "Forager Camp",
       "era": "stone",
       "category": "collector",
       "maxLevel": 5,
@@ -79,11 +79,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.0
+      "efficiencyFloor": 0.0,
+      "description": "Baskets, traps, and the first organized hunts.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "quarry",
-      "name": "Quarry",
+      "name": "Stone Pit",
       "era": "stone",
       "category": "collector",
       "maxLevel": 5,
@@ -104,11 +107,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.0
+      "efficiencyFloor": 0.0,
+      "description": "Rough excavation for early materials.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": -0.0005
     },
     {
       "id": "granary",
-      "name": "Granary",
+      "name": "Earthen Pits",
       "era": "stone",
       "category": "storage",
       "maxLevel": 4,
@@ -129,11 +135,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.0
+      "efficiencyFloor": 0.0,
+      "description": "Crude storage that slows spoilage.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0.001
     },
     {
       "id": "stockpile",
-      "name": "Stockpile",
+      "name": "Hearth Stockpile",
       "era": "stone",
       "category": "storage",
       "maxLevel": 4,
@@ -154,11 +163,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.0
+      "efficiencyFloor": 0.0,
+      "description": "Stacks of stone and wood tucked near the fire.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "palisade",
-      "name": "Palisade",
+      "name": "Stake Fence",
       "era": "stone",
       "category": "defense",
       "maxLevel": 3,
@@ -178,11 +190,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.0
+      "efficiencyFloor": 0.0,
+      "description": "A perimeter of sharpened logs to deter raiders.",
+      "cohesionPerHour": -0.0005,
+      "biospherePerHour": 0
     },
     {
       "id": "lookout",
-      "name": "Lookout",
+      "name": "Sky Watch",
       "era": "stone",
       "category": "defense",
       "maxLevel": 3,
@@ -202,11 +217,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.0
+      "efficiencyFloor": 0.0,
+      "description": "Scouts keep watch for danger and opportunity.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "farm",
-      "name": "Farm",
+      "name": "Seeded Fields",
       "era": "agrarian",
       "category": "collector",
       "maxLevel": 5,
@@ -225,10 +243,13 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "food",
+      "districtBonus": 1.08,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.05
+      "efficiencyFloor": 0.05,
+      "description": "Planted plots feed a growing people.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0.002
     },
     {
       "id": "irrigation_channel",
@@ -257,11 +278,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.05
+      "efficiencyFloor": 0.05,
+      "description": "Water guides growth and protects harvests.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0.001
     },
     {
       "id": "silo",
-      "name": "Silo",
+      "name": "Harvest Silo",
       "era": "agrarian",
       "category": "storage",
       "maxLevel": 4,
@@ -279,14 +303,17 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "food",
+      "districtBonus": 1.08,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.05
+      "efficiencyFloor": 0.05,
+      "description": "Tall storage to stabilize food surpluses.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "trade_post",
-      "name": "Trade Post",
+      "name": "Caravan Post",
       "era": "agrarian",
       "category": "economy",
       "maxLevel": 4,
@@ -307,14 +334,17 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 80,
-      "districtTag": "economy",
-      "districtBonus": 1.12,
+      "districtTag": "food",
+      "districtBonus": 1.08,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.05
+      "efficiencyFloor": 0.05,
+      "description": "Merchants and news flow through the settlement.",
+      "cohesionPerHour": 0.001,
+      "biospherePerHour": 0
     },
     {
       "id": "partnership_office",
-      "name": "Partnership Office",
+      "name": "Council Hall",
       "era": "agrarian",
       "category": "institution",
       "maxLevel": 3,
@@ -333,10 +363,13 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "civic",
+      "districtBonus": 1.08,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.05
+      "efficiencyFloor": 0.05,
+      "description": "Elders deliberate and mediate disputes.",
+      "cohesionPerHour": 0.002,
+      "biospherePerHour": 0
     },
     {
       "id": "watchtower",
@@ -359,7 +392,10 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.05
+      "efficiencyFloor": 0.05,
+      "description": "High ground for early warning.",
+      "cohesionPerHour": -0.0005,
+      "biospherePerHour": 0
     },
     {
       "id": "smelter",
@@ -384,14 +420,17 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "forge",
+      "districtBonus": 1.1,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Ore and fire yield the first metals.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": -0.002
     },
     {
       "id": "academy",
-      "name": "Academy",
+      "name": "Archivist Hall",
       "era": "metallurgy",
       "category": "institution",
       "maxLevel": 5,
@@ -414,10 +453,13 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "civic",
+      "districtBonus": 1.08,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Knowledge keepers formalize learning.",
+      "cohesionPerHour": 0.002,
+      "biospherePerHour": 0
     },
     {
       "id": "foundry",
@@ -442,14 +484,17 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "forge",
+      "districtBonus": 1.1,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Metalworks feed tools and armies.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": -0.002
     },
     {
       "id": "depot",
-      "name": "Depot",
+      "name": "Alloy Depot",
       "era": "metallurgy",
       "category": "storage",
       "maxLevel": 4,
@@ -470,11 +515,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Heavy materials stored for projects.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "embassy",
-      "name": "Embassy",
+      "name": "Envoy Lodge",
       "era": "metallurgy",
       "category": "institution",
       "maxLevel": 4,
@@ -497,14 +545,17 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "civic",
+      "districtBonus": 1.08,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Diplomacy and influence expand.",
+      "cohesionPerHour": 0.002,
+      "biospherePerHour": 0
     },
     {
       "id": "fortified_wall",
-      "name": "Fortified Wall",
+      "name": "Stone Bastion",
       "era": "metallurgy",
       "category": "defense",
       "maxLevel": 4,
@@ -523,11 +574,14 @@
       "districtTag": null,
       "districtBonus": 1.0,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Fortified walls anchor defense.",
+      "cohesionPerHour": -0.0005,
+      "biospherePerHour": 0
     },
     {
       "id": "workshop",
-      "name": "Workshop",
+      "name": "Craft Workshop",
       "era": "metallurgy",
       "category": "production",
       "maxLevel": 4,
@@ -549,14 +603,17 @@
       "projectSpeedBonus": 0,
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
-      "districtTag": null,
-      "districtBonus": 1.0,
+      "districtTag": "forge",
+      "districtBonus": 1.1,
       "maintenancePerHour": {},
-      "efficiencyFloor": 0.1
+      "efficiencyFloor": 0.1,
+      "description": "Artisans refine tools and techniques.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": -0.001
     },
     {
       "id": "generator",
-      "name": "Generator",
+      "name": "Steam Generator",
       "era": "industrial",
       "category": "energy",
       "maxLevel": 5,
@@ -578,15 +635,18 @@
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
       "districtTag": "energy",
-      "districtBonus": 1.08,
+      "districtBonus": 1.1,
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Energy roars to life with industry.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": -0.003
     },
     {
       "id": "grid_node",
-      "name": "Grid Node",
+      "name": "Power Grid Node",
       "era": "industrial",
       "category": "storage",
       "maxLevel": 4,
@@ -606,11 +666,14 @@
       "adjacencyBonus": null,
       "logisticsCapAdd": 140,
       "districtTag": "energy",
-      "districtBonus": 1.12,
+      "districtBonus": 1.1,
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Distribution hubs stabilize energy flow.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "market_exchange",
@@ -642,11 +705,14 @@
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Credits and goods move at scale.",
+      "cohesionPerHour": 0.001,
+      "biospherePerHour": 0
     },
     {
       "id": "vault",
-      "name": "Vault",
+      "name": "Secure Vault",
       "era": "industrial",
       "category": "defense",
       "maxLevel": 4,
@@ -671,11 +737,14 @@
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Protected reserves prevent loss.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "security_center",
-      "name": "Security Center",
+      "name": "Security Bureau",
       "era": "industrial",
       "category": "defense",
       "maxLevel": 4,
@@ -699,7 +768,10 @@
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Coordinated patrols deter threats.",
+      "cohesionPerHour": -0.001,
+      "biospherePerHour": 0
     },
     {
       "id": "logistics_hub",
@@ -730,7 +802,10 @@
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Rail, roads, and routing align.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "automation_foundry",
@@ -759,7 +834,10 @@
       "maintenancePerHour": {
         "credits": 0.4
       },
-      "efficiencyFloor": 0.2
+      "efficiencyFloor": 0.2,
+      "description": "Machines accelerate output at a cost.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": -0.003
     },
     {
       "id": "solar_array_field",
@@ -790,7 +868,10 @@
       "maintenancePerHour": {
         "credits": 1.0
       },
-      "efficiencyFloor": 0.25
+      "efficiencyFloor": 0.25,
+      "description": "Planetary power captured cleanly.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0.003
     },
     {
       "id": "planetary_battery",
@@ -819,7 +900,10 @@
       "maintenancePerHour": {
         "credits": 1.0
       },
-      "efficiencyFloor": 0.25
+      "efficiencyFloor": 0.25,
+      "description": "Reserves smooth planetary demand.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "planetary_relay",
@@ -849,11 +933,14 @@
       "adjacencyBonus": null,
       "logisticsCapAdd": 140,
       "districtTag": "energy",
-      "districtBonus": 1.12,
+      "districtBonus": 1.1,
       "maintenancePerHour": {
         "credits": 1.0
       },
-      "efficiencyFloor": 0.25
+      "efficiencyFloor": 0.25,
+      "description": "Signals bind distant regions.",
+      "cohesionPerHour": 0.001,
+      "biospherePerHour": 0
     },
     {
       "id": "orbital_platform",
@@ -885,7 +972,10 @@
       "maintenancePerHour": {
         "credits": 1.0
       },
-      "efficiencyFloor": 0.25
+      "efficiencyFloor": 0.25,
+      "description": "Industry reaches above the sky.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "shield_grid",
@@ -914,11 +1004,14 @@
       "maintenancePerHour": {
         "credits": 1.0
       },
-      "efficiencyFloor": 0.25
+      "efficiencyFloor": 0.25,
+      "description": "A planetary defense canopy.",
+      "cohesionPerHour": -0.001,
+      "biospherePerHour": 0
     },
     {
       "id": "control_node",
-      "name": "Control Node",
+      "name": "World Council Node",
       "era": "planetary",
       "category": "institution",
       "maxLevel": 4,
@@ -948,7 +1041,10 @@
       "maintenancePerHour": {
         "credits": 1.0
       },
-      "efficiencyFloor": 0.25
+      "efficiencyFloor": 0.25,
+      "description": "Planetary governance and coordination.",
+      "cohesionPerHour": 0.003,
+      "biospherePerHour": 0
     },
     {
       "id": "stellar_collector_node",
@@ -975,11 +1071,14 @@
       "adjacencyBonus": null,
       "logisticsCapAdd": 0,
       "districtTag": "energy",
-      "districtBonus": 1.08,
+      "districtBonus": 1.1,
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "First anchors of star-scale capture.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "relay_nexus",
@@ -1013,12 +1112,15 @@
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "Interstellar routing for energy and data.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "galactic_archive",
       "name": "Galactic Archive",
-      "era": "stellar",
+      "era": "galactic",
       "category": "institution",
       "maxLevel": 4,
       "baseCost": {
@@ -1046,7 +1148,10 @@
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "A living library of a thousand worlds.",
+      "cohesionPerHour": 0.002,
+      "biospherePerHour": 0
     },
     {
       "id": "stellar_vault",
@@ -1077,7 +1182,10 @@
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "Redundant stores for star-era reserves.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "shield_protocol_array",
@@ -1106,12 +1214,15 @@
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "Defense nets for megastructures.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "relay_fabricator",
       "name": "Relay Fabricator",
-      "era": "stellar",
+      "era": "galactic",
       "category": "accelerator",
       "maxLevel": 3,
       "baseCost": {
@@ -1135,12 +1246,15 @@
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "Self-replicating relay manufacturing.",
+      "cohesionPerHour": 0,
+      "biospherePerHour": 0
     },
     {
       "id": "galactic_relay_node",
       "name": "Galactic Relay Node",
-      "era": "stellar",
+      "era": "galactic",
       "category": "energy",
       "maxLevel": 3,
       "baseCost": {
@@ -1167,7 +1281,10 @@
       "maintenancePerHour": {
         "credits": 2.0
       },
-      "efficiencyFloor": 0.3
+      "efficiencyFloor": 0.3,
+      "description": "Power conduits spanning star systems.",
+      "cohesionPerHour": 0.001,
+      "biospherePerHour": 0
     }
   ],
   "projects": [
@@ -1188,7 +1305,7 @@
           "eraId": "agrarian"
         }
       ],
-      "description": "Establish permanent settlement infrastructure.",
+      "description": "Settle around the fire and build lasting shelters.",
       "tags": [
         "era",
         "keystone"
@@ -1209,16 +1326,24 @@
         {
           "type": "add_crew",
           "crewCount": 1
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "basic_literacy"
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "scout_pact"
         }
       ],
-      "description": "Unlock a third work crew through formal organization.",
+      "description": "Organize the first councils and work crews.",
       "tags": [
         "institution"
       ]
     },
     {
       "id": "primitive_granaries",
-      "name": "Primitive Granaries",
+      "name": "Pit-Caches & Fired Seals",
       "era": "stone",
       "category": "infrastructure",
       "durationSeconds": 600,
@@ -1231,9 +1356,17 @@
           "type": "add_resource_cap",
           "resourceId": "food",
           "amount": 200
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "storage_discipline"
+        },
+        {
+          "type": "add_collector_capacity_hours",
+          "amount": 1
         }
       ],
-      "description": "Increase food storage capacity.",
+      "description": "Seal surplus in clay and earth, extending the tribe\u2019s memory.",
       "tags": [
         "infrastructure"
       ]
@@ -1254,16 +1387,20 @@
           "type": "add_resource_multiplier",
           "resourceId": "materials",
           "multiplier": 1.12
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "palisade_reinforcement"
         }
       ],
-      "description": "Improve material extraction efficiency.",
+      "description": "Chisel stone into sharper tools and spears.",
       "tags": [
         "production"
       ]
     },
     {
       "id": "basic_literacy",
-      "name": "Basic Literacy",
+      "name": "Sky-Voice Myths",
       "era": "stone",
       "category": "institution",
       "durationSeconds": 900,
@@ -1282,9 +1419,13 @@
           "type": "add_resource_multiplier",
           "resourceId": "knowledge",
           "multiplier": 1.1
+        },
+        {
+          "type": "add_cohesion",
+          "amount": 0.04
         }
       ],
-      "description": "Formalize knowledge keeping.",
+      "description": "Record stories that bind the people together.",
       "tags": [
         "institution"
       ]
@@ -1305,7 +1446,7 @@
           "amount": 5
         }
       ],
-      "description": "Strengthen early defenses.",
+      "description": "Strengthen the stake fence against raids.",
       "tags": [
         "defense"
       ]
@@ -1326,14 +1467,14 @@
           "contractId": "caravans_basic"
         }
       ],
-      "description": "Open basic caravan contracts.",
+      "description": "Open early caravan agreements for safety and trade.",
       "tags": [
         "partnership"
       ]
     },
     {
       "id": "storage_discipline",
-      "name": "Storage Discipline",
+      "name": "Clay That Remembers",
       "era": "stone",
       "category": "infrastructure",
       "durationSeconds": 600,
@@ -1346,9 +1487,13 @@
           "type": "add_resource_cap",
           "resourceId": "materials",
           "amount": 180
+        },
+        {
+          "type": "add_collector_capacity_hours",
+          "amount": 2
         }
       ],
-      "description": "Expand material handling capacity.",
+      "description": "Standardize cache jars so nothing hard-won is wasted.",
       "tags": [
         "infrastructure"
       ]
@@ -1370,7 +1515,7 @@
           "eraId": "metallurgy"
         }
       ],
-      "description": "Interlink agrarian production and storage.",
+      "description": "Link fields and granaries across the village.",
       "tags": [
         "era",
         "keystone"
@@ -1392,9 +1537,13 @@
           "type": "add_resource_multiplier",
           "resourceId": "food",
           "multiplier": 1.2
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "grain_reserve_program"
         }
       ],
-      "description": "Boost farm yields with reliable irrigation.",
+      "description": "Channel water to steady harvests.",
       "tags": [
         "infrastructure"
       ]
@@ -1416,7 +1565,7 @@
           "amount": 500
         }
       ],
-      "description": "Expand food reserves for stability.",
+      "description": "Institutionalize surplus for lean seasons.",
       "tags": [
         "infrastructure"
       ]
@@ -1436,9 +1585,17 @@
         {
           "type": "unlock_contract",
           "contractId": "caravans_trade"
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "early_markets"
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "partnership_framework"
         }
       ],
-      "description": "Formalize trade routes and contracts.",
+      "description": "Formalize caravan diplomacy and the first trade obligations.",
       "tags": [
         "partnership"
       ]
@@ -1458,16 +1615,20 @@
         {
           "type": "add_security_bonus",
           "amount": 8
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "civic_festivals"
         }
       ],
-      "description": "Improve readiness across the settlement.",
+      "description": "Train militias to repel raiders.",
       "tags": [
         "defense"
       ]
     },
     {
       "id": "civic_festivals",
-      "name": "Civic Festivals",
+      "name": "Great Gatherings",
       "era": "agrarian",
       "category": "institution",
       "durationSeconds": 3600,
@@ -1486,9 +1647,13 @@
           "type": "add_resource_cap",
           "resourceId": "influence",
           "amount": 60
+        },
+        {
+          "type": "add_cohesion",
+          "amount": 0.08
         }
       ],
-      "description": "Strengthen social cohesion and influence.",
+      "description": "Festivals reinforce unity and morale.",
       "tags": [
         "institution"
       ]
@@ -1511,7 +1676,7 @@
           "multiplier": 1.2
         }
       ],
-      "description": "Enable early credit flow.",
+      "description": "Create a steady flow of credits and goods.",
       "tags": [
         "economy"
       ]
@@ -1533,7 +1698,7 @@
           "flagId": "partnerships_enabled"
         }
       ],
-      "description": "Unlock formal partnerships.",
+      "description": "Build structures to maintain alliances.",
       "tags": [
         "diplomacy",
         "partnership"
@@ -1557,7 +1722,7 @@
           "eraId": "industrial"
         }
       ],
-      "description": "Standardize metallurgy across the base.",
+      "description": "Standardize metallurgy across the realm.",
       "tags": [
         "era",
         "keystone"
@@ -1565,7 +1730,7 @@
     },
     {
       "id": "industrial_coordination",
-      "name": "Industrial Coordination",
+      "name": "Forge City Charter",
       "era": "metallurgy",
       "category": "institution",
       "durationSeconds": 14400,
@@ -1578,9 +1743,17 @@
         {
           "type": "add_crew",
           "crewCount": 1
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "alloy_stockpiles"
+        },
+        {
+          "type": "add_biosphere",
+          "amount": -0.05
         }
       ],
-      "description": "Unlock a fourth work crew.",
+      "description": "Coordinate industry and resource flow.",
       "tags": [
         "institution"
       ]
@@ -1601,9 +1774,13 @@
           "type": "add_resource_multiplier",
           "resourceId": "materials",
           "multiplier": 1.25
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "fortification_doctrine"
         }
       ],
-      "description": "Increase metallurgical yield.",
+      "description": "Refine processes to increase metal yield.",
       "tags": [
         "production"
       ]
@@ -1624,9 +1801,17 @@
           "type": "add_resource_multiplier",
           "resourceId": "knowledge",
           "multiplier": 1.3
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "diplomatic_envoys"
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "contract_tier_two"
         }
       ],
-      "description": "Formalize knowledge institutions.",
+      "description": "Formalize Archivist institutions.",
       "tags": [
         "institution"
       ]
@@ -1649,7 +1834,7 @@
           "multiplier": 1.25
         }
       ],
-      "description": "Strengthen diplomatic reach.",
+      "description": "Build formal channels for negotiation.",
       "tags": [
         "partnership"
       ]
@@ -1671,7 +1856,7 @@
           "amount": 800
         }
       ],
-      "description": "Increase materials storage.",
+      "description": "Expand reserves for heavy projects.",
       "tags": [
         "infrastructure"
       ]
@@ -1693,7 +1878,7 @@
           "amount": 12
         }
       ],
-      "description": "Reduce raid likelihood via doctrine.",
+      "description": "Codify layered defenses.",
       "tags": [
         "defense"
       ]
@@ -1719,7 +1904,7 @@
           "contractId": "archivist_pact"
         }
       ],
-      "description": "Unlock higher-tier contracts.",
+      "description": "Unlock stronger pact tiers.",
       "tags": [
         "diplomacy",
         "partnership"
@@ -1743,7 +1928,7 @@
           "eraId": "planetary"
         }
       ],
-      "description": "Establish industrial energy distribution.",
+      "description": "Electrify industry with a unified grid.",
       "tags": [
         "era",
         "keystone"
@@ -1765,9 +1950,13 @@
           "type": "add_resource_multiplier",
           "resourceId": "credits",
           "multiplier": 1.3
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "vaulting"
         }
       ],
-      "description": "Scale the credit economy.",
+      "description": "Stabilize the credit economy.",
       "tags": [
         "economy"
       ]
@@ -1787,9 +1976,13 @@
         {
           "type": "add_security_bonus",
           "amount": 18
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "contract_tier_three"
         }
       ],
-      "description": "Reduce raid probability with advanced protocols.",
+      "description": "Codify advanced defense readiness.",
       "tags": [
         "defense"
       ]
@@ -1812,7 +2005,7 @@
           "amount": 400
         }
       ],
-      "description": "Reduce theft impact by securing resources.",
+      "description": "Secure reserves against theft.",
       "tags": [
         "defense"
       ]
@@ -1833,9 +2026,13 @@
         {
           "type": "project_speed_bonus",
           "amount": 0.06
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "catalyst_program"
         }
       ],
-      "description": "Permanently improve project speed.",
+      "description": "Accelerate production through mechanization.",
       "tags": [
         "accelerator"
       ]
@@ -1856,7 +2053,7 @@
           "type": "unlock_catalyst"
         }
       ],
-      "description": "Unlock daily catalyst acceleration.",
+      "description": "Deploy chrono-accelerators for projects.",
       "tags": [
         "accelerator"
       ]
@@ -1886,7 +2083,7 @@
     },
     {
       "id": "keystone_planetary_energy_grid",
-      "name": "Planetary Energy Grid",
+      "name": "Planetary Energy Grid (Type I)",
       "era": "planetary",
       "category": "keystone",
       "durationSeconds": 86400,
@@ -1906,7 +2103,7 @@
           "flagId": "type_i_complete"
         }
       ],
-      "description": "Complete Type I energy capture.",
+      "description": "Complete planetary-scale energy capture and achieve Type I status.",
       "tags": [
         "era",
         "keystone"
@@ -1928,16 +2125,24 @@
         {
           "type": "add_crew",
           "crewCount": 1
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "chrono_shard_recovery"
+        },
+        {
+          "type": "add_cohesion",
+          "amount": 0.03
         }
       ],
-      "description": "Unlock a fifth work crew.",
+      "description": "Coordinate supply lines planet-wide.",
       "tags": [
         "institution"
       ]
     },
     {
       "id": "supply_chain_stabilization",
-      "name": "Supply Chain Stabilization",
+      "name": "Planetary Stewardship Plan",
       "era": "planetary",
       "category": "economy",
       "durationSeconds": 54000,
@@ -1951,9 +2156,17 @@
           "type": "add_resource_multiplier",
           "resourceId": "materials",
           "multiplier": 1.2
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "array_optimization"
+        },
+        {
+          "type": "add_biosphere",
+          "amount": 0.08
         }
       ],
-      "description": "Reduce market volatility impact.",
+      "description": "Balance growth with ecological recovery.",
       "tags": [
         "economy"
       ]
@@ -1973,9 +2186,17 @@
         {
           "type": "add_security_bonus",
           "amount": 28
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "contract_tier_four"
+        },
+        {
+          "type": "add_cohesion",
+          "amount": -0.03
         }
       ],
-      "description": "Near-zero raid risk when maintained.",
+      "description": "Maintain near-impenetrable defenses.",
       "tags": [
         "defense"
       ]
@@ -1998,7 +2219,7 @@
           "multiplier": 1.3
         }
       ],
-      "description": "Improve planetary energy efficiency.",
+      "description": "Boost planetary energy efficiency.",
       "tags": [
         "energy"
       ]
@@ -2020,7 +2241,7 @@
           "amount": 2
         }
       ],
-      "description": "Unlock rare time acceleration shards.",
+      "description": "Recover rare time acceleration shards.",
       "tags": [
         "accelerator"
       ]
@@ -2050,7 +2271,7 @@
     },
     {
       "id": "keystone_stellar_collector_array",
-      "name": "Dyson Swarm",
+      "name": "Dyson Swarm (Type II)",
       "era": "stellar",
       "category": "keystone",
       "durationSeconds": 129600,
@@ -2074,6 +2295,10 @@
           "type": "add_resource_multiplier",
           "resourceId": "energy",
           "multiplier": 1.25
+        },
+        {
+          "type": "unlock_era",
+          "eraId": "galactic"
         }
       ],
       "description": "Deploy a stellar-scale swarm for massive energy capture.",
@@ -2086,7 +2311,7 @@
     },
     {
       "id": "type_ii_matrioshka_brain",
-      "name": "Matrioshka Brain",
+      "name": "Matrioshka Brain (Type II)",
       "era": "stellar",
       "category": "keystone",
       "durationSeconds": 129600,
@@ -2110,9 +2335,13 @@
           "type": "add_resource_multiplier",
           "resourceId": "knowledge",
           "multiplier": 1.35
+        },
+        {
+          "type": "unlock_era",
+          "eraId": "galactic"
         }
       ],
-      "description": "Layered computational shells amplify knowledge throughput.",
+      "description": "Layered computation shells around the star.",
       "tags": [
         "era",
         "keystone",
@@ -2122,7 +2351,7 @@
     },
     {
       "id": "type_ii_stellar_engine",
-      "name": "Stellar Engine",
+      "name": "Stellar Engine (Type II)",
       "era": "stellar",
       "category": "keystone",
       "durationSeconds": 129600,
@@ -2150,9 +2379,13 @@
           "type": "add_resource_multiplier",
           "resourceId": "credits",
           "multiplier": 1.15
+        },
+        {
+          "type": "unlock_era",
+          "eraId": "galactic"
         }
       ],
-      "description": "Reconfigure stellar output to stabilize logistics and trade.",
+      "description": "Reconfigure stellar output to steer the system.",
       "tags": [
         "era",
         "keystone",
@@ -2175,6 +2408,14 @@
         {
           "type": "add_crew",
           "crewCount": 1
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "relay_nexus_coordination"
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "stellar_efficiency_algorithms"
         }
       ],
       "description": "Unlock a sixth work crew.",
@@ -2197,9 +2438,13 @@
         {
           "type": "set_flag",
           "flagId": "galactic_overlay"
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "shield_protocols"
         }
       ],
-      "description": "Unlock the galactic relay overlay.",
+      "description": "Map the first interstellar relay corridors.",
       "tags": [
         "infrastructure"
       ]
@@ -2273,8 +2518,8 @@
     },
     {
       "id": "galactic_harness_network",
-      "name": "Galactic Harness Network",
-      "era": "stellar",
+      "name": "Galactic Harness Network (Type III)",
+      "era": "galactic",
       "category": "megaproject",
       "durationSeconds": 172800,
       "crewRequired": 2,
@@ -2291,16 +2536,345 @@
           "flagId": "type_iii_complete"
         }
       ],
-      "description": "Complete the Kardashev Type III chain.",
+      "description": "Link star systems into a galactic energy web.",
       "tags": [
         "megaproject"
+      ]
+    },
+    {
+      "id": "first_ledger",
+      "name": "First Ledger",
+      "era": "agrarian",
+      "category": "institution",
+      "durationSeconds": 3600,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 160,
+        "knowledge": 60
+      },
+      "effects": [
+        {
+          "type": "add_resource_cap",
+          "resourceId": "knowledge",
+          "amount": 200
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "knowledge",
+          "multiplier": 1.1
+        },
+        {
+          "type": "unlock_contract",
+          "contractId": "archivist_advisory"
+        },
+        {
+          "type": "set_flag",
+          "flagId": "ledger_invented"
+        }
+      ],
+      "description": "Put marks to clay to preserve seasons, law, and memory.",
+      "tags": [
+        "institution",
+        "science"
+      ]
+    },
+    {
+      "id": "standard_coinage",
+      "name": "Standard Coinage",
+      "era": "metallurgy",
+      "category": "economy",
+      "durationSeconds": 7200,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 420,
+        "knowledge": 120,
+        "influence": 80
+      },
+      "effects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "credits",
+          "multiplier": 1.15
+        },
+        {
+          "type": "add_resource_cap",
+          "resourceId": "credits",
+          "amount": 200
+        },
+        {
+          "type": "unlock_contract",
+          "contractId": "caravans_exchange"
+        },
+        {
+          "type": "set_flag",
+          "flagId": "coinage_standardized"
+        }
+      ],
+      "description": "Mint trusted currency and stabilize trade across cities.",
+      "tags": [
+        "economy"
+      ]
+    },
+    {
+      "id": "steam_standardization",
+      "name": "Steam Standardization",
+      "era": "industrial",
+      "category": "infrastructure",
+      "durationSeconds": 14400,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 800,
+        "energy": 220,
+        "knowledge": 160
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 80
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "materials",
+          "multiplier": 1.08
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "telegraph_mesh"
+        }
+      ],
+      "description": "Standardize engines and parts to scale industry.",
+      "tags": [
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "telegraph_mesh",
+      "name": "Telegraph Mesh",
+      "era": "industrial",
+      "category": "infrastructure",
+      "durationSeconds": 14400,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 700,
+        "energy": 200,
+        "knowledge": 220
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 60
+        },
+        {
+          "type": "add_security_bonus",
+          "amount": 6
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "time_clock_doctrine"
+        }
+      ],
+      "description": "Bind factories and cities with instant signals.",
+      "tags": [
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "time_clock_doctrine",
+      "name": "Time-Clock Doctrine",
+      "era": "industrial",
+      "category": "accelerator",
+      "durationSeconds": 18000,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 600,
+        "credits": 200,
+        "knowledge": 240
+      },
+      "effects": [
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.05
+        },
+        {
+          "type": "unlock_catalyst"
+        }
+      ],
+      "description": "Discipline labor and unlock the first chrono accelerators.",
+      "tags": [
+        "accelerator"
+      ]
+    },
+    {
+      "id": "orbital_elevator",
+      "name": "Orbital Elevator (Skyhook)",
+      "era": "planetary",
+      "category": "infrastructure",
+      "durationSeconds": 64800,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 2000,
+        "energy": 1200,
+        "credits": 800
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 240
+        },
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.04
+        },
+        {
+          "type": "set_flag",
+          "flagId": "skyhook_online"
+        }
+      ],
+      "description": "Anchor an orbital lift for routine access to space.",
+      "tags": [
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "global_archive",
+      "name": "Global Archive",
+      "era": "planetary",
+      "category": "institution",
+      "durationSeconds": 54000,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 1200,
+        "credits": 500,
+        "knowledge": 800
+      },
+      "effects": [
+        {
+          "type": "add_resource_cap",
+          "resourceId": "knowledge",
+          "amount": 800
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "knowledge",
+          "multiplier": 1.15
+        },
+        {
+          "type": "add_cohesion",
+          "amount": 0.04
+        }
+      ],
+      "description": "Preserve the sum of human knowledge against loss.",
+      "tags": [
+        "institution",
+        "science"
+      ]
+    },
+    {
+      "id": "anomaly_drive_research",
+      "name": "Anomaly Drive",
+      "era": "stellar",
+      "category": "science",
+      "durationSeconds": 86400,
+      "crewRequired": 1,
+      "costs": {
+        "knowledge": 1400,
+        "energy": 900,
+        "credits": 800
+      },
+      "effects": [
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.06
+        },
+        {
+          "type": "add_logistics_cap",
+          "amount": 120
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "knowledge",
+          "multiplier": 1.08
+        }
+      ],
+      "description": "Decode the probe\u2019s physics to bend distance and time.",
+      "tags": [
+        "science",
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "von_neumann_seed_factories",
+      "name": "Von Neumann Seed Factories",
+      "era": "galactic",
+      "category": "infrastructure",
+      "durationSeconds": 108000,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 3200,
+        "energy": 2600,
+        "credits": 2000,
+        "knowledge": 1200
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 220
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "stargate_spine"
+        },
+        {
+          "type": "set_flag",
+          "flagId": "seed_factories_online"
+        }
+      ],
+      "description": "Self-replicating factories to spread the network.",
+      "tags": [
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "stargate_spine",
+      "name": "Stargate Spine",
+      "era": "galactic",
+      "category": "infrastructure",
+      "durationSeconds": 120000,
+      "crewRequired": 1,
+      "costs": {
+        "materials": 3600,
+        "energy": 2800,
+        "credits": 2400,
+        "knowledge": 1400
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 240
+        },
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.05
+        },
+        {
+          "type": "unlock_project",
+          "projectId": "galactic_harness_network"
+        },
+        {
+          "type": "set_flag",
+          "flagId": "stargate_spine_complete"
+        }
+      ],
+      "description": "Bind distant systems with a permanent gate lattice.",
+      "tags": [
+        "infrastructure"
       ]
     }
   ],
   "eras": [
     {
       "id": "stone",
-      "name": "Stone",
+      "name": "Stone Age",
       "sortOrder": 0,
       "keystoneProjectId": "keystone_permanent_settlement",
       "unlocksBuildingIds": [
@@ -2315,17 +2889,13 @@
         "keystone_permanent_settlement",
         "civic_organization",
         "primitive_granaries",
-        "toolmaking",
-        "basic_literacy",
-        "palisade_reinforcement",
-        "scout_pact",
-        "storage_discipline"
+        "toolmaking"
       ],
-      "description": "Primitive settlement and basic production."
+      "description": "Sparks of awakening: fire, tools, and the first fragile shelters."
     },
     {
       "id": "agrarian",
-      "name": "Agrarian",
+      "name": "Agrarian Era",
       "sortOrder": 1,
       "keystoneProjectId": "keystone_agricultural_network",
       "unlocksBuildingIds": [
@@ -2339,18 +2909,15 @@
       "unlocksProjectIds": [
         "keystone_agricultural_network",
         "irrigation_systems",
-        "grain_reserve_program",
         "trade_charter",
         "village_defense_drill",
-        "civic_festivals",
-        "early_markets",
-        "partnership_framework"
+        "first_ledger"
       ],
-      "description": "Scaled food production and early trade."
+      "description": "Seeds of society take root, trade begins, and villages knit together."
     },
     {
       "id": "metallurgy",
-      "name": "Metallurgy",
+      "name": "Age of Metallurgy",
       "sortOrder": 2,
       "keystoneProjectId": "keystone_foundry_standardization",
       "unlocksBuildingIds": [
@@ -2367,16 +2934,13 @@
         "industrial_coordination",
         "smelting_mastery",
         "academy_charter",
-        "diplomatic_envoys",
-        "alloy_stockpiles",
-        "fortification_doctrine",
-        "contract_tier_two"
+        "standard_coinage"
       ],
-      "description": "Materials conversion and knowledge acceleration."
+      "description": "Forges blaze. Knowledge and conflict accelerate in equal measure."
     },
     {
       "id": "industrial",
-      "name": "Industrial",
+      "name": "Industrial Revolution",
       "sortOrder": 3,
       "keystoneProjectId": "keystone_industrial_power_grid",
       "unlocksBuildingIds": [
@@ -2392,16 +2956,14 @@
         "keystone_industrial_power_grid",
         "market_exchange_protocols",
         "security_protocols",
-        "vaulting",
         "automation_foundry_project",
-        "catalyst_program",
-        "contract_tier_three"
+        "steam_standardization"
       ],
-      "description": "Energy and credits become central."
+      "description": "Steam, steel, and industry reshape the world and its people."
     },
     {
       "id": "planetary",
-      "name": "Planetary",
+      "name": "Planetary Era",
       "sortOrder": 4,
       "keystoneProjectId": "keystone_planetary_energy_grid",
       "unlocksBuildingIds": [
@@ -2417,60 +2979,69 @@
         "planetary_logistics_directorate",
         "supply_chain_stabilization",
         "global_defense_net",
-        "array_optimization",
-        "chrono_shard_recovery",
-        "contract_tier_four"
+        "orbital_elevator",
+        "global_archive"
       ],
-      "description": "Planetary-scale energy capture and stability."
+      "description": "One world, one destiny. Planetary systems unify under a shared grid."
     },
     {
       "id": "stellar",
-      "name": "Stellar & Galactic",
+      "name": "Stellar Era",
       "sortOrder": 5,
       "keystoneProjectId": "keystone_stellar_collector_array",
+      "keystoneProjectIds": [
+        "keystone_stellar_collector_array",
+        "type_ii_matrioshka_brain",
+        "type_ii_stellar_engine"
+      ],
       "unlocksBuildingIds": [
         "stellar_collector_node",
         "relay_nexus",
-        "galactic_archive",
         "stellar_vault",
-        "shield_protocol_array",
+        "shield_protocol_array"
+      ],
+      "unlocksProjectIds": [
+        "autonomous_fabrication_network",
+        "galactic_relay_mapping"
+      ],
+      "description": "The Solar Council chooses the path to Type II mastery."
+    },
+    {
+      "id": "galactic",
+      "name": "Galactic Ascension",
+      "sortOrder": 6,
+      "keystoneProjectId": "galactic_harness_network",
+      "unlocksBuildingIds": [
+        "galactic_archive",
         "relay_fabricator",
         "galactic_relay_node"
       ],
       "unlocksProjectIds": [
-        "keystone_stellar_collector_array",
-        "type_ii_matrioshka_brain",
-        "type_ii_stellar_engine",
-        "autonomous_fabrication_network",
-        "galactic_relay_mapping",
-        "shield_protocols",
-        "stellar_efficiency_algorithms",
-        "relay_nexus_coordination",
-        "galactic_harness_network"
+        "von_neumann_seed_factories"
       ],
-      "description": "Stellar megastructures and galactic network."
+      "description": "A federation of stars reaches for Type III galactic power."
     }
   ],
   "factions": [
     {
       "id": "caravans",
       "name": "Caravans",
-      "description": "Trade stability and logistics."
+      "description": "Trade stability and logistics from village to void."
     },
     {
       "id": "forge_cities",
       "name": "Forge Cities",
-      "description": "Industrial acceleration for materials."
+      "description": "Industrial acceleration and metallurgical power."
     },
     {
       "id": "archivists",
       "name": "Archivists",
-      "description": "Knowledge acceleration and research pacts."
+      "description": "Knowledge preservation and scientific momentum."
     },
     {
       "id": "raiders",
       "name": "Raiders",
-      "description": "Threat faction; can be pacified into security contractors."
+      "description": "Opposition faction; can be pacified or bought off."
     }
   ],
   "contracts": [
@@ -2528,7 +3099,7 @@
         "materials": 1.05
       },
       "securityBonus": 0,
-      "description": "Boost materials supply with minor efficiency.",
+      "description": "Boost materials output with industrial support.",
       "priceIndexMultiplier": 1.0,
       "renewable": false,
       "penaltyEffects": []
@@ -2567,7 +3138,7 @@
       "effectsPerHour": {},
       "multipliers": {},
       "securityBonus": 18,
-      "description": "Reduce raid risk through paid security.",
+      "description": "Reduce raid risk through paid protection.",
       "priceIndexMultiplier": 1.0,
       "renewable": true,
       "penaltyEffects": [
@@ -2598,6 +3169,68 @@
       "priceIndexMultiplier": 1.0,
       "renewable": false,
       "penaltyEffects": []
+    },
+    {
+      "id": "caravans_seed_exchange",
+      "name": "Seed Exchange",
+      "factionId": "caravans",
+      "requiredRelationship": 0,
+      "durationSeconds": 86400,
+      "upkeepPerHour": {
+        "food": 2
+      },
+      "effectsPerHour": {
+        "materials": 3,
+        "knowledge": 1
+      },
+      "multipliers": {},
+      "securityBonus": 0,
+      "description": "Trade surplus for hardy seeds and tools.",
+      "priceIndexMultiplier": 1.0,
+      "renewable": false,
+      "penaltyEffects": []
+    },
+    {
+      "id": "archivist_advisory",
+      "name": "Archivist Advisory",
+      "factionId": "archivists",
+      "requiredRelationship": 0,
+      "durationSeconds": 86400,
+      "upkeepPerHour": {
+        "materials": 2
+      },
+      "effectsPerHour": {
+        "knowledge": 4
+      },
+      "multipliers": {
+        "knowledge": 1.05
+      },
+      "securityBonus": 0,
+      "description": "A small circle of sages improves record-keeping.",
+      "priceIndexMultiplier": 1.0,
+      "renewable": false,
+      "penaltyEffects": []
+    },
+    {
+      "id": "caravans_exchange",
+      "name": "Coin Exchange",
+      "factionId": "caravans",
+      "requiredRelationship": 1,
+      "durationSeconds": 172800,
+      "upkeepPerHour": {
+        "materials": 4
+      },
+      "effectsPerHour": {
+        "credits": 8
+      },
+      "multipliers": {
+        "credits": 1.08
+      },
+      "securityBonus": 0,
+      "description": "Standardized coinage boosts long-range trade.",
+      "priceIndexMultiplier": 1.0,
+      "renewable": false,
+      "penaltyEffects": []
     }
   ],
   "events": [
@@ -2605,7 +3238,7 @@
       "id": "market_shock",
       "category": "market",
       "title": "Market Shock",
-      "description": "Prices fluctuate abruptly.",
+      "description": "Trade prices swing unexpectedly.",
       "weight": 1.4
     },
     {
@@ -2619,7 +3252,7 @@
       "id": "discovery",
       "category": "discovery",
       "title": "Rare Discovery",
-      "description": "A rare accelerator is found.",
+      "description": "A Chrono Shard is uncovered.",
       "weight": 0.7
     },
     {
@@ -2633,7 +3266,7 @@
       "id": "raid",
       "category": "raid",
       "title": "Raid Alert",
-      "description": "Hostile raid attempt detected.",
+      "description": "Hostile raiders test your defenses.",
       "weight": 0.6
     },
     {
@@ -2663,7 +3296,7 @@
         }
       ],
       "cooldownSeconds": 7200,
-      "description": "Stabilize the treasury by trimming discretionary spend."
+      "description": "Stabilize reserves by trimming discretionary spend."
     },
     {
       "id": "policy_open_markets",
@@ -2720,7 +3353,7 @@
         }
       ],
       "cooldownSeconds": 10800,
-      "description": "Covert intelligence operations reduce revenue."
+      "description": "Covert operations reduce revenue but quiet unrest."
     },
     {
       "id": "policy_research_focus",
@@ -2760,6 +3393,62 @@
       ],
       "cooldownSeconds": 10800,
       "description": "Aggressive innovation strains energy reserves."
+    },
+    {
+      "id": "policy_stewardship",
+      "name": "Stewardship Accord",
+      "slot": "economy",
+      "era": "planetary",
+      "effects": [
+        {
+          "type": "add_biosphere_rate",
+          "amount": 0.006
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "materials",
+          "multiplier": 0.95
+        }
+      ],
+      "cooldownSeconds": 0,
+      "description": "Restore ecological balance at the cost of raw output."
+    },
+    {
+      "id": "policy_unity_council",
+      "name": "Unity Council",
+      "slot": "diplomacy",
+      "era": "planetary",
+      "effects": [
+        {
+          "type": "add_cohesion_rate",
+          "amount": 0.006
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "influence",
+          "multiplier": 1.05
+        }
+      ],
+      "cooldownSeconds": 0,
+      "description": "Strengthen cohesion through shared councils and rituals."
+    },
+    {
+      "id": "policy_war_mobilization",
+      "name": "War Mobilization",
+      "slot": "security",
+      "era": "industrial",
+      "effects": [
+        {
+          "type": "add_security_bonus",
+          "amount": 10
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.006
+        }
+      ],
+      "cooldownSeconds": 0,
+      "description": "Raise defenses rapidly at the cost of social unity."
     }
   ],
   "eventChains": [
@@ -2811,8 +3500,7 @@
       "title": "Raider Ultimatum",
       "description": "Hostile raiders offer a truce in exchange for tribute.",
       "trigger": {
-        "minExposure": 0.6,
-        "minHostility": 0.6
+        "minRaidChance": 0.12
       },
       "choices": [
         {
@@ -2941,8 +3629,8 @@
     },
     {
       "id": "meta_vector_prime",
-      "title": "Vector Prime",
-      "description": "A kinetic field pilot offers to reshape your logistics corridors.",
+      "title": "Wayfinder",
+      "description": "A kinetic pathfinder offers to reshape your logistics corridors.",
       "trigger": {
         "requiresEraId": "stone"
       },
@@ -3043,8 +3731,8 @@
     },
     {
       "id": "meta_aegis_node",
-      "title": "Aegis Node",
-      "description": "A defensive specialist offers to fortify your perimeter mesh.",
+      "title": "Hearthguard",
+      "description": "A guardian offers to fortify your perimeter mesh.",
       "trigger": {
         "requiresEraId": "agrarian"
       },
@@ -3133,8 +3821,8 @@
     },
     {
       "id": "meta_quantum_forge",
-      "title": "Quantum Forge",
-      "description": "A materials savant offers to tune your fabrication lattice.",
+      "title": "Durnan Ironheart",
+      "description": "A forge savant offers to tune your fabrication lattice.",
       "trigger": {
         "requiresEraId": "metallurgy"
       },
@@ -3221,7 +3909,7 @@
     },
     {
       "id": "meta_neuralis",
-      "title": "Neuralis",
+      "title": "Elina the Chronicler",
       "description": "A cognition architect offers to accelerate your research mesh.",
       "trigger": {
         "requiresEraId": "metallurgy"
@@ -3312,10 +4000,10 @@
     },
     {
       "id": "meta_helios_arc",
-      "title": "Helios Arc",
-      "description": "An energy wielder offers to stabilize your power arrays.",
+      "title": "Aurora",
+      "description": "A woman who bends heat and light offers to stabilize your forges.",
       "trigger": {
-        "requiresEraId": "industrial"
+        "requiresEraId": "metallurgy"
       },
       "choices": [
         {
@@ -3404,10 +4092,10 @@
     },
     {
       "id": "meta_void_runner",
-      "title": "Void Runner",
-      "description": "A corridor smuggler offers to bend markets in your favor.",
+      "title": "Garruk the Thunderer",
+      "description": "A storm caller demands terms after the skies split.",
       "trigger": {
-        "requiresEraId": "industrial"
+        "requiresEraId": "metallurgy"
       },
       "choices": [
         {
@@ -3499,6 +4187,1613 @@
       "nextIds": [],
       "cooldownSeconds": 36000,
       "uniqueFlagId": "metahuman:void_runner:resolved"
+    },
+    {
+      "id": "stone_cooking_accident",
+      "title": "Fire-Cooked Meal",
+      "description": "A hunter drops meat into the fire. The tribe is stunned by the flavor.",
+      "trigger": {
+        "requiresEraId": "stone"
+      },
+      "choices": [
+        {
+          "id": "share_meal",
+          "title": "Share the Meal",
+          "description": "The tribe bonds over the first cooked feast.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.05
+            }
+          ]
+        },
+        {
+          "id": "save_for_later",
+          "title": "Save for Later",
+          "description": "Teach careful storage and rationing.",
+          "effects": [
+            {
+              "type": "add_resource_cap",
+              "resourceId": "food",
+              "amount": 20
+            }
+          ]
+        },
+        {
+          "id": "discard",
+          "title": "Discard It",
+          "description": "Superstition keeps the meal uneaten.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": -0.02
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:stone_cooking"
+    },
+    {
+      "id": "stone_boar_rider",
+      "title": "Boar Rider",
+      "description": "A brave soul tries to ride a wild boar. It does not go well.",
+      "trigger": {
+        "requiresEraId": "stone",
+        "minExposure": 0.2
+      },
+      "choices": [
+        {
+          "id": "laugh",
+          "title": "Laugh It Off",
+          "description": "Laughter eases the hardship.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.03
+            }
+          ]
+        },
+        {
+          "id": "honor",
+          "title": "Honor the Bravery",
+          "description": "Turn the mishap into a tale.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 4
+            }
+          ]
+        },
+        {
+          "id": "ban",
+          "title": "Ban Reckless Acts",
+          "description": "Strict rules dampen spirits.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:stone_boar"
+    },
+    {
+      "id": "stone_granary_overflow",
+      "title": "Granary Overflow",
+      "description": "Food rots as storage caps are exceeded.",
+      "trigger": {
+        "requiresEraId": "stone",
+        "resourceAtCapId": "food"
+      },
+      "choices": [
+        {
+          "id": "dig_pits",
+          "title": "Dig Deeper Pits",
+          "description": "Expand storage before the next harvest.",
+          "effects": [
+            {
+              "type": "add_resource_cap",
+              "resourceId": "food",
+              "amount": 40
+            }
+          ]
+        },
+        {
+          "id": "share",
+          "title": "Share with All",
+          "description": "Community sharing lifts morale.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.04
+            }
+          ]
+        },
+        {
+          "id": "waste",
+          "title": "Let It Rot",
+          "description": "Waste spreads frustration.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:stone_overflow"
+    },
+    {
+      "id": "agrarian_seed_discovery",
+      "title": "Seed Discovery",
+      "description": "A handful of forgotten seeds sprouts beside the river.",
+      "trigger": {
+        "requiresEraId": "agrarian"
+      },
+      "choices": [
+        {
+          "id": "expand_fields",
+          "title": "Expand Fields",
+          "description": "Push growth aggressively.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 1.05
+            },
+            {
+              "type": "add_biosphere",
+              "amount": -0.02
+            }
+          ]
+        },
+        {
+          "id": "balanced_growth",
+          "title": "Balanced Growth",
+          "description": "Grow carefully and nurture soil.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 1.03
+            },
+            {
+              "type": "add_biosphere",
+              "amount": 0.01
+            }
+          ]
+        },
+        {
+          "id": "ritualize",
+          "title": "Ritualize the Harvest",
+          "description": "Turn growth into shared tradition.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.05
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:agrarian_seed"
+    },
+    {
+      "id": "agrarian_adjacency_lesson",
+      "title": "Neighboring Granaries",
+      "description": "Builders notice storage near trade posts speeds distribution.",
+      "trigger": {
+        "requiresEraId": "agrarian"
+      },
+      "choices": [
+        {
+          "id": "cluster",
+          "title": "Cluster the District",
+          "description": "Plan districts to boost efficiency.",
+          "effects": [
+            {
+              "type": "add_logistics_cap",
+              "amount": 60
+            }
+          ]
+        },
+        {
+          "id": "ignore",
+          "title": "Ignore the Lesson",
+          "description": "Keep building wherever land is free.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": -0.01
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:agrarian_adjacency"
+    },
+    {
+      "id": "industrial_factory_reform",
+      "title": "Factory Reform",
+      "description": "Workers demand safer conditions as smoke thickens.",
+      "trigger": {
+        "requiresEraId": "industrial",
+        "minExposure": 0.5
+      },
+      "choices": [
+        {
+          "id": "reform",
+          "title": "Reform Industry",
+          "description": "Improve conditions and plant greenways.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.05
+            },
+            {
+              "type": "add_biosphere",
+              "amount": 0.02
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "materials",
+              "multiplier": 0.95
+            }
+          ]
+        },
+        {
+          "id": "exploit",
+          "title": "Exploit the Workforce",
+          "description": "Push output at any cost.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "materials",
+              "multiplier": 1.05
+            },
+            {
+              "type": "add_biosphere",
+              "amount": -0.05
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:industrial_reform"
+    },
+    {
+      "id": "planetary_unification",
+      "title": "Unification Congress",
+      "description": "Nations gather to shape a planetary charter.",
+      "trigger": {
+        "requiresEraId": "planetary"
+      },
+      "choices": [
+        {
+          "id": "federate",
+          "title": "Federate",
+          "description": "Form a shared planetary council.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.08
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 10
+            }
+          ]
+        },
+        {
+          "id": "centralize",
+          "title": "Centralize Power",
+          "description": "Strengthen security at the cost of unity.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 8
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.04
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:planetary_unity"
+    },
+    {
+      "id": "planetary_space_elevator",
+      "title": "Space Elevator Setback",
+      "description": "Early tethers snap under strain. The world watches.",
+      "trigger": {
+        "requiresEraId": "planetary",
+        "resourceAtCapId": "materials"
+      },
+      "choices": [
+        {
+          "id": "reinforce",
+          "title": "Reinforce",
+          "description": "Double down on materials and engineering.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "materials",
+              "amount": -30
+            },
+            {
+              "type": "add_logistics_cap",
+              "amount": 80
+            }
+          ]
+        },
+        {
+          "id": "delay",
+          "title": "Delay the Project",
+          "description": "Wait for stronger alloys.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": -0.02
+            }
+          ]
+        },
+        {
+          "id": "innovate",
+          "title": "Innovate",
+          "description": "A breakthrough saves the plan.",
+          "effects": [
+            {
+              "type": "project_speed_bonus",
+              "amount": 0.02
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:space_elevator"
+    },
+    {
+      "id": "stellar_solar_council",
+      "title": "Solar Council",
+      "description": "The world debates how to harness the star.",
+      "trigger": {
+        "requiresEraId": "stellar"
+      },
+      "choices": [
+        {
+          "id": "choose_dyson",
+          "title": "Dyson Swarm",
+          "description": "Capture stellar power in a modular swarm.",
+          "effects": [
+            {
+              "type": "unlock_project",
+              "projectId": "keystone_stellar_collector_array"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "type_ii_path_dyson"
+            }
+          ]
+        },
+        {
+          "id": "choose_matrioshka",
+          "title": "Matrioshka Brain",
+          "description": "Build a star-sized mind for knowledge.",
+          "effects": [
+            {
+              "type": "unlock_project",
+              "projectId": "type_ii_matrioshka_brain"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "type_ii_path_matrioshka"
+            }
+          ]
+        },
+        {
+          "id": "choose_engine",
+          "title": "Stellar Engine",
+          "description": "Steer the system with star-scale thrust.",
+          "effects": [
+            {
+              "type": "unlock_project",
+              "projectId": "type_ii_stellar_engine"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "type_ii_path_engine"
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:solar_council"
+    },
+    {
+      "id": "galactic_first_contact",
+      "title": "First Contact",
+      "description": "Signals from another star system finally answer back.",
+      "trigger": {
+        "requiresEraId": "galactic"
+      },
+      "choices": [
+        {
+          "id": "open_hand",
+          "title": "Open Hand",
+          "description": "Invite cooperation and exchange.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.06
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "influence",
+              "multiplier": 1.05
+            }
+          ]
+        },
+        {
+          "id": "guarded",
+          "title": "Guarded Welcome",
+          "description": "Prepare defenses while negotiating.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 8
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            }
+          ]
+        },
+        {
+          "id": "study_ruins",
+          "title": "Study the Ruins",
+          "description": "Prioritize knowledge from ancient relics.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "knowledge",
+              "multiplier": 1.08
+            },
+            {
+              "type": "add_biosphere",
+              "amount": -0.02
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:first_contact"
+    },
+    {
+      "id": "stone_first_caravan",
+      "title": "The First Caravan",
+      "description": "Strangers with pack animals arrive, polite and wary.",
+      "trigger": {
+        "requiresEraId": "stone"
+      },
+      "choices": [
+        {
+          "id": "welcome_caravan",
+          "title": "Welcome Them",
+          "description": "Open trade and share a meal.",
+          "effects": [
+            {
+              "type": "unlock_contract",
+              "contractId": "caravans_seed_exchange"
+            },
+            {
+              "type": "adjust_faction",
+              "factionId": "caravans",
+              "amount": 1
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 6
+            },
+            {
+              "type": "set_flag",
+              "flagId": "caravan_allied"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "cautious_trade",
+          "title": "Trade Cautiously",
+          "description": "Swap goods, keep guards close.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "materials",
+              "amount": 30
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 2
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "rob_caravan",
+          "title": "Rob Them",
+          "description": "Take what you need by force.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "materials",
+              "amount": 50
+            },
+            {
+              "type": "adjust_faction",
+              "factionId": "caravans",
+              "amount": -1
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            },
+            {
+              "type": "set_flag",
+              "flagId": "caravan_robbed"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:first_caravan"
+    },
+    {
+      "id": "agrarian_marks_ledger",
+      "title": "Marks That Don\u2019t Forget",
+      "description": "A scribe misplaces a ledger page that benefits their cousin.",
+      "trigger": {
+        "requiresEraId": "agrarian",
+        "requiresFlag": "ledger_invented"
+      },
+      "choices": [
+        {
+          "id": "punish_scribe",
+          "title": "Punish the Scribe",
+          "description": "Trust rises, but influence suffers.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.03
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": -4
+            },
+            {
+              "type": "set_flag",
+              "flagId": "ledger_punished"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "ignore_issue",
+          "title": "Ignore It",
+          "description": "Short-term stability, long-term rot.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 6
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            },
+            {
+              "type": "set_flag",
+              "flagId": "ledger_corruption"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:ledger_marks"
+    },
+    {
+      "id": "agrarian_soil_exhaustion",
+      "title": "Soil Exhaustion",
+      "description": "Fields grown too hard begin to fail.",
+      "trigger": {
+        "requiresEraId": "agrarian",
+        "requiresFlag": "greenhand_monoculture",
+        "maxBiosphere": 0.45
+      },
+      "choices": [
+        {
+          "id": "rotate_crops",
+          "title": "Rotate Crops",
+          "description": "Recover the land at a short-term cost.",
+          "effects": [
+            {
+              "type": "add_biosphere",
+              "amount": 0.05
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 0.95
+            },
+            {
+              "type": "set_flag",
+              "flagId": "soil_recovered"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "push_harder",
+          "title": "Push Harder",
+          "description": "Chase yield and accept the damage.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 1.05
+            },
+            {
+              "type": "add_biosphere",
+              "amount": -0.05
+            },
+            {
+              "type": "set_flag",
+              "flagId": "soil_exhausted"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:soil_exhaustion"
+    },
+    {
+      "id": "metallurgy_counterfeit_coins",
+      "title": "Counterfeit Coins",
+      "description": "False coinage spreads through the markets.",
+      "trigger": {
+        "requiresEraId": "metallurgy",
+        "requiresFlag": "coinage_standardized"
+      },
+      "choices": [
+        {
+          "id": "crackdown",
+          "title": "Crack Down",
+          "description": "Restore trust with harsh penalties.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "credits",
+              "amount": -30
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 8
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "ignore",
+          "title": "Look Away",
+          "description": "Profit now, credibility later.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "credits",
+              "amount": 40
+            },
+            {
+              "type": "adjust_faction",
+              "factionId": "caravans",
+              "amount": -1
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:counterfeit"
+    },
+    {
+      "id": "industrial_black_lung",
+      "title": "Black Lung Winter",
+      "description": "Smoke chokes the cities and tempers flare.",
+      "trigger": {
+        "requiresEraId": "industrial",
+        "maxBiosphere": 0.35
+      },
+      "choices": [
+        {
+          "id": "reform",
+          "title": "Reform Industry",
+          "description": "Clean air at the cost of output.",
+          "effects": [
+            {
+              "type": "add_biosphere",
+              "amount": 0.06
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "materials",
+              "multiplier": 0.95
+            },
+            {
+              "type": "add_cohesion",
+              "amount": 0.03
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "exploit",
+          "title": "Exploit the Workforce",
+          "description": "Push output and accept the fallout.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "materials",
+              "multiplier": 1.05
+            },
+            {
+              "type": "add_biosphere",
+              "amount": -0.05
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:black_lung"
+    },
+    {
+      "id": "planetary_silent_probe",
+      "title": "The Silent Probe",
+      "description": "A dead probe drifts in from deep space. It is not yours.",
+      "trigger": {
+        "requiresEraId": "planetary",
+        "resourceAtCapId": "knowledge",
+        "requiresFlagNotSet": "probe_recovered"
+      },
+      "choices": [
+        {
+          "id": "share_publicly",
+          "title": "Share Publicly",
+          "description": "Transparency builds unity but stirs fear.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 12
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "knowledge",
+              "amount": 40
+            },
+            {
+              "type": "unlock_project",
+              "projectId": "anomaly_drive_research"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "probe_recovered"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "militarize",
+          "title": "Militarize Secrecy",
+          "description": "Turn it into a weapons program.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 10
+            },
+            {
+              "type": "adjust_faction",
+              "factionId": "archivists",
+              "amount": -1
+            },
+            {
+              "type": "unlock_project",
+              "projectId": "anomaly_drive_research"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "probe_recovered"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "give_archivists",
+          "title": "Give to Archivists",
+          "description": "Let scholars decode the machine.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "knowledge",
+              "multiplier": 1.08
+            },
+            {
+              "type": "unlock_project",
+              "projectId": "anomaly_drive_research"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "probe_recovered"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:probe"
+    },
+    {
+      "id": "stellar_sun_shadow",
+      "title": "The Sun\u2019s Shadow",
+      "description": "The Dyson swarm changes daylight. Panic spreads.",
+      "trigger": {
+        "requiresEraId": "stellar",
+        "requiresFlag": "type_ii_path_dyson"
+      },
+      "choices": [
+        {
+          "id": "transparent",
+          "title": "Be Transparent",
+          "description": "Explain the plan and calm fears.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.04
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 10
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "censor",
+          "title": "Censor the Data",
+          "description": "Hide the scale and tighten security.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 8
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.03
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:sun_shadow"
+    },
+    {
+      "id": "stellar_thought_not_yours",
+      "title": "The Thought That Isn\u2019t Yours",
+      "description": "Matrioshka simulations begin to whisper back.",
+      "trigger": {
+        "requiresEraId": "stellar",
+        "requiresFlag": "type_ii_path_matrioshka"
+      },
+      "choices": [
+        {
+          "id": "embrace",
+          "title": "Embrace the Echo",
+          "description": "Let the system expand its mind.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "knowledge",
+              "multiplier": 1.06
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.02
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "contain",
+          "title": "Contain It",
+          "description": "Slow the growth and add controls.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 6
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "knowledge",
+              "multiplier": 0.97
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:matrioshka_echo"
+    },
+    {
+      "id": "stellar_orbit_anxiety",
+      "title": "Orbit Anxiety",
+      "description": "Colonies fear the stellar engine will disrupt their worlds.",
+      "trigger": {
+        "requiresEraId": "stellar",
+        "requiresFlag": "type_ii_path_engine"
+      },
+      "choices": [
+        {
+          "id": "reassure",
+          "title": "Reassure Colonies",
+          "description": "Invest in transparency and safety.",
+          "effects": [
+            {
+              "type": "add_cohesion",
+              "amount": 0.04
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": -6
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "impose",
+          "title": "Impose Authority",
+          "description": "Push forward with force.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 10
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.05
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:orbit_anxiety"
+    },
+    {
+      "id": "galactic_precursor_vault",
+      "title": "Precursor Vault",
+      "description": "A dead megastructure hums with ancient power.",
+      "trigger": {
+        "requiresEraId": "galactic",
+        "resourceAtCapId": "knowledge",
+        "requiresFlagNotSet": "precursor_vault_opened"
+      },
+      "choices": [
+        {
+          "id": "study",
+          "title": "Study the Vault",
+          "description": "Unlock protocols for legacy gains.",
+          "effects": [
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "knowledge",
+              "multiplier": 1.05
+            },
+            {
+              "type": "grant_chrono_shards",
+              "amount": 2
+            },
+            {
+              "type": "set_flag",
+              "flagId": "precursor_protocols"
+            },
+            {
+              "type": "set_flag",
+              "flagId": "precursor_vault_opened"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "salvage",
+          "title": "Salvage",
+          "description": "Strip it for resources.",
+          "effects": [
+            {
+              "type": "grant_resource",
+              "resourceId": "materials",
+              "amount": 800
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "credits",
+              "amount": 500
+            },
+            {
+              "type": "grant_chrono_shards",
+              "amount": 3
+            },
+            {
+              "type": "set_flag",
+              "flagId": "precursor_vault_opened"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "seal",
+          "title": "Seal It",
+          "description": "Leave the vault undisturbed.",
+          "effects": [
+            {
+              "type": "add_security_bonus",
+              "amount": 20
+            },
+            {
+              "type": "set_flag",
+              "flagId": "precursor_vault_opened"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 0,
+      "uniqueFlagId": "event:precursor_vault"
+    },
+    {
+      "id": "meta_ember_child",
+      "title": "Ember Child",
+      "description": "A storm-born child\u2019s hands glow with heat.",
+      "trigger": {
+        "requiresEraId": "stone"
+      },
+      "choices": [
+        {
+          "id": "ember_protect",
+          "title": "Protect and Teach",
+          "description": "Guide them as a symbol of the hearth.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "ember_child",
+              "amount": 2
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 1.03
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 3
+            },
+            {
+              "type": "set_flag",
+              "flagId": "ember_child_protected"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "ember_exploit",
+          "title": "Exploit the Gift",
+          "description": "Force their power into your kilns.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "ember_child",
+              "amount": -2
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "materials",
+              "multiplier": 1.05
+            },
+            {
+              "type": "set_flag",
+              "flagId": "ember_child_exploited"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "ember_exile",
+          "title": "Exile Them",
+          "description": "Drive them out to protect the tribe.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "ember_child",
+              "amount": -2
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 5
+            },
+            {
+              "type": "set_flag",
+              "flagId": "ember_child_exiled"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 36000,
+      "uniqueFlagId": "metahuman:ember_child:resolved"
+    },
+    {
+      "id": "meta_greenhand",
+      "title": "Greenhand",
+      "description": "A farmer walks through drought and leaves sprouts behind.",
+      "trigger": {
+        "requiresEraId": "agrarian"
+      },
+      "choices": [
+        {
+          "id": "green_steward",
+          "title": "Steward the Soil",
+          "description": "Respect the land and share the harvest.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "greenhand",
+              "amount": 2
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 1.04
+            },
+            {
+              "type": "add_biosphere",
+              "amount": 0.03
+            },
+            {
+              "type": "set_flag",
+              "flagId": "greenhand_stewardship"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "green_mono",
+          "title": "Monoculture",
+          "description": "Maximize yields now, worry later.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "greenhand",
+              "amount": -1
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "food",
+              "multiplier": 1.08
+            },
+            {
+              "type": "add_biosphere",
+              "amount": -0.03
+            },
+            {
+              "type": "set_flag",
+              "flagId": "greenhand_monoculture"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "green_weaponize",
+          "title": "Weaponize",
+          "description": "Use the gift to pressure rivals.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "greenhand",
+              "amount": -2
+            },
+            {
+              "type": "grant_resource",
+              "resourceId": "influence",
+              "amount": 10
+            },
+            {
+              "type": "adjust_faction",
+              "factionId": "raiders",
+              "amount": -1
+            },
+            {
+              "type": "set_flag",
+              "flagId": "greenhand_weaponized"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 36000,
+      "uniqueFlagId": "metahuman:greenhand:resolved"
+    },
+    {
+      "id": "meta_sparkwright",
+      "title": "The Sparkwright",
+      "description": "A factory accident births a living circuit.",
+      "trigger": {
+        "requiresEraId": "industrial"
+      },
+      "choices": [
+        {
+          "id": "spark_public",
+          "title": "Public Servant",
+          "description": "Place them in charge of the grid.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "sparkwright",
+              "amount": 2
+            },
+            {
+              "type": "add_logistics_cap",
+              "amount": 80
+            },
+            {
+              "type": "project_speed_bonus",
+              "amount": 0.03
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "spark_corp",
+          "title": "Corporate Leash",
+          "description": "Bind them to industrialists.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "sparkwright",
+              "amount": -1
+            },
+            {
+              "type": "add_resource_multiplier",
+              "resourceId": "credits",
+              "multiplier": 1.08
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.02
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "spark_vanish",
+          "title": "Let Them Vanish",
+          "description": "They disappear into the rail lines.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "sparkwright",
+              "amount": -1
+            },
+            {
+              "type": "add_logistics_cap",
+              "amount": 40
+            },
+            {
+              "type": "set_flag",
+              "flagId": "sparkwright_missing"
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 36000,
+      "uniqueFlagId": "metahuman:sparkwright:resolved"
+    },
+    {
+      "id": "meta_nullfield",
+      "title": "Nullfield",
+      "description": "A survivor radiates a calm that shields electronics.",
+      "trigger": {
+        "requiresEraId": "planetary"
+      },
+      "choices": [
+        {
+          "id": "null_recruit",
+          "title": "Recruit for Spaceflight",
+          "description": "Use the quiet zone to protect crews.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "nullfield",
+              "amount": 2
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 12
+            },
+            {
+              "type": "unlock_project",
+              "projectId": "global_archive"
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "null_contain",
+          "title": "Containment Protocol",
+          "description": "Keep them under guard.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "nullfield",
+              "amount": -2
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 8
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "null_weaponize",
+          "title": "Weaponize",
+          "description": "Turn the quiet into a weapon.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "nullfield",
+              "amount": -2
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 14
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.04
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 36000,
+      "uniqueFlagId": "metahuman:nullfield:resolved"
+    },
+    {
+      "id": "meta_lens",
+      "title": "Lens",
+      "description": "A gravity-singer offers to stabilize your corridors.",
+      "trigger": {
+        "requiresEraId": "stellar"
+      },
+      "choices": [
+        {
+          "id": "lens_ally",
+          "title": "Place on Council",
+          "description": "Give them a seat among megaprojects.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "lens",
+              "amount": 2
+            },
+            {
+              "type": "project_speed_bonus",
+              "amount": 0.04
+            },
+            {
+              "type": "add_logistics_cap",
+              "amount": 80
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "lens_neutral",
+          "title": "Keep Them Independent",
+          "description": "A cautious, limited relationship.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "lens",
+              "amount": 1
+            },
+            {
+              "type": "add_logistics_cap",
+              "amount": 40
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "lens_hunt",
+          "title": "Hunt Them",
+          "description": "Remove a perceived threat.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "lens",
+              "amount": -2
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 8
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 36000,
+      "uniqueFlagId": "metahuman:lens:resolved"
+    },
+    {
+      "id": "meta_chorus",
+      "title": "Chorus",
+      "description": "Millions of minds begin to synchronize across the network.",
+      "trigger": {
+        "requiresEraId": "galactic"
+      },
+      "choices": [
+        {
+          "id": "chorus_citizen",
+          "title": "Grant Autonomy",
+          "description": "Recognize Chorus as a citizen.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "chorus",
+              "amount": 2
+            },
+            {
+              "type": "add_global_multiplier",
+              "multiplier": 1.05
+            },
+            {
+              "type": "add_cohesion",
+              "amount": 0.04
+            },
+            {
+              "type": "add_offline_cap",
+              "amount": 1
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "chorus_leash",
+          "title": "Leash It",
+          "description": "Use it as infrastructure only.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "chorus",
+              "amount": -2
+            },
+            {
+              "type": "project_speed_bonus",
+              "amount": 0.06
+            },
+            {
+              "type": "add_cohesion",
+              "amount": -0.04
+            }
+          ],
+          "nextId": null
+        },
+        {
+          "id": "chorus_dissolve",
+          "title": "Dissolve It",
+          "description": "Shut down the collective.",
+          "effects": [
+            {
+              "type": "adjust_metahuman_affinity",
+              "metahumanId": "chorus",
+              "amount": -2
+            },
+            {
+              "type": "add_security_bonus",
+              "amount": 10
+            }
+          ],
+          "nextId": null
+        }
+      ],
+      "effects": [],
+      "nextIds": [],
+      "cooldownSeconds": 36000,
+      "uniqueFlagId": "metahuman:chorus:resolved"
     }
   ],
   "ambientEntities": [
@@ -3634,7 +5929,7 @@
       "tiers": [
         {
           "tier": 1,
-          "requiredPoints": 3,
+          "requiredPoints": 2,
           "effects": [
             {
               "type": "add_resource_multiplier",
@@ -3645,7 +5940,7 @@
         },
         {
           "tier": 2,
-          "requiredPoints": 8,
+          "requiredPoints": 5,
           "effects": [
             {
               "type": "add_logistics_cap",
@@ -3655,7 +5950,7 @@
         },
         {
           "tier": 3,
-          "requiredPoints": 15,
+          "requiredPoints": 8,
           "effects": [
             {
               "type": "add_resource_multiplier",
@@ -3679,7 +5974,7 @@
       "tiers": [
         {
           "tier": 1,
-          "requiredPoints": 3,
+          "requiredPoints": 2,
           "effects": [
             {
               "type": "add_resource_multiplier",
@@ -3690,7 +5985,7 @@
         },
         {
           "tier": 2,
-          "requiredPoints": 8,
+          "requiredPoints": 5,
           "effects": [
             {
               "type": "project_speed_bonus",
@@ -3700,7 +5995,7 @@
         },
         {
           "tier": 3,
-          "requiredPoints": 15,
+          "requiredPoints": 8,
           "effects": [
             {
               "type": "add_global_multiplier",
@@ -3722,7 +6017,7 @@
       "tiers": [
         {
           "tier": 1,
-          "requiredPoints": 3,
+          "requiredPoints": 2,
           "effects": [
             {
               "type": "add_resource_multiplier",
@@ -3733,7 +6028,7 @@
         },
         {
           "tier": 2,
-          "requiredPoints": 8,
+          "requiredPoints": 4,
           "effects": [
             {
               "type": "add_security_bonus",
@@ -3743,7 +6038,7 @@
         },
         {
           "tier": 3,
-          "requiredPoints": 15,
+          "requiredPoints": 7,
           "effects": [
             {
               "type": "add_resource_multiplier",
@@ -3804,7 +6099,7 @@
     {
       "id": "dispatch_scavenging",
       "name": "Scavenging Run",
-      "description": "Quick sweep for materials and food.",
+      "description": "Quick sweep for materials and food in the wilds.",
       "durationSeconds": 7200,
       "requiredCrew": 1,
       "rewards": {
@@ -3820,7 +6115,7 @@
     {
       "id": "dispatch_survey",
       "name": "Survey Mission",
-      "description": "Gather knowledge and influence through exploration.",
+      "description": "Explore new ground for knowledge and influence.",
       "durationSeconds": 14400,
       "requiredCrew": 1,
       "rewards": {
@@ -3836,7 +6131,7 @@
     {
       "id": "dispatch_trade_convoy",
       "name": "Trade Convoy",
-      "description": "Move surplus goods into credits.",
+      "description": "Convert surplus into credits through caravan routes.",
       "durationSeconds": 21600,
       "requiredCrew": 2,
       "rewards": {
@@ -3852,7 +6147,7 @@
     {
       "id": "dispatch_relay_patrol",
       "name": "Relay Patrol",
-      "description": "Secure high-energy relays for strategic yields.",
+      "description": "Secure stellar relays for strategic yields.",
       "durationSeconds": 43200,
       "requiredCrew": 2,
       "rewards": {
@@ -3863,217 +6158,555 @@
       "era": "stellar",
       "tags": [
         "infrastructure"
+      ],
+      "requiresFlag": "skyhook_online"
+    },
+    {
+      "id": "dispatch_river_mouth",
+      "name": "River Mouth Expedition",
+      "description": "Seek new seeds and clay deposits along the river.",
+      "durationSeconds": 18000,
+      "requiredCrew": 1,
+      "rewards": {
+        "materials": 60,
+        "knowledge": 30
+      },
+      "riskChance": 0.14,
+      "era": "agrarian",
+      "tags": [
+        "science",
+        "diplomacy"
       ]
+    },
+    {
+      "id": "dispatch_colonial_survey",
+      "name": "Colonial Survey",
+      "description": "Chart distant lands for resources and influence.",
+      "durationSeconds": 28800,
+      "requiredCrew": 2,
+      "rewards": {
+        "materials": 120,
+        "knowledge": 90,
+        "credits": 120
+      },
+      "riskChance": 0.2,
+      "era": "industrial",
+      "tags": [
+        "diplomacy",
+        "infrastructure"
+      ]
+    },
+    {
+      "id": "dispatch_coreward_expedition",
+      "name": "Coreward Expedition",
+      "description": "Probe the galactic core for relics and data.",
+      "durationSeconds": 86400,
+      "requiredCrew": 2,
+      "rewards": {
+        "knowledge": 300,
+        "influence": 120,
+        "energy": 200
+      },
+      "riskChance": 0.3,
+      "era": "galactic",
+      "tags": [
+        "science",
+        "infrastructure"
+      ],
+      "requiresFlag": "skyhook_online"
     }
   ],
   "metahumans": [
     {
       "id": "vector_prime",
-      "name": "Vector Prime",
-      "description": "Kinetic field pilot who bends travel lanes and time dilation.",
+      "name": "Wayfinder",
+      "description": "A kinetic field pilot who bends routes and momentum.",
       "role": "Logistics Navigator",
       "spriteId": "metahuman_vector_prime_neutral",
       "accentHex": "#76E4FF",
       "powers": [
-        "Vector Drift",
-        "Lane Folding",
-        "Time Shear"
+        "Routefold",
+        "Momentum Shift",
+        "Corridor Sense"
       ],
-      "allySummary": "Boosts logistics throughput and project speed.",
-      "enemySummary": "Disrupts logistics lanes and siphons credits.",
+      "allySummary": "Logistics and project flow accelerate.",
+      "enemySummary": "Corridors destabilize and raids intensify.",
       "allyPassiveEffects": [
         {
           "type": "add_logistics_cap",
-          "amount": 40
+          "amount": 120
         },
         {
           "type": "project_speed_bonus",
-          "amount": 0.01
+          "amount": 0.03
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": 0.002
         }
       ],
       "enemyPassiveEffects": [
         {
           "type": "add_logistics_cap",
-          "amount": -30
+          "amount": -80
         },
         {
-          "type": "add_security_bonus",
-          "amount": -2
+          "type": "add_cohesion_rate",
+          "amount": -0.003
         }
       ]
     },
     {
       "id": "aegis_node",
-      "name": "Aegis Node",
-      "description": "Defensive specialist operating an adaptive shield matrix.",
+      "name": "Hearthguard",
+      "description": "A guardian who weaves protective lattices around settlements.",
       "role": "Shield Architect",
       "spriteId": "metahuman_aegis_node_neutral",
       "accentHex": "#8FE3A7",
       "powers": [
-        "Bulwark Mesh",
-        "Reactive Shield",
-        "Field Lock"
+        "Barrier Weave",
+        "Ward Pulse",
+        "Threat Sense"
       ],
-      "allySummary": "Raises security and stabilizes influence.",
-      "enemySummary": "Weakens perimeter security and emboldens raiders.",
+      "allySummary": "Security rises and unrest calms.",
+      "enemySummary": "Defenses falter as fear spreads.",
       "allyPassiveEffects": [
         {
           "type": "add_security_bonus",
-          "amount": 6
+          "amount": 12
         },
         {
-          "type": "add_resource_multiplier",
-          "resourceId": "influence",
-          "multiplier": 1.03
+          "type": "add_cohesion_rate",
+          "amount": 0.003
         }
       ],
       "enemyPassiveEffects": [
         {
           "type": "add_security_bonus",
-          "amount": -4
+          "amount": -8
         },
         {
-          "type": "add_resource_multiplier",
-          "resourceId": "influence",
-          "multiplier": 0.97
+          "type": "add_cohesion_rate",
+          "amount": -0.003
         }
       ]
     },
     {
       "id": "quantum_forge",
-      "name": "Quantum Forge",
-      "description": "Fabrication savant who tunes material lattice output.",
+      "name": "Durnan Ironheart",
+      "description": "A forge savant who tunes matter at the atomic edge.",
       "role": "Fabrication Savant",
       "spriteId": "metahuman_quantum_forge_neutral",
       "accentHex": "#F5C66A",
       "powers": [
-        "Lattice Tune",
-        "Forge Surge",
-        "Micro Assembly"
+        "Atomic Tempering",
+        "Material Resonance",
+        "Yield Surge"
       ],
-      "allySummary": "Increases materials output and credit yield.",
-      "enemySummary": "Cuts material flow and drains stockpiles.",
+      "allySummary": "Materials flow faster with steadier output.",
+      "enemySummary": "Metal yields destabilize.",
       "allyPassiveEffects": [
         {
           "type": "add_resource_multiplier",
           "resourceId": "materials",
-          "multiplier": 1.05
+          "multiplier": 1.12
         },
         {
-          "type": "add_resource_multiplier",
-          "resourceId": "credits",
-          "multiplier": 1.02
+          "type": "add_biosphere_rate",
+          "amount": -0.002
         }
       ],
       "enemyPassiveEffects": [
         {
           "type": "add_resource_multiplier",
           "resourceId": "materials",
-          "multiplier": 0.96
+          "multiplier": 0.9
+        },
+        {
+          "type": "add_biosphere_rate",
+          "amount": -0.003
         }
       ]
     },
     {
       "id": "neuralis",
-      "name": "Neuralis",
-      "description": "Cognition architect who accelerates research cycles.",
+      "name": "Elina the Chronicler",
+      "description": "A cognition architect who expands collective memory.",
       "role": "Cognition Architect",
       "spriteId": "metahuman_neuralis_neutral",
       "accentHex": "#C7A6FF",
       "powers": [
-        "Cognitive Bloom",
-        "Insight Cascade",
-        "Thought Mesh"
+        "Memory Weave",
+        "Insight Spark",
+        "Mind Lattice"
       ],
-      "allySummary": "Boosts knowledge gain and project tempo.",
-      "enemySummary": "Dampens research and influence momentum.",
+      "allySummary": "Knowledge throughput rises and cohesion steadies.",
+      "enemySummary": "Research fractures under doubt.",
       "allyPassiveEffects": [
         {
           "type": "add_resource_multiplier",
           "resourceId": "knowledge",
-          "multiplier": 1.06
+          "multiplier": 1.15
         },
         {
           "type": "project_speed_bonus",
-          "amount": 0.02
+          "amount": 0.04
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": 0.002
         }
       ],
       "enemyPassiveEffects": [
         {
           "type": "add_resource_multiplier",
           "resourceId": "knowledge",
-          "multiplier": 0.95
+          "multiplier": 0.9
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.002
         }
       ]
     },
     {
       "id": "helios_arc",
-      "name": "Helios Arc",
-      "description": "Energy wielder able to stabilize high-output arrays.",
+      "name": "Aurora",
+      "description": "A heat-bringer who stabilizes blazing arrays.",
       "role": "Array Stabilizer",
       "spriteId": "metahuman_helios_arc_neutral",
       "accentHex": "#FFB05C",
       "powers": [
-        "Solar Flux",
-        "Arc Stabilize",
-        "Phase Ignition"
+        "Solar Hymn",
+        "Heat Weave",
+        "Light Bloom"
       ],
-      "allySummary": "Improves energy production and credits.",
-      "enemySummary": "Destabilizes energy and reduces security.",
+      "allySummary": "Energy and biosphere resilience improve.",
+      "enemySummary": "Energy flux and unrest intensify.",
       "allyPassiveEffects": [
         {
           "type": "add_resource_multiplier",
           "resourceId": "energy",
-          "multiplier": 1.05
+          "multiplier": 1.12
         },
         {
           "type": "add_resource_multiplier",
-          "resourceId": "credits",
-          "multiplier": 1.02
+          "resourceId": "materials",
+          "multiplier": 1.05
+        },
+        {
+          "type": "add_logistics_cap",
+          "amount": 40
+        },
+        {
+          "type": "add_biosphere_rate",
+          "amount": 0.004
         }
       ],
       "enemyPassiveEffects": [
         {
           "type": "add_resource_multiplier",
           "resourceId": "energy",
-          "multiplier": 0.96
+          "multiplier": 0.9
         },
         {
-          "type": "add_security_bonus",
-          "amount": -2
+          "type": "add_resource_multiplier",
+          "resourceId": "materials",
+          "multiplier": 0.95
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.004
         }
       ]
     },
     {
       "id": "void_runner",
-      "name": "Void Runner",
-      "description": "Corridor smuggler with leverage over market routes.",
-      "role": "Market Disruptor",
+      "name": "Garruk the Thunderer",
+      "description": "A storm caller who bends markets and skies alike.",
+      "role": "Storm Warden",
       "spriteId": "metahuman_void_runner_neutral",
       "accentHex": "#8EC5FF",
       "powers": [
-        "Shadow Routes",
-        "Cargo Shift",
-        "Signal Drift"
+        "Stormcall",
+        "Ion Veil",
+        "Skydrift"
       ],
-      "allySummary": "Raises credits and materials yields.",
-      "enemySummary": "Suppresses credits and strains caravan ties.",
+      "allySummary": "Security rises and logistics stabilize.",
+      "enemySummary": "Biosphere and cohesion deteriorate under tempests.",
       "allyPassiveEffects": [
         {
+          "type": "add_security_bonus",
+          "amount": 12
+        },
+        {
+          "type": "add_logistics_cap",
+          "amount": 100
+        },
+        {
           "type": "add_resource_multiplier",
-          "resourceId": "credits",
+          "resourceId": "energy",
           "multiplier": 1.05
         }
       ],
       "enemyPassiveEffects": [
         {
-          "type": "add_resource_multiplier",
-          "resourceId": "credits",
-          "multiplier": 0.95
+          "type": "add_biosphere_rate",
+          "amount": -0.006
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.004
         },
         {
           "type": "add_logistics_cap",
-          "amount": -20
+          "amount": -60
+        }
+      ]
+    },
+    {
+      "id": "ember_child",
+      "name": "Ember Child",
+      "description": "A storm-born child whose touch kindles fire.",
+      "role": "Living Hearth",
+      "spriteId": "citizen_gray",
+      "accentHex": "#F2C070",
+      "powers": [
+        "Ember Touch",
+        "Hearth Glow",
+        "Ash Ward"
+      ],
+      "allySummary": "Food stability and early security improve.",
+      "enemySummary": "Firelight fades and morale frays.",
+      "allyPassiveEffects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "food",
+          "multiplier": 1.05
+        },
+        {
+          "type": "add_security_bonus",
+          "amount": 4
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": 0.002
+        }
+      ],
+      "enemyPassiveEffects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "food",
+          "multiplier": 0.95
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.003
+        }
+      ]
+    },
+    {
+      "id": "greenhand",
+      "name": "Greenhand",
+      "description": "A farmer who coaxes life from tired soil.",
+      "role": "Soil Steward",
+      "spriteId": "herbalist",
+      "accentHex": "#7FBF7F",
+      "powers": [
+        "Sproutwake",
+        "Floodplain Sense",
+        "Seedbond"
+      ],
+      "allySummary": "Harvests strengthen and biosphere recovers.",
+      "enemySummary": "Soil exhausts and yields stumble.",
+      "allyPassiveEffects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "food",
+          "multiplier": 1.08
+        },
+        {
+          "type": "add_biosphere_rate",
+          "amount": 0.003
+        }
+      ],
+      "enemyPassiveEffects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "food",
+          "multiplier": 0.92
+        },
+        {
+          "type": "add_biosphere_rate",
+          "amount": -0.004
+        }
+      ]
+    },
+    {
+      "id": "sparkwright",
+      "name": "The Sparkwright",
+      "description": "A living circuit who hears the hum of machines.",
+      "role": "Circuit Savant",
+      "spriteId": "engineer",
+      "accentHex": "#8EC5FF",
+      "powers": [
+        "Signal Walk",
+        "Current Weave",
+        "Machine Song"
+      ],
+      "allySummary": "Projects accelerate and logistics stabilize.",
+      "enemySummary": "Factory rhythms slip and routes degrade.",
+      "allyPassiveEffects": [
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.04
+        },
+        {
+          "type": "add_logistics_cap",
+          "amount": 80
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "energy",
+          "multiplier": 1.05
+        }
+      ],
+      "enemyPassiveEffects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": -60
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "energy",
+          "multiplier": 0.92
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.003
+        }
+      ]
+    },
+    {
+      "id": "nullfield",
+      "name": "Nullfield",
+      "description": "A radiation survivor who calms storms and static.",
+      "role": "Radiation Anchor",
+      "spriteId": "guard",
+      "accentHex": "#7FD4FF",
+      "powers": [
+        "Quiet Zone",
+        "Field Damping",
+        "Signal Shield"
+      ],
+      "allySummary": "Defense and energy stability rise.",
+      "enemySummary": "Systems falter and routes destabilize.",
+      "allyPassiveEffects": [
+        {
+          "type": "add_security_bonus",
+          "amount": 18
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "energy",
+          "multiplier": 1.08
+        },
+        {
+          "type": "add_biosphere_rate",
+          "amount": 0.002
+        }
+      ],
+      "enemyPassiveEffects": [
+        {
+          "type": "add_security_bonus",
+          "amount": -10
+        },
+        {
+          "type": "add_logistics_cap",
+          "amount": -80
+        },
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "energy",
+          "multiplier": 0.9
+        }
+      ]
+    },
+    {
+      "id": "lens",
+      "name": "Lens",
+      "description": "A gravity-singer who steadies fragile corridors.",
+      "role": "Gravity Singer",
+      "spriteId": "envoy",
+      "accentHex": "#B89CFF",
+      "powers": [
+        "Mass Harmony",
+        "Orbit Tune",
+        "Singularity Whisper"
+      ],
+      "allySummary": "Megaprojects stabilize and logistics surge.",
+      "enemySummary": "Routes wobble and cohesion frays.",
+      "allyPassiveEffects": [
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.05
+        },
+        {
+          "type": "add_logistics_cap",
+          "amount": 120
+        },
+        {
+          "type": "add_security_bonus",
+          "amount": 8
+        }
+      ],
+      "enemyPassiveEffects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": -100
+        },
+        {
+          "type": "project_speed_bonus",
+          "amount": -0.04
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.003
+        }
+      ]
+    },
+    {
+      "id": "chorus",
+      "name": "Chorus",
+      "description": "A networked consciousness woven across the relay grid.",
+      "role": "Collective Mind",
+      "spriteId": "worker",
+      "accentHex": "#8FFFE3",
+      "powers": [
+        "Resonant Sync",
+        "Consensus Surge",
+        "Lattice Mind"
+      ],
+      "allySummary": "Global output and unity increase.",
+      "enemySummary": "Consensus fractures and output wanes.",
+      "allyPassiveEffects": [
+        {
+          "type": "add_global_multiplier",
+          "multiplier": 1.08
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": 0.004
+        }
+      ],
+      "enemyPassiveEffects": [
+        {
+          "type": "add_global_multiplier",
+          "multiplier": 0.95
+        },
+        {
+          "type": "add_cohesion_rate",
+          "amount": -0.006
         }
       ]
     }
@@ -4081,8 +6714,8 @@
   "people": [
     {
       "id": "field_builder",
-      "name": "Field Builder",
-      "description": "Organizes crews and shortens build timelines.",
+      "name": "Camp Foreman",
+      "description": "Organizes early crews and keeps builds on pace.",
       "era": "stone",
       "role": "Builder",
       "spriteId": "citizen_blue",
@@ -4100,10 +6733,10 @@
     },
     {
       "id": "storekeeper",
-      "name": "Storekeeper",
-      "description": "Keeps inventories steady and expands storage routines.",
+      "name": "Hearth Keeper",
+      "description": "Stabilizes inventories and reduces waste.",
       "era": "stone",
-      "role": "Quartermaster",
+      "role": "Steward",
       "spriteId": "citizen_gray",
       "costs": {
         "food": 10,
@@ -4125,10 +6758,10 @@
     },
     {
       "id": "crew_builder",
-      "name": "Crew Builder",
-      "description": "Keeps construction moving through rough conditions.",
+      "name": "Crew Warden",
+      "description": "Keeps construction moving through hardship.",
       "era": "stone",
-      "role": "Builder",
+      "role": "Foreman",
       "spriteId": "builder",
       "costs": {
         "food": 12,
@@ -4144,8 +6777,8 @@
     },
     {
       "id": "vein_miner",
-      "name": "Vein Miner",
-      "description": "Finds richer seams to steady materials flow.",
+      "name": "Stone Seeker",
+      "description": "Finds richer seams to steady material flow.",
       "era": "stone",
       "role": "Miner",
       "spriteId": "miner",
@@ -4164,8 +6797,8 @@
     },
     {
       "id": "winter_scout",
-      "name": "Winter Scout",
-      "description": "Charts safer routes through harsh terrain.",
+      "name": "Trail Scout",
+      "description": "Charts safer routes and reduces danger.",
       "era": "stone",
       "role": "Scout",
       "spriteId": "scout",
@@ -4183,10 +6816,10 @@
     },
     {
       "id": "pathfinder",
-      "name": "Pathfinder",
-      "description": "Optimizes travel lanes to reduce logistics drag.",
+      "name": "Route Pathfinder",
+      "description": "Optimizes travel lanes to reduce drag.",
       "era": "agrarian",
-      "role": "Logistics Scout",
+      "role": "Navigator",
       "spriteId": "worker",
       "costs": {
         "food": 18,
@@ -4202,8 +6835,8 @@
     },
     {
       "id": "winter_courier",
-      "name": "Winter Courier",
-      "description": "Keeps routes humming when visibility drops.",
+      "name": "Courier",
+      "description": "Keeps routes humming even in storms.",
       "era": "agrarian",
       "role": "Courier",
       "spriteId": "courier",
@@ -4221,8 +6854,8 @@
     },
     {
       "id": "snow_herbalist",
-      "name": "Snow Herbalist",
-      "description": "Keeps food supplies steady with hardy harvests.",
+      "name": "Field Herbalist",
+      "description": "Stabilizes food supply with hardy harvests.",
       "era": "agrarian",
       "role": "Herbalist",
       "spriteId": "herbalist",
@@ -4261,10 +6894,10 @@
     },
     {
       "id": "scribe",
-      "name": "Scribe",
-      "description": "Captures learnings to increase knowledge output.",
+      "name": "Archivist Scribe",
+      "description": "Captures learnings to expand knowledge output.",
       "era": "metallurgy",
-      "role": "Researcher",
+      "role": "Archivist",
       "spriteId": "snowman_walk",
       "costs": {
         "food": 14,
@@ -4282,7 +6915,7 @@
     {
       "id": "forge_artisan",
       "name": "Forge Artisan",
-      "description": "Fine-tunes output to squeeze more from every haul.",
+      "description": "Refines output to squeeze more from each haul.",
       "era": "metallurgy",
       "role": "Artisan",
       "spriteId": "artisan",
@@ -4301,10 +6934,10 @@
     },
     {
       "id": "ice_engineer",
-      "name": "Ice Engineer",
-      "description": "Stabilizes core systems to keep materials flowing.",
+      "name": "Systems Engineer",
+      "description": "Stabilizes systems to keep materials flowing.",
       "era": "metallurgy",
-      "role": "Systems Engineer",
+      "role": "Engineer",
       "spriteId": "engineer",
       "costs": {
         "food": 18,
@@ -4321,10 +6954,10 @@
     },
     {
       "id": "sentinel",
-      "name": "Sentinel",
-      "description": "Keeps watch over the perimeter to deter raids.",
+      "name": "Perimeter Sentinel",
+      "description": "Deters raids through constant vigilance.",
       "era": "industrial",
-      "role": "Defender",
+      "role": "Sentinel",
       "spriteId": "dispatch",
       "costs": {
         "food": 20,
@@ -4340,10 +6973,10 @@
     },
     {
       "id": "frost_guard",
-      "name": "Frost Guard",
+      "name": "Bulwark Guard",
       "description": "Holds the line when threats approach.",
       "era": "industrial",
-      "role": "Guard",
+      "role": "Guardian",
       "spriteId": "guard",
       "costs": {
         "food": 22,
@@ -4359,8 +6992,8 @@
     },
     {
       "id": "snow_envoy",
-      "name": "Snow Envoy",
-      "description": "Builds influence by smoothing tense negotiations.",
+      "name": "Diplomatic Envoy",
+      "description": "Smooths tense negotiations and builds influence.",
       "era": "industrial",
       "role": "Envoy",
       "spriteId": "envoy",
@@ -4373,6 +7006,83 @@
           "type": "add_resource_multiplier",
           "resourceId": "influence",
           "multiplier": 1.03
+        }
+      ],
+      "rarity": "rare"
+    },
+    {
+      "id": "firekeeper",
+      "name": "Firekeeper",
+      "description": "Tends the hearth and steadies morale.",
+      "era": "stone",
+      "role": "Hearth",
+      "spriteId": "citizen_blue",
+      "costs": {
+        "food": 10,
+        "materials": 8
+      },
+      "effects": [
+        {
+          "type": "add_cohesion_rate",
+          "amount": 0.002
+        }
+      ],
+      "rarity": "uncommon"
+    },
+    {
+      "id": "hearth_warden",
+      "name": "Hearth Warden",
+      "description": "Keeps night watch and calms the fearful.",
+      "era": "stone",
+      "role": "Guard",
+      "spriteId": "guard",
+      "costs": {
+        "food": 12,
+        "materials": 10
+      },
+      "effects": [
+        {
+          "type": "add_security_bonus",
+          "amount": 2
+        }
+      ],
+      "rarity": "uncommon"
+    },
+    {
+      "id": "ledger_scribe",
+      "name": "Ledger Scribe",
+      "description": "Expands knowledge by keeping careful records.",
+      "era": "agrarian",
+      "role": "Scribe",
+      "spriteId": "snowman_walk",
+      "costs": {
+        "food": 14,
+        "materials": 12
+      },
+      "effects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "knowledge",
+          "multiplier": 1.02
+        }
+      ],
+      "rarity": "uncommon"
+    },
+    {
+      "id": "signal_master",
+      "name": "Signal Master",
+      "description": "Keeps lines humming across the industrial web.",
+      "era": "industrial",
+      "role": "Signal",
+      "spriteId": "courier",
+      "costs": {
+        "food": 20,
+        "materials": 18
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 30
         }
       ],
       "rarity": "rare"
@@ -4391,6 +7101,137 @@
     }
   ],
   "achievements": [
+    {
+      "id": "ach_food_surplus",
+      "name": "Food Surplus",
+      "description": "Sustain +12/hr Food output.",
+      "condition": {
+        "type": "resource_rate",
+        "resourceId": "food",
+        "amount": 12
+      },
+      "effects": [
+        {
+          "type": "add_resource_cap",
+          "resourceId": "food",
+          "amount": 100
+        }
+      ]
+    },
+    {
+      "id": "ach_materials_flow",
+      "name": "Materials Flow",
+      "description": "Sustain +10/hr Materials output.",
+      "condition": {
+        "type": "resource_rate",
+        "resourceId": "materials",
+        "amount": 10
+      },
+      "effects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "materials",
+          "multiplier": 1.04
+        }
+      ]
+    },
+    {
+      "id": "ach_influence_network",
+      "name": "Influence Network",
+      "description": "Sustain +6/hr Influence output.",
+      "condition": {
+        "type": "resource_rate",
+        "resourceId": "influence",
+        "amount": 6
+      },
+      "effects": [
+        {
+          "type": "add_resource_multiplier",
+          "resourceId": "influence",
+          "multiplier": 1.05
+        }
+      ]
+    },
+    {
+      "id": "ach_industry_tier1",
+      "name": "Industrial Foundation",
+      "description": "Reach Industry Tier 1.",
+      "condition": {
+        "type": "domain_tier",
+        "domainId": "industry",
+        "tier": 1
+      },
+      "effects": [
+        {
+          "type": "add_logistics_cap",
+          "amount": 40
+        }
+      ]
+    },
+    {
+      "id": "ach_science_tier1",
+      "name": "Research Cadence",
+      "description": "Reach Science Tier 1.",
+      "condition": {
+        "type": "domain_tier",
+        "domainId": "science",
+        "tier": 1
+      },
+      "effects": [
+        {
+          "type": "project_speed_bonus",
+          "amount": 0.03
+        }
+      ]
+    },
+    {
+      "id": "ach_diplomacy_tier1",
+      "name": "Diplomatic Channels",
+      "description": "Reach Diplomacy Tier 1.",
+      "condition": {
+        "type": "domain_tier",
+        "domainId": "diplomacy",
+        "tier": 1
+      },
+      "effects": [
+        {
+          "type": "add_security_bonus",
+          "amount": 4
+        }
+      ]
+    },
+    {
+      "id": "ach_infrastructure_tier1",
+      "name": "Infrastructure Footing",
+      "description": "Reach Infrastructure Tier 1.",
+      "condition": {
+        "type": "domain_tier",
+        "domainId": "infrastructure",
+        "tier": 1
+      },
+      "effects": [
+        {
+          "type": "add_resource_cap",
+          "resourceId": "materials",
+          "amount": 80
+        }
+      ]
+    },
+    {
+      "id": "ach_type_i",
+      "name": "Type I Achieved",
+      "description": "Complete the Type I planetary energy grid.",
+      "condition": {
+        "type": "flag",
+        "flagId": "type_i_complete"
+      },
+      "effects": [
+        {
+          "type": "add_global_multiplier",
+          "multiplier": 1.03
+        }
+      ]
+    },
     {
       "id": "ach_energy_surge",
       "name": "Energy Surge",
@@ -4470,6 +7311,36 @@
           "multiplier": 1.05
         }
       ]
+    },
+    {
+      "id": "ach_type_iii",
+      "name": "Type III Achieved",
+      "description": "Complete the Galactic Harness Network.",
+      "condition": {
+        "type": "flag",
+        "flagId": "type_iii_complete"
+      },
+      "effects": []
+    },
+    {
+      "id": "ach_biosphere_stable",
+      "name": "Biosphere Stable",
+      "description": "Maintain biosphere health above 80%.",
+      "condition": {
+        "type": "biosphere_threshold",
+        "amount": 0.8
+      },
+      "effects": []
+    },
+    {
+      "id": "ach_cohesion_high",
+      "name": "Unified Society",
+      "description": "Maintain cohesion above 80%.",
+      "condition": {
+        "type": "cohesion_threshold",
+        "amount": 0.8
+      },
+      "effects": []
     }
   ],
   "collector": {

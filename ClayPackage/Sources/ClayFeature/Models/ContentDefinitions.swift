@@ -36,6 +36,7 @@ public struct ResourceDefinition: Codable, Identifiable {
 public struct BuildingDefinition: Codable, Identifiable {
     public var id: String
     public var name: String
+    public var description: String
     public var era: String
     public var category: String
     public var maxLevel: Int
@@ -53,10 +54,13 @@ public struct BuildingDefinition: Codable, Identifiable {
     public var districtBonus: Double
     public var maintenancePerHour: ResourceAmount
     public var efficiencyFloor: Double
+    public var cohesionPerHour: Double
+    public var biospherePerHour: Double
 
     enum CodingKeys: String, CodingKey {
         case id
         case name
+        case description
         case era
         case category
         case maxLevel
@@ -74,12 +78,15 @@ public struct BuildingDefinition: Codable, Identifiable {
         case districtBonus
         case maintenancePerHour
         case efficiencyFloor
+        case cohesionPerHour
+        case biospherePerHour
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
+        description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
         era = try container.decode(String.self, forKey: .era)
         category = try container.decode(String.self, forKey: .category)
         maxLevel = try container.decode(Int.self, forKey: .maxLevel)
@@ -97,6 +104,8 @@ public struct BuildingDefinition: Codable, Identifiable {
         districtBonus = try container.decodeIfPresent(Double.self, forKey: .districtBonus) ?? 1.0
         maintenancePerHour = try container.decodeIfPresent(ResourceAmount.self, forKey: .maintenancePerHour) ?? [:]
         efficiencyFloor = try container.decodeIfPresent(Double.self, forKey: .efficiencyFloor) ?? 0
+        cohesionPerHour = try container.decodeIfPresent(Double.self, forKey: .cohesionPerHour) ?? 0
+        biospherePerHour = try container.decodeIfPresent(Double.self, forKey: .biospherePerHour) ?? 0
     }
 }
 
@@ -165,6 +174,7 @@ public struct EraDefinition: Codable, Identifiable {
     public var name: String
     public var sortOrder: Int
     public var keystoneProjectId: String
+    public var keystoneProjectIds: [String]?
     public var unlocksBuildingIds: [String]
     public var unlocksProjectIds: [String]
     public var description: String
@@ -247,10 +257,16 @@ public struct EventTriggerDefinition: Codable {
     public var minExposure: Double?
     public var minSecurity: Double?
     public var minHostility: Double?
+    public var minCohesion: Double?
+    public var maxCohesion: Double?
+    public var minBiosphere: Double?
+    public var maxBiosphere: Double?
+    public var minRaidChance: Double?
     public var resourceAtCapId: String?
     public var requiresEraId: String?
     public var requiresContractId: String?
     public var requiresFlag: String?
+    public var requiresFlagNotSet: String?
     public var requiresLogisticsBelow: Double?
 }
 
@@ -371,6 +387,8 @@ public struct DispatchDefinition: Codable, Identifiable {
     public var riskChance: Double
     public var era: String
     public var tags: [String]
+    public var requiresFlag: String?
+    public var requiresFlagNotSet: String?
 }
 
 public struct MegaprojectFamilyDefinition: Codable, Identifiable {

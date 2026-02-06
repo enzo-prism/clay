@@ -1,28 +1,28 @@
 import SwiftUI
 
 enum ClayTheme {
-    static let bg = Color(hex: "#0B0E13")
-    static let bg2 = Color(hex: "#11141A")
-    static let panel = Color(hex: "#141923")
-    static let panelElevated = Color(hex: "#1A2230")
-    static let stroke = Color(hex: "#243041")
-    static let accent = Color(hex: "#8EC5FF")
-    static let accentText = Color(hex: "#0B0E13")
-    static let accentWarm = Color(hex: "#F5C66A")
-    static let good = Color(hex: "#8FE3A7")
-    static let bad = Color(hex: "#F38B8B")
-    static let text = Color(hex: "#EAF0F7")
-    static let muted = Color(hex: "#A2ACBB")
-    static let shadow = Color.black.opacity(0.25)
+    static let bg = Color(hex: "#1D1F1B")
+    static let bg2 = Color(hex: "#242824")
+    static let panel = Color(hex: "#2C312C")
+    static let panelElevated = Color(hex: "#343A33")
+    static let stroke = Color(hex: "#424A41")
+    static let accent = Color(hex: "#9CC7B8")
+    static let accentText = Color(hex: "#1B1F1C")
+    static let accentWarm = Color(hex: "#E5C48B")
+    static let good = Color(hex: "#9DD3A8")
+    static let bad = Color(hex: "#E39A9A")
+    static let text = Color(hex: "#F2EEE6")
+    static let muted = Color(hex: "#C8C2B6")
+    static let shadow = Color.black.opacity(0.15)
     
     static let hudGradient = LinearGradient(
-        colors: [Color(hex: "#0F131A"), Color(hex: "#0B0E13")],
+        colors: [Color(hex: "#343A33"), Color(hex: "#1D1F1B")],
         startPoint: .top,
         endPoint: .bottom
     )
     
     static let accentGradient = LinearGradient(
-        colors: [Color(hex: "#8EC5FF"), Color(hex: "#6BA8E6")],
+        colors: [Color(hex: "#A6D2C2"), Color(hex: "#7FB7A3")],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )

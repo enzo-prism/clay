@@ -51,3 +51,21 @@ extension TimeInterval {
         }
     }
 }
+
+extension Text {
+    func claySingleLine(minScale: CGFloat = 0.75) -> some View {
+        self
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .minimumScaleFactor(minScale)
+            .allowsTightening(true)
+    }
+
+    func clayTwoLines(minScale: CGFloat = 0.85) -> some View {
+        self
+            .lineLimit(2)
+            .truncationMode(.tail)
+            .minimumScaleFactor(minScale)
+            .allowsTightening(true)
+    }
+}

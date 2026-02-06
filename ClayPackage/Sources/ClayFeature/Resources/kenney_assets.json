@@ -6,7 +6,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/shoppingBasket.png"
     },
     {
       "id": "quarry",
@@ -14,7 +15,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/wrench.png"
     },
     {
       "id": "granary",
@@ -22,7 +24,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/save.png"
     },
     {
       "id": "stockpile",
@@ -30,7 +33,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/save.png"
     },
     {
       "id": "palisade",
@@ -38,7 +42,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/target.png"
     },
     {
       "id": "lookout",
@@ -46,7 +51,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/zoom.png"
     },
     {
       "id": "farm",
@@ -54,7 +60,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/shoppingBasket.png"
     },
     {
       "id": "irrigation_channel",
@@ -62,7 +69,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/barsHorizontal.png"
     },
     {
       "id": "silo",
@@ -70,7 +78,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/barsVertical.png"
     },
     {
       "id": "trade_post",
@@ -78,7 +87,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/shoppingCart.png"
     },
     {
       "id": "partnership_office",
@@ -86,7 +96,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/share1.png"
     },
     {
       "id": "watchtower",
@@ -94,7 +105,8 @@
       "scale": 0.8,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 6
+      "cameraDistance": 6,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/target.png"
     },
     {
       "id": "smelter",
@@ -102,7 +114,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/power.png"
     },
     {
       "id": "academy",
@@ -110,7 +123,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/information.png"
     },
     {
       "id": "foundry",
@@ -118,7 +132,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/gear.png"
     },
     {
       "id": "depot",
@@ -126,7 +141,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/save.png"
     },
     {
       "id": "embassy",
@@ -134,7 +150,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/share2.png"
     },
     {
       "id": "fortified_wall",
@@ -142,7 +159,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/target.png"
     },
     {
       "id": "workshop",
@@ -150,7 +168,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/wrench.png"
     },
     {
       "id": "generator",
@@ -158,7 +177,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/power.png"
     },
     {
       "id": "grid_node",
@@ -166,7 +186,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/signal3.png"
     },
     {
       "id": "market_exchange",
@@ -174,7 +195,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/shoppingCart.png"
     },
     {
       "id": "vault",
@@ -182,7 +204,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/locked.png"
     },
     {
       "id": "security_center",
@@ -190,7 +213,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/target.png"
     },
     {
       "id": "logistics_hub",
@@ -198,7 +222,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/barsVertical.png"
     },
     {
       "id": "automation_foundry",
@@ -206,7 +231,8 @@
       "scale": 0.5,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/gear.png"
     },
     {
       "id": "solar_array_field",
@@ -214,7 +240,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/power.png"
     },
     {
       "id": "planetary_battery",
@@ -222,7 +249,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/power.png"
     },
     {
       "id": "planetary_relay",
@@ -230,7 +258,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/signal3.png"
     },
     {
       "id": "orbital_platform",
@@ -238,7 +267,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/export.png"
     },
     {
       "id": "shield_grid",
@@ -246,7 +276,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/target.png"
     },
     {
       "id": "control_node",
@@ -254,7 +285,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/joystick.png"
     },
     {
       "id": "stellar_collector_node",
@@ -262,7 +294,8 @@
       "scale": 0.7,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 8
+      "cameraDistance": 8,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/star.png"
     },
     {
       "id": "relay_nexus",
@@ -270,7 +303,8 @@
       "scale": 0.7,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 8
+      "cameraDistance": 8,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/signal3.png"
     },
     {
       "id": "galactic_archive",
@@ -278,7 +312,8 @@
       "scale": 0.7,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 8
+      "cameraDistance": 8,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/leaderboardsComplex.png"
     },
     {
       "id": "stellar_vault",
@@ -286,7 +321,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/locked.png"
     },
     {
       "id": "shield_protocol_array",
@@ -294,7 +330,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/target.png"
     },
     {
       "id": "relay_fabricator",
@@ -302,7 +339,8 @@
       "scale": 0.9,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 7
+      "cameraDistance": 7,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/gear.png"
     },
     {
       "id": "galactic_relay_node",
@@ -310,7 +348,8 @@
       "scale": 0.7,
       "rotation": 0,
       "yOffset": 0,
-      "cameraDistance": 8
+      "cameraDistance": 8,
+      "tile2d": "Kenney/GameIcons/PNG/White/2x/signal3.png"
     }
   ],
   "resources": [

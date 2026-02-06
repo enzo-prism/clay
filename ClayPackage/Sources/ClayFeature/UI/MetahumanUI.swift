@@ -31,6 +31,7 @@ struct MetahumanPowerTag: View {
         Text(text.uppercased())
             .font(ClayFonts.display(8, weight: .semibold))
             .foregroundColor(tint)
+            .claySingleLine(minScale: 0.6)
             .padding(.vertical, 2)
             .padding(.horizontal, 6)
             .background(

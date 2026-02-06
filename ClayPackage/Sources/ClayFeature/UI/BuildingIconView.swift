@@ -8,13 +8,15 @@ struct BuildingIconView: View {
     var tint: Color = ClayTheme.text
     
     var body: some View {
-        if let symbol = categorySymbol(for: category), symbolAvailable(symbol) {
+        let asset = KenneyAssetCatalog.shared.buildingAsset(for: buildingId)
+        if let path = asset?.tile2d, KenneyAssetCatalog.shared.image(for: path) != nil {
+            KenneyIconView(path: path, size: size, tint: nil)
+        } else if let symbol = categorySymbol(for: category), symbolAvailable(symbol) {
             Image(systemName: symbol)
                 .font(.system(size: size, weight: .semibold))
                 .foregroundColor(tint)
         } else {
-            let asset = KenneyAssetCatalog.shared.buildingAsset(for: buildingId)
-            let path = asset?.tile2d ?? KenneyAssetCatalog.shared.categoryIconPath(for: category)
+            let path = KenneyAssetCatalog.shared.categoryIconPath(for: category)
             if KenneyAssetCatalog.shared.image(for: path) != nil {
                 KenneyIconView(path: path, size: size, tint: tint)
             } else {
@@ -46,12 +48,12 @@ struct ResourceIconView: View {
     var tint: Color = ClayTheme.text
     
     var body: some View {
-        if let pixelDef = PixelAssetCatalog.shared.resourceIcon(for: resourceId),
-           let image = PixelAssetCatalog.shared.iconImage(for: pixelDef) {
-            PixelIconView(image: image, size: size, tint: tint)
-        } else if let path = KenneyAssetCatalog.shared.resourceIconPath(for: resourceId),
+        if let path = KenneyAssetCatalog.shared.resourceIconPath(for: resourceId),
                   KenneyAssetCatalog.shared.image(for: path) != nil {
             KenneyIconView(path: path, size: size, tint: tint)
+        } else if let pixelDef = PixelAssetCatalog.shared.resourceIcon(for: resourceId),
+                  let image = PixelAssetCatalog.shared.iconImage(for: pixelDef) {
+            PixelIconView(image: image, size: size, tint: tint)
         } else {
             Text(resourceId.prefix(1).uppercased())
                 .font(ClayFonts.display(size, weight: .semibold))

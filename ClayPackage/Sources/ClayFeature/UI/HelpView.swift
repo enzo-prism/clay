@@ -2,34 +2,44 @@ import SwiftUI
 
 struct HelpView: View {
     @EnvironmentObject private var engine: GameEngine
+    @State private var searchText: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             PageHeader(title: "Help", subtitle: "A full guide to progression, systems, and best practices.")
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    quickStart
-                    coreLoop
-                    resources
-                    crews
-                    buildings
-                    projects
-                    partnerships
-                    raids
-                    catalyst
-                    events
-                    domains
-                    dispatches
-                    metahumans
-                    people
-                    prestige
-                    tips
-                    attributions
+                    HelpSearchField(text: $searchText)
+                    if matches("Quick Start") { quickStart }
+                    if matches("Core Loop") { coreLoop }
+                    if matches("Resources") { resources }
+                    if matches("Work Crews") { crews }
+                    if matches("Buildings") { buildings }
+                    if matches("Projects") { projects }
+                    if matches("Partnerships") { partnerships }
+                    if matches("Raids") { raids }
+                    if matches("World State") { worldState }
+                    if matches("Catalyst") { catalyst }
+                    if matches("Events") { events }
+                    if matches("Domains") { domains }
+                    if matches("Operations") { dispatches }
+                    if matches("Metahumans") { metahumans }
+                    if matches("Solar Council") { solarCouncil }
+                    if matches("People") { people }
+                    if matches("Prestige") { prestige }
+                    if matches("Strategy Tips") { tips }
+                    if matches("Attribution") { attributions }
                 }
                 .padding(.horizontal, 12)
                 .padding(.bottom, 24)
             }
         }
+    }
+
+    private func matches(_ title: String) -> Bool {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !query.isEmpty else { return true }
+        return title.lowercased().contains(query)
     }
 
     private var quickStart: some View {
@@ -46,6 +56,7 @@ struct HelpView: View {
             HelpBullet("Produce resources in real time, including while the app is closed.")
             HelpBullet("Spend resources on long upgrades and projects that multiply output.")
             HelpBullet("Keep storage, logistics, and defense balanced to avoid waste and raids.")
+            HelpBullet("Overflow feeds the Cache, which stores a few hours of output until collected.")
         }
     }
 
@@ -98,6 +109,14 @@ struct HelpView: View {
         }
     }
 
+    private var worldState: some View {
+        HelpSection(title: "World State") {
+            HelpBullet("Cohesion reflects social unity; low cohesion can increase hostility.")
+            HelpBullet("Biosphere tracks planet health; strong biosphere boosts Food and Knowledge.")
+            HelpBullet("Policies, buildings, and events all shape these long-term meters.")
+        }
+    }
+
     private var catalyst: some View {
         HelpSection(title: "Catalyst & Chrono Shards") {
             HelpBullet("Catalyst speeds a single project for 1 hour (cooldown applies).")
@@ -109,6 +128,7 @@ struct HelpView: View {
         HelpSection(title: "Events") {
             HelpBullet("Events bring market shocks, discoveries, and diplomacy choices.")
             HelpBullet("Decision events offer tradeoffs—read the effects carefully.")
+            HelpBullet("Some chains are triggered by cohesion, biosphere health, or raid risk.")
         }
     }
 
@@ -131,6 +151,14 @@ struct HelpView: View {
             HelpBullet("Special encounters can become allies or enemies.")
             HelpBullet("Ally deals grant powerful bonuses; bad deals can create a lasting threat.")
             HelpBullet("You can force an encounter from Intel to test the system.")
+        }
+    }
+
+    private var solarCouncil: some View {
+        HelpSection(title: "Solar Council") {
+            HelpBullet("When you enter the Stellar era, a Solar Council decision appears.")
+            HelpBullet("Choose one Type II path: Dyson Swarm, Matrioshka Brain, or Stellar Engine.")
+            HelpBullet("That decision defines your road to the Galactic era.")
         }
     }
 
@@ -177,6 +205,42 @@ struct HelpView: View {
     }
 }
 
+private struct HelpSearchField: View {
+    @Binding var text: String
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundColor(ClayTheme.muted)
+            TextField("Search help topics", text: $text)
+                .font(ClayFonts.data(10))
+                .foregroundColor(ClayTheme.text)
+                .textFieldStyle(.plain)
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(ClayTheme.muted)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panelElevated)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(ClayTheme.stroke.opacity(0.7), lineWidth: 1)
+        )
+    }
+}
+
 struct HelpSection<Content: View>: View {
     let title: String
     let content: Content
@@ -191,6 +255,7 @@ struct HelpSection<Content: View>: View {
             Text(title.uppercased())
                 .font(ClayFonts.display(10, weight: .semibold))
                 .foregroundColor(ClayTheme.accent)
+                .claySingleLine(minScale: 0.8)
             content
         }
         .padding(10)

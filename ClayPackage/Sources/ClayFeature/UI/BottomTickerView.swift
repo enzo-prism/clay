@@ -5,22 +5,37 @@ struct BottomTickerView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            Text("EVENT FEED")
+            Text("RECENT EVENTS - TAP TO INTEL")
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(ClayTheme.accent)
+                .claySingleLine(minScale: 0.75)
+
             if engine.state.events.isEmpty {
                 Text("No recent events.")
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.75)
             } else {
-                ForEach(engine.state.events.prefix(3)) { event in
-                    TickerPill(title: event.title, category: event.category)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(engine.state.events.prefix(5)) { event in
+                            TickerPill(title: event.title, category: event.category)
+                        }
+                    }
+                    .padding(.vertical, 2)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
             }
-            Spacer()
+
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            NotificationCenter.default.post(name: .claySwitchTab, object: ClayTab.intel)
+        }
         .background(ClayTheme.panel)
         .overlay(
             Rectangle()
@@ -45,9 +60,8 @@ private struct TickerPill: View {
             }
             Text(title)
                 .font(ClayFonts.data(10))
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-                .allowsTightening(true)
+                .claySingleLine(minScale: 0.75)
+                .frame(maxWidth: 220, alignment: .leading)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)

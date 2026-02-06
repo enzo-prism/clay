@@ -9,9 +9,11 @@ struct AdvisorPanel: View {
             Text(title.uppercased())
                 .font(ClayFonts.display(10, weight: .semibold))
                 .foregroundColor(ClayTheme.accent)
+                .claySingleLine(minScale: 0.8)
             Text(message)
                 .font(ClayFonts.data(10))
                 .foregroundColor(ClayTheme.muted)
+                .clayTwoLines(minScale: 0.9)
         }
         .padding(8)
         .background(

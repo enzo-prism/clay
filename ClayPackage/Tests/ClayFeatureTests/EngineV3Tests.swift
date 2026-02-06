@@ -29,10 +29,16 @@ import Foundation
 @Test @MainActor func collectorClampsAndTransfers() {
     let engine = GameEngine(seed: 13, shouldStartTimers: false, loadPersistence: false)
     engine.debugSetResource("food", amount: 0, cap: 10_000)
+    engine.debugUpdateState { state in
+        state.cohesion = 0.6
+        state.biosphere = 0.6
+    }
     engine.debugAddBuilding(buildingId: "foraging_hut", x: 0, y: 0)
+    let influenceCap = engine.computeResourceCapsPublic()["influence", default: 100]
+    engine.debugSetResource("influence", amount: influenceCap * 0.5)
     engine.simulate(seconds: 48 * 3600)
-    let baseRate = engine.content.buildingsById["foraging_hut"]?.productionPerHour["food"] ?? 0
-    let maxStored = baseRate * engine.state.collector.capacityHours
+    let rate = engine.computeResourceRatesPerHourPublic()["food", default: 0]
+    let maxStored = rate * engine.state.collector.capacityHours
     let stored = engine.state.collector.storedByResource["food", default: 0]
     #expect(abs(stored - maxStored) < 0.1)
     engine.collectCache()

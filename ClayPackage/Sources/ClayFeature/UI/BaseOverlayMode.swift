@@ -1,6 +1,6 @@
 enum BaseOverlayMode: String, CaseIterable {
     case none
-    case logistics
+    case logisticsImpact
     case district
-    case risk
+    case defense
 }

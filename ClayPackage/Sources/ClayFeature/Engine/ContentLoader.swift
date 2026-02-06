@@ -51,7 +51,9 @@ public enum ContentLoader {
             let decoder = JSONDecoder()
             let pack = try decoder.decode(ContentPack.self, from: data)
             let catalog = ContentCatalog(pack: pack)
+#if DEBUG
             validate(catalog: catalog)
+#endif
             return catalog
         } catch {
             fatalError("Failed to load content.json: \(error)")
@@ -84,8 +86,11 @@ public enum ContentLoader {
             }
         }
         for era in catalog.pack.eras {
-            if catalog.projectsById[era.keystoneProjectId] == nil {
-                errors.append("Era \(era.id) references missing keystone project \(era.keystoneProjectId).")
+            let keystoneIds = era.keystoneProjectIds ?? [era.keystoneProjectId]
+            for keystoneId in keystoneIds {
+                if catalog.projectsById[keystoneId] == nil {
+                    errors.append("Era \(era.id) references missing keystone project \(keystoneId).")
+                }
             }
         }
         for project in catalog.pack.projects {

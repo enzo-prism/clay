@@ -8,14 +8,29 @@ struct OperationsView: View {
             PageHeader(title: "Operations", subtitle: "Dispatch crews on timed runs for extra rewards.")
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
+                    Panel(title: "Ready to Collect") {
+                        let ready = engine.state.dispatches.filter { $0.status != .active }
+                        if ready.isEmpty {
+                            Text("No dispatches ready.")
+                                .font(ClayFonts.data(10))
+                                .foregroundColor(ClayTheme.muted)
+                        } else {
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(ready) { dispatch in
+                                    ActiveDispatchRow(dispatch: dispatch)
+                                }
+                            }
+                        }
+                    }
                     Panel(title: "Active Dispatches") {
-                        if engine.state.dispatches.isEmpty {
+                        let active = engine.state.dispatches.filter { $0.status == .active }
+                        if active.isEmpty {
                             Text("No active dispatches.")
                                 .font(ClayFonts.data(10))
                                 .foregroundColor(ClayTheme.muted)
                         } else {
                             VStack(alignment: .leading, spacing: 8) {
-                                ForEach(engine.state.dispatches) { dispatch in
+                                ForEach(active) { dispatch in
                                     ActiveDispatchRow(dispatch: dispatch)
                                 }
                             }
@@ -58,18 +73,21 @@ struct DispatchCard: View {
                 PixelSpriteView(spriteId: spriteId(), size: 14)
                 Text(dispatch.name)
                     .font(ClayFonts.display(11, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
                 Spacer()
                 Text("\(Int(dispatch.durationSeconds / 3600))h")
                     .font(ClayFonts.display(9, weight: .semibold))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.7)
             }
             Text(dispatch.description)
                 .font(ClayFonts.data(9))
                 .foregroundColor(ClayTheme.muted)
+                .clayTwoLines(minScale: 0.9)
             HStack {
                 Text("Crew \(dispatch.requiredCrew)")
                 Spacer()
-                Text("Risk \(Int(dispatch.riskChance * 100))%")
+                InlineStatusPill(text: "Risk \(Int(dispatch.riskChance * 100))%", tint: dispatch.riskChance > 0.25 ? ClayTheme.bad : ClayTheme.accentWarm)
             }
             .font(ClayFonts.data(9))
             HStack(spacing: 6) {
@@ -133,6 +151,7 @@ struct ActiveDispatchRow: View {
                 PixelSpriteView(spriteId: "dispatch", size: 14)
                 Text(title)
                     .font(ClayFonts.display(10, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
                 Spacer()
                 statusLabel
             }
@@ -141,10 +160,13 @@ struct ActiveDispatchRow: View {
                 Text(dispatch.remainingSeconds.clayTimeString)
                     .font(ClayFonts.data(9))
                     .foregroundColor(ClayTheme.muted)
+                    .monospacedDigit()
+                    .claySingleLine(minScale: 0.85)
             } else {
                 Text(dispatch.status == .ready ? "Ready to collect" : "Recovery required")
                     .font(ClayFonts.data(9))
                     .foregroundColor(dispatch.status == .ready ? ClayTheme.good : ClayTheme.accentWarm)
+                    .claySingleLine(minScale: 0.85)
             }
             if dispatch.status != .active {
                 ClayButton(isEnabled: true, active: true) {

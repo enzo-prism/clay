@@ -42,6 +42,34 @@ struct EffectDescriptor {
             if let amount = effect.amount {
                 return "+\(amount.clayFormatted) Logistics"
             }
+        case "add_collector_capacity_hours":
+            if let amount = effect.amount {
+                return "Cache +\(amount.clayFormatted)h"
+            }
+        case "add_offline_cap":
+            if let amount = effect.amount {
+                return "Offline Cap +\(Int(amount))d"
+            }
+        case "add_cohesion":
+            if let amount = effect.amount {
+                let sign = amount >= 0 ? "+" : ""
+                return "Cohesion \(sign)\(amount.clayFormatted)"
+            }
+        case "add_biosphere":
+            if let amount = effect.amount {
+                let sign = amount >= 0 ? "+" : ""
+                return "Biosphere \(sign)\(amount.clayFormatted)"
+            }
+        case "add_cohesion_rate":
+            if let amount = effect.amount {
+                let sign = amount >= 0 ? "+" : ""
+                return "Cohesion \(sign)\(amount.clayFormatted)/h"
+            }
+        case "add_biosphere_rate":
+            if let amount = effect.amount {
+                let sign = amount >= 0 ? "+" : ""
+                return "Biosphere \(sign)\(amount.clayFormatted)/h"
+            }
         case "unlock_building":
             if let buildingId = effect.buildingId {
                 let name = content.buildingsById[buildingId]?.name ?? buildingId
@@ -52,10 +80,21 @@ struct EffectDescriptor {
                 let name = content.projectsById[projectId]?.name ?? projectId
                 return "Unlock \(name)"
             }
+        case "unlock_contract":
+            if let contractId = effect.contractId {
+                let name = content.contractsById[contractId]?.name ?? contractId
+                return "Unlock \(name)"
+            }
         case "unlock_era":
             if let eraId = effect.eraId {
                 let name = content.erasById[eraId]?.name ?? eraId
                 return "Unlock \(name) Era"
+            }
+        case "unlock_catalyst":
+            return "Unlock Catalyst"
+        case "grant_chrono_shards":
+            if let amount = effect.amount {
+                return "+\(Int(amount)) Chrono Shards"
             }
         case "adjust_faction":
             if let factionId = effect.factionId, let amount = effect.amount {

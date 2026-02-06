@@ -23,7 +23,16 @@ let package = Package(
         .target(
             name: "ClayFeature",
             dependencies: [],
-            exclude: ["Resources/Kenney"],
+            exclude: [
+                "Resources/Kenney/BuildingKit",
+                "Resources/Kenney/CityKitCommercial",
+                "Resources/Kenney/CityKitIndustrial",
+                "Resources/Kenney/CityKitRoads",
+                "Resources/Kenney/CityKitSuburban",
+                "Resources/Kenney/GameIcons/PNG/Black",
+                "Resources/Kenney/GameIcons/PNG/White/1x",
+                "Resources/Kenney/UIPackSciFi"
+            ],
             resources: [.process("Resources")]
         ),
         .testTarget(

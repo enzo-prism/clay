@@ -6,45 +6,57 @@ struct RightPanelView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Panel(title: "Work Crews") {
-                    HStack(spacing: 8) {
-                        PixelSpriteView(spriteId: "worker", size: 16)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Available")
+                SoftCard(title: "Next Actions") {
+                    GuidanceCenterView(maxItems: 4)
+                }
+                SoftCard(title: "Timers") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        if engine.state.activeProjects.isEmpty && engine.state.dispatches.isEmpty {
+                            Text("No active timers.")
                                 .font(ClayFonts.data(10))
                                 .foregroundColor(ClayTheme.muted)
-                            Text("\(engine.derived.availableCrewCount) / \(engine.state.crewCount)")
-                                .font(ClayFonts.data(13, weight: .semibold))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                                .allowsTightening(true)
-                        }
-                        Spacer(minLength: 0)
-                    }
-                }
-                Panel(title: "Active Projects") {
-                    if engine.state.activeProjects.isEmpty {
-                        Text("No active projects.")
-                            .font(ClayFonts.data(10))
-                            .foregroundColor(ClayTheme.muted)
-                    } else {
-                        LazyVStack(alignment: .leading, spacing: 8) {
-                            ForEach(engine.state.activeProjects) { project in
-                                ActiveProjectRow(project: project)
+                        } else {
+                            if !engine.state.activeProjects.isEmpty {
+                                Text("Projects")
+                                    .font(ClayFonts.display(9, weight: .semibold))
+                                    .foregroundColor(ClayTheme.muted)
+                                ForEach(engine.state.activeProjects) { project in
+                                    ActiveProjectRow(project: project)
+                                }
+                            }
+                            if !engine.state.dispatches.isEmpty {
+                                Text("Dispatches")
+                                    .font(ClayFonts.display(9, weight: .semibold))
+                                    .foregroundColor(ClayTheme.muted)
+                                ForEach(engine.state.dispatches) { dispatch in
+                                    ActiveDispatchMiniRow(dispatch: dispatch)
+                                }
                             }
                         }
                     }
                 }
-                Panel(title: "Accelerators") {
-                    RightPanelRow(label: "Catalyst", value: Date() >= engine.state.catalyst.availableAt ? "Ready" : "Cooldown", valueColor: Date() >= engine.state.catalyst.availableAt ? ClayTheme.good : ClayTheme.accentWarm)
-                    RightPanelRow(label: "Chrono Shards", value: "\(engine.state.chronoShards)")
+                SoftCard(title: "Alerts") {
+                    AlertsPanel()
                 }
             }
             .padding(.vertical, 4)
         }
         .padding(12)
         .frame(width: 260)
-        .background(ClayTheme.panel)
+        .background(
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                LinearGradient(
+                    colors: [
+                        ClayTheme.panel.opacity(0.92),
+                        ClayTheme.panelElevated.opacity(0.86)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
+        )
         .overlay(
             Rectangle()
                 .fill(ClayTheme.stroke.opacity(0.6))
@@ -54,27 +66,108 @@ struct RightPanelView: View {
     }
 }
 
-private struct RightPanelRow: View {
-    let label: String
-    let value: String
-    var valueColor: Color = ClayTheme.text
+private struct ActiveDispatchMiniRow: View {
+    @EnvironmentObject private var engine: GameEngine
+    let dispatch: DispatchInstance
+
+    var body: some View {
+        let definition = engine.content.dispatchesById[dispatch.dispatchId]
+        let title = definition?.name ?? dispatch.dispatchId
+        HStack(spacing: 8) {
+            PixelSpriteView(spriteId: "dispatch", size: 12)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(ClayFonts.display(10, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
+                Text(dispatch.status == .active ? dispatch.remainingSeconds.clayTimeString : "Ready")
+                    .font(ClayFonts.data(9))
+                    .foregroundColor(dispatch.status == .active ? ClayTheme.muted : ClayTheme.good)
+                    .monospacedDigit()
+                    .claySingleLine(minScale: 0.75)
+            }
+            Spacer(minLength: 0)
+            if dispatch.status != .active {
+                ClayButton(isEnabled: true, active: true) {
+                    engine.collectDispatch(id: dispatch.id)
+                } label: {
+                    Text("Collect")
+                }
+            }
+        }
+        .padding(6)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panel)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(ClayTheme.stroke.opacity(0.6), lineWidth: 1)
+        )
+    }
+}
+
+private struct AlertsPanel: View {
+    @EnvironmentObject private var engine: GameEngine
+
+    var body: some View {
+        let caps = engine.derived.resourceCaps
+        let nearCap = engine.state.resources.filter { resource in
+            let cap = caps[resource.key, default: 0]
+            return cap > 0 && resource.value.amount >= cap * 0.9
+        }
+        let negativeRates = engine.derived.resourceRatesPerHour.filter { $0.value < 0 }
+        let expiringContracts = engine.state.factionStates.values
+            .flatMap(\.activeContracts)
+            .filter { $0.remainingSeconds < 3600 }
+        VStack(alignment: .leading, spacing: 6) {
+            if nearCap.isEmpty && negativeRates.isEmpty && expiringContracts.isEmpty {
+                Text("No alerts right now.")
+                    .font(ClayFonts.data(10))
+                    .foregroundColor(ClayTheme.muted)
+            } else {
+                if !nearCap.isEmpty {
+                    AlertRow(title: "Storage Near Cap", detail: "\(nearCap.count) resources", tint: ClayTheme.accentWarm)
+                }
+                if !negativeRates.isEmpty {
+                    AlertRow(title: "Negative Nets", detail: "\(negativeRates.count) resources", tint: ClayTheme.bad)
+                }
+                if !expiringContracts.isEmpty {
+                    AlertRow(title: "Contracts Expiring", detail: "\(expiringContracts.count) within 1h", tint: ClayTheme.accent)
+                }
+            }
+        }
+    }
+}
+
+private struct AlertRow: View {
+    let title: String
+    let detail: String
+    let tint: Color
 
     var body: some View {
         HStack(spacing: 8) {
-            Text(label)
-                .font(ClayFonts.data(11))
-                .foregroundColor(ClayTheme.text)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                .allowsTightening(true)
+            Circle()
+                .fill(tint)
+                .frame(width: 6, height: 6)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(ClayFonts.display(9, weight: .semibold))
+                    .foregroundColor(ClayTheme.text)
+                Text(detail)
+                    .font(ClayFonts.data(9))
+                    .foregroundColor(ClayTheme.muted)
+            }
             Spacer(minLength: 0)
-            Text(value)
-                .font(ClayFonts.data(11, weight: .semibold))
-                .foregroundColor(valueColor)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .allowsTightening(true)
         }
+        .padding(6)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panel)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(tint.opacity(0.3), lineWidth: 1)
+        )
     }
 }
 
@@ -101,6 +194,8 @@ struct ActiveProjectRow: View {
             SimpleProgressBar(value: progressValue, isActive: true)
             VStack(alignment: .leading, spacing: 6) {
                 Text(project.remainingSeconds.clayTimeString)
+                    .monospacedDigit()
+                    .claySingleLine(minScale: 0.75)
                 actionButtons
             }
             .font(ClayFonts.data(10))

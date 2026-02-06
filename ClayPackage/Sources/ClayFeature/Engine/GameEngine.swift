@@ -1,4 +1,5 @@
 import Foundation
+@preconcurrency import Combine
 import SwiftUI
 
 public struct DerivedState {
@@ -9,9 +10,19 @@ public struct DerivedState {
     public var availableCrewCount: Int
     public var projectSpeedMultiplier: Double
     public var risk: RiskState
+    public var cohesion: Double
+    public var biosphere: Double
     public var logistics: LogisticsState
     public var averageEfficiency: Double
     public var marketIndexByResource: [String: Double]
+}
+
+public struct LegacyGainBreakdown {
+    public var eraPoints: Int
+    public var domainBonus: Int
+    public var achievementBonus: Int
+    public var energyBonus: Int
+    public var total: Int
 }
 
 struct PolicyModifiers {
@@ -21,18 +32,25 @@ struct PolicyModifiers {
     var securityBonus: Double = 0
     var logisticsBonus: Double = 0
     var storageAdditions: [String: Double] = [:]
+    var cohesionRate: Double = 0
+    var biosphereRate: Double = 0
 }
 
 @MainActor
 public final class GameEngine: ObservableObject {
-    @Published public private(set) var state: GameState
-    @Published public private(set) var derived: DerivedState
+    public nonisolated let objectWillChange = ObservableObjectPublisher()
+
+    public private(set) var state: GameState
+    public private(set) var derived: DerivedState
     
     public let content: ContentCatalog
     
     private var tickTimer: Timer?
     private var autosaveTimer: Timer?
     private var rng: SeededGenerator
+    private var isBatchingUIChanges = false
+    private var isAdvancing = false
+    private var isBackgroundPaused = false
     
     public init(seed: UInt64? = nil, shouldStartTimers: Bool = true, loadPersistence: Bool = true) {
         let content = ContentLoader.load()
@@ -41,60 +59,142 @@ public final class GameEngine: ObservableObject {
         self.rng = SeededGenerator(seed: seedValue)
         self.content = content
         self.state = initialState
-        self.derived = GameEngine.computeDerived(state: initialState, content: content)
+        self.derived = DerivedState(
+            resourceRatesPerHour: [:],
+            resourceCaps: [:],
+            timeToCapHours: [:],
+            activeCrewCount: 0,
+            availableCrewCount: 0,
+            projectSpeedMultiplier: 1.0,
+            risk: initialState.risk,
+            cohesion: initialState.cohesion,
+            biosphere: initialState.biosphere,
+            logistics: initialState.logistics,
+            averageEfficiency: initialState.stats.lastEfficiency,
+            marketIndexByResource: initialState.market.priceIndexByResource
+        )
         migrateIfNeeded()
+        refreshDomainTiers()
+        refreshDerived(now: Date())
+        evaluateAchievements(now: Date())
         reconcileOffline(now: Date())
         if shouldStartTimers {
             startTimers()
         }
     }
+
+    private func mutateUI(refreshDerived: Bool = false, _ body: () -> Void) {
+        if isBatchingUIChanges {
+            body()
+            return
+        }
+        isBatchingUIChanges = true
+        objectWillChange.send()
+        defer { isBatchingUIChanges = false }
+        body()
+        if refreshDerived && !isAdvancing {
+            self.refreshDerived(now: Date())
+        }
+    }
+
+    private func refreshDerived(now: Date) {
+        let policy = policyModifiers()
+        let grid = BuildingGridIndex(buildings: state.buildings)
+        state.logistics = computeLogisticsState(policy: policy, grid: grid)
+        let caps = computeResourceCaps(policy: policy)
+        state.risk = computeRiskState(policy: policy, caps: caps)
+        let rates = computeResourceRatesPerHour(now: now, policy: policy, grid: grid)
+        let projectSpeedMultiplier = computeProjectSpeedMultiplier(policy: policy)
+        derived = GameEngine.computeDerived(
+            state: state,
+            content: content,
+            caps: caps,
+            ratesPerHour: rates,
+            projectSpeedMultiplier: projectSpeedMultiplier
+        )
+    }
     
     public func startTimers() {
         tickTimer?.invalidate()
         tickTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                self?.tick()
+            guard let self else { return }
+            MainActor.assumeIsolated {
+                self.tick()
             }
         }
+        tickTimer?.tolerance = 0.1
+
         autosaveTimer?.invalidate()
         autosaveTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                guard let self else { return }
+            guard let self else { return }
+            MainActor.assumeIsolated {
                 self.state.lastSavedAt = Date()
-                Persistence.save(state: self.state)
+                Persistence.save(state: self.state, rotateBackups: false)
             }
         }
+        autosaveTimer?.tolerance = 8.0
     }
     
     public func stopTimers() {
         tickTimer?.invalidate()
         autosaveTimer?.invalidate()
+        tickTimer = nil
+        autosaveTimer = nil
         state.lastSavedAt = Date()
-        Persistence.save(state: state)
+        Persistence.saveSync(state: state, rotateBackups: true)
+    }
+
+    public func pauseForBackground() {
+        guard !isBackgroundPaused else { return }
+        isBackgroundPaused = true
+        stopTimers()
+    }
+
+    public func resumeFromBackground() {
+        guard isBackgroundPaused else { return }
+        isBackgroundPaused = false
+        reconcileOffline(now: Date())
+        startTimers()
     }
 
     public func resolveTimeTravel(allow: Bool) {
-        state.pendingTimeTravelWarning = false
-        if allow {
-            state.timeTravelClampUntil = nil
-            state.lastSavedAt = Date()
+        mutateUI {
+            state.pendingTimeTravelWarning = false
+            if allow {
+                state.timeTravelClampUntil = nil
+                state.lastSavedAt = Date()
+            }
         }
     }
 
     public func setOfflineCapDays(_ days: Int) {
-        updateSettings { $0.offlineCapDays = days }
+        mutateUI {
+            updateSettings { $0.offlineCapDays = days }
+        }
     }
     
     public func setNotificationsEnabled(_ enabled: Bool) {
-        updateSettings { $0.notificationsEnabled = enabled }
+        mutateUI {
+            updateSettings { $0.notificationsEnabled = enabled }
+        }
     }
     
     public func setColorblindMode(_ enabled: Bool) {
-        updateSettings { $0.colorblindMode = enabled }
+        mutateUI {
+            updateSettings { $0.colorblindMode = enabled }
+        }
     }
 
     public func setUse3DPreviews(_ enabled: Bool) {
-        updateSettings { $0.use3DPreviews = enabled }
+        mutateUI {
+            updateSettings { $0.use3DPreviews = enabled }
+        }
+    }
+
+    public func setGuidanceLevel(_ level: GuidanceLevel) {
+        mutateUI {
+            updateSettings { $0.guidanceLevel = level }
+        }
     }
 
     private func updateSettings(_ update: (inout SettingsState) -> Void) {
@@ -166,7 +266,41 @@ public final class GameEngine: ObservableObject {
         if state.people.recruitedIds.isEmpty && state.people.maxRoster == 0 {
             state.people = PeopleState(recruitedIds: [], maxRoster: 8)
         }
+        if state.saveVersion < 7 {
+            if state.flags["type_iii_complete"] == true || state.flags["type_ii_complete"] == true {
+                state.eraId = "galactic"
+            }
+            syncUnlocksForCurrentEra()
+            if state.cohesion <= 0 {
+                state.cohesion = 0.6
+            }
+            if state.biosphere <= 0 {
+                state.biosphere = 0.6
+            }
+        }
         state.saveVersion = GameState.currentVersion
+    }
+
+    private func syncUnlocksForCurrentEra() {
+        guard let currentEra = content.erasById[state.eraId] else { return }
+        for era in content.pack.eras where era.sortOrder <= currentEra.sortOrder {
+            for buildingId in era.unlocksBuildingIds {
+                if !state.unlockedBuildingIds.contains(buildingId) {
+                    state.unlockedBuildingIds.append(buildingId)
+                }
+            }
+            for projectId in era.unlocksProjectIds {
+                if !state.unlockedProjectIds.contains(projectId) {
+                    state.unlockedProjectIds.append(projectId)
+                }
+            }
+        }
+    }
+
+    private func refreshDomainTiers() {
+        for domain in content.pack.domains {
+            unlockDomainTiers(for: domain)
+        }
     }
 
     private func policyModifiers() -> PolicyModifiers {
@@ -239,41 +373,57 @@ public final class GameEngine: ObservableObject {
             if let resourceId = effect.resourceId, let amount = effect.amount {
                 modifiers.storageAdditions[resourceId, default: 0] += amount
             }
+        case "add_cohesion_rate":
+            if let amount = effect.amount {
+                modifiers.cohesionRate += amount
+            }
+        case "add_biosphere_rate":
+            if let amount = effect.amount {
+                modifiers.biosphereRate += amount
+            }
         default:
             break
         }
     }
 
     public func setAutoPlannerEnabled(_ enabled: Bool) {
-        state.autoPlanRules.enabled = enabled
+        mutateUI {
+            state.autoPlanRules.enabled = enabled
+        }
     }
 
     public func setAutoPlanTag(_ tag: String, enabled: Bool) {
-        var tags = Set(state.autoPlanRules.priorityTags)
-        if enabled {
-            tags.insert(tag)
-        } else {
-            tags.remove(tag)
+        mutateUI {
+            var tags = Set(state.autoPlanRules.priorityTags)
+            if enabled {
+                tags.insert(tag)
+            } else {
+                tags.remove(tag)
+            }
+            state.autoPlanRules.priorityTags = Array(tags).sorted()
         }
-        state.autoPlanRules.priorityTags = Array(tags).sorted()
     }
 
     public func setAutoRenewContracts(_ enabled: Bool) {
-        state.autoPlanRules.autoRenewContracts = enabled
+        mutateUI {
+            state.autoPlanRules.autoRenewContracts = enabled
+        }
     }
 
     public func setPolicy(slot: String, policyId: String?) {
-        if let policyId {
-            guard let policy = content.policiesById[policyId] else { return }
-            let now = Date()
-            if let cooldown = state.policyState.cooldownsByPolicyId[policyId], cooldown > now {
-                return
+        mutateUI(refreshDerived: true) {
+            if let policyId {
+                guard let policy = content.policiesById[policyId] else { return }
+                let now = Date()
+                if let cooldown = state.policyState.cooldownsByPolicyId[policyId], cooldown > now {
+                    return
+                }
+                guard isPolicyUnlocked(policy) else { return }
+                state.policyState.activePoliciesBySlot[slot] = policyId
+                state.policyState.cooldownsByPolicyId[policyId] = now.addingTimeInterval(policy.cooldownSeconds)
+            } else {
+                state.policyState.activePoliciesBySlot.removeValue(forKey: slot)
             }
-            guard isPolicyUnlocked(policy) else { return }
-            state.policyState.activePoliciesBySlot[slot] = policyId
-            state.policyState.cooldownsByPolicyId[policyId] = now.addingTimeInterval(policy.cooldownSeconds)
-        } else {
-            state.policyState.activePoliciesBySlot.removeValue(forKey: slot)
         }
     }
 
@@ -289,42 +439,65 @@ public final class GameEngine: ObservableObject {
         return currentEra.sortOrder >= requiredEra.sortOrder
     }
 
+    func isEraComplete(_ era: EraDefinition) -> Bool {
+        let keystones = era.keystoneProjectIds ?? [era.keystoneProjectId]
+        return keystones.contains { state.completedProjectIds.contains($0) }
+    }
+
     public func availableLegacyGain() -> Int {
-        var points = 0
+        legacyGainBreakdown().total
+    }
+
+    public func legacyGainBreakdown() -> LegacyGainBreakdown {
+        var eraPoints = 0
         for era in content.pack.eras where era.sortOrder > 0 {
-            if state.completedProjectIds.contains(era.keystoneProjectId) {
-                points += 1
+            if isEraComplete(era) {
+                eraPoints += 1
             }
         }
+        let totalTiers = state.domainState.unlockedTiersByDomain.values.reduce(0, +)
+        let domainBonus = totalTiers / 3
+        let achievementBonus = state.achievementsUnlocked.count / 4
+        var energyBonus = 0
         if state.flags["type_iii_complete"] == true {
             let energy = max(1, state.stats.totalProducedByResource["energy", default: 0])
-            let bonus = Int(max(0, floor(log10(energy)) - 8))
-            points += bonus
+            energyBonus = Int(max(0, floor(log10(energy)) - 7))
         }
-        return points
+        let total = eraPoints + domainBonus + achievementBonus + energyBonus
+        return LegacyGainBreakdown(
+            eraPoints: eraPoints,
+            domainBonus: domainBonus,
+            achievementBonus: achievementBonus,
+            energyBonus: energyBonus,
+            total: total
+        )
     }
 
     public func purchaseLegacyUpgrade(_ upgradeId: String) {
-        guard let upgrade = content.legacyUpgradesById[upgradeId] else { return }
-        guard !state.prestige.legacyUpgrades.contains(upgradeId) else { return }
-        guard state.prestige.legacyPoints >= upgrade.cost else { return }
-        state.prestige.legacyPoints -= upgrade.cost
-        state.prestige.legacyUpgrades.append(upgradeId)
-        applyEffects(upgrade.effects)
+        mutateUI(refreshDerived: true) {
+            guard let upgrade = content.legacyUpgradesById[upgradeId] else { return }
+            guard !state.prestige.legacyUpgrades.contains(upgradeId) else { return }
+            guard state.prestige.legacyPoints >= upgrade.cost else { return }
+            state.prestige.legacyPoints -= upgrade.cost
+            state.prestige.legacyUpgrades.append(upgradeId)
+            applyEffects(upgrade.effects)
+        }
     }
 
     public func ascend() {
-        let gain = availableLegacyGain()
-        var prestige = state.prestige
-        let settings = state.settings
-        prestige.legacyPoints += gain
-        prestige.lastPrestigeAt = Date()
-        let newState = GameEngine.defaultState(content: content)
-        state = newState
-        state.prestige = prestige
-        state.settings = settings
-        applyLegacyUpgrades()
-        derived = GameEngine.computeDerived(state: state, content: content)
+        mutateUI {
+            let gain = availableLegacyGain()
+            var prestige = state.prestige
+            let settings = state.settings
+            prestige.legacyPoints += gain
+            prestige.lastPrestigeAt = Date()
+            let newState = GameEngine.defaultState(content: content)
+            state = newState
+            state.prestige = prestige
+            state.settings = settings
+            applyLegacyUpgrades()
+            refreshDerived(now: Date())
+        }
     }
 
     private func applyLegacyUpgrades() {
@@ -402,17 +575,17 @@ public final class GameEngine: ObservableObject {
     }
 
     public func projectAdvisorMessage() -> String? {
-        if state.logistics.logisticsFactor < 0.7 {
+        if derived.logistics.logisticsFactor < 0.7 {
             return "Logistics bottleneck detected. Consider building a Logistics Hub."
         }
-        let caps = computeResourceCaps(policy: policyModifiers())
+        let caps = derived.resourceCaps
         for (resourceId, resource) in state.resources {
             let cap = caps[resourceId, default: resource.cap]
             if cap > 0 && resource.amount >= cap * 0.9 {
                 return "\(resourceId.capitalized) nearing cap. Invest in storage or spend resources."
             }
         }
-        let rates = computeResourceRatesPerHour()
+        let rates = derived.resourceRatesPerHour
         if let worst = rates.min(by: { $0.value < $1.value }), worst.value < 0 {
             return "Net \(worst.key.capitalized) is negative. Boost production or reduce upkeep."
         }
@@ -422,6 +595,9 @@ public final class GameEngine: ObservableObject {
     public func projectBlockReason(_ project: ProjectDefinition) -> String? {
         if let reason = megaprojectBlockReason(projectId: project.id) {
             return reason
+        }
+        if !state.unlockedProjectIds.contains(project.id) {
+            return "Project locked"
         }
         if availableCrewCount() < project.crewRequired {
             return "No available crews"
@@ -566,13 +742,15 @@ public final class GameEngine: ObservableObject {
     }
 
     public func recruitPerson(_ person: PeopleDefinition) {
-        if let reason = personBlockReason(person) {
-            NotificationCenter.default.post(name: .clayToast, object: ToastPayload(message: reason, style: .warning))
-            return
+        mutateUI(refreshDerived: true) {
+            if let reason = personBlockReason(person) {
+                NotificationCenter.default.post(name: .clayToast, object: ToastPayload(message: reason, style: .warning))
+                return
+            }
+            spend(costs: person.costs)
+            state.people.recruitedIds.append(person.id)
+            addEvent(category: "system", title: "Recruit Joined", message: "\(person.name) joined your roster.")
         }
-        spend(costs: person.costs)
-        state.people.recruitedIds.append(person.id)
-        addEvent(category: "system", title: "Recruit Joined", message: "\(person.name) joined your roster.")
     }
 
     public func catalystBlockReason(projectId: UUID) -> String? {
@@ -604,14 +782,141 @@ public final class GameEngine: ObservableObject {
     }
 
     public func partnershipAdvisorMessage() -> String? {
-        if state.risk.raidChancePerHour > 0.15 {
+        if derived.risk.raidChancePerHour > 0.15 {
             return "Raid risk is elevated. Consider a Security Pact."
         }
-        let creditsRate = computeResourceRatesPerHour()["credits", default: 0]
+        let creditsRate = derived.resourceRatesPerHour["credits", default: 0]
         if creditsRate < 1 {
             return "Credits are tight. Export surplus via trade contracts."
         }
         return nil
+    }
+
+    func guidanceItems() -> [GuidanceItem] {
+        var items: [GuidanceItem] = []
+        let cacheTotal = state.collector.storedByResource.values.reduce(0, +)
+        if cacheTotal > 0 {
+            items.append(GuidanceItem(
+                id: "collectCache",
+                title: "Collect Cache",
+                detail: "\(cacheTotal.clayFormatted) ready to claim.",
+                priority: .high,
+                action: .collectCache
+            ))
+        }
+        let readyDispatches = state.dispatches.filter { $0.status != .active }
+        if !readyDispatches.isEmpty {
+            items.append(GuidanceItem(
+                id: "collectDispatches",
+                title: "Collect Dispatches",
+                detail: "\(readyDispatches.count) operations ready.",
+                priority: .high,
+                action: .collectDispatches
+            ))
+        }
+        if state.eventChains.pendingEventChainId != nil {
+            items.append(GuidanceItem(
+                id: "pendingIntelDecision",
+                title: "Decision Pending",
+                detail: "Intel event requires your choice.",
+                priority: .urgent,
+                action: .reviewIntel
+            ))
+        }
+        if derived.availableCrewCount > 0 && state.queuedProjects.isEmpty {
+            items.append(GuidanceItem(
+                id: "idleCrews",
+                title: "Idle Crews",
+                detail: "\(derived.availableCrewCount) crew idle. Queue a project.",
+                priority: .high,
+                action: .switchTab(.projects)
+            ))
+        }
+        if derived.logistics.logisticsFactor < 0.85 {
+            items.append(GuidanceItem(
+                id: "logisticsBottleneck",
+                title: "Logistics Bottleneck",
+                detail: "Output throttled. Build logistics capacity.",
+                priority: .medium,
+                action: .switchTab(.base)
+            ))
+        }
+        let raidChance = derived.risk.raidChancePerHour
+        if raidChance > 0.12 {
+            items.append(GuidanceItem(
+                id: "raidRiskHigh",
+                title: "Raid Risk High",
+                detail: "Risk at \(Int(raidChance * 100))%. Add defenses or pacts.",
+                priority: .high,
+                action: .switchTab(.partnerships)
+            ))
+        }
+        let rates = derived.resourceRatesPerHour
+        if let worst = rates.min(by: { $0.value < $1.value }), worst.value < 0 {
+            let name = content.resourcesById[worst.key]?.name ?? worst.key.capitalized
+            items.append(GuidanceItem(
+                id: "negativeResource:\(worst.key)",
+                title: "Negative \(name)",
+                detail: "Net \(worst.value.clayFormatted)/h. Boost production.",
+                priority: .high,
+                action: .openResource(worst.key)
+            ))
+        }
+        let caps = derived.resourceCaps
+        if let nearCap = state.resources.max(by: { lhs, rhs in
+            let lhsCap = caps[lhs.key, default: 0]
+            let rhsCap = caps[rhs.key, default: 0]
+            let lhsRatio = lhsCap > 0 ? lhs.value.amount / lhsCap : 0
+            let rhsRatio = rhsCap > 0 ? rhs.value.amount / rhsCap : 0
+            return lhsRatio < rhsRatio
+        }) {
+            let cap = caps[nearCap.key, default: 0]
+            if cap > 0 && nearCap.value.amount >= cap * 0.9 {
+                let name = content.resourcesById[nearCap.key]?.name ?? nearCap.key.capitalized
+                items.append(GuidanceItem(
+                    id: "nearCap:\(nearCap.key)",
+                    title: "\(name) Near Cap",
+                    detail: "Add storage or spend resources.",
+                    priority: .medium,
+                    action: .switchTab(.base)
+                ))
+            }
+        }
+        let expiringContracts = state.factionStates.values
+            .flatMap(\.activeContracts)
+            .filter { $0.remainingSeconds < 3600 }
+        if !expiringContracts.isEmpty {
+            items.append(GuidanceItem(
+                id: "expiringContracts",
+                title: "Contracts Expiring",
+                detail: "\(expiringContracts.count) contract(s) end within 1h.",
+                priority: .high,
+                action: .switchTab(.partnerships)
+            ))
+        }
+        let filtered = items.filter { item in
+            switch state.settings.guidanceLevel {
+            case .high:
+                return true
+            case .balanced:
+                return item.priority >= .medium
+            case .minimal:
+                return item.priority >= .high
+            }
+        }
+        return filtered.sorted { lhs, rhs in
+            if lhs.priority == rhs.priority {
+                return lhs.title < rhs.title
+            }
+            return lhs.priority > rhs.priority
+        }
+    }
+
+    func guidanceBadgeSummary() -> GuidanceSummary {
+        let items = guidanceItems()
+        let urgent = items.filter { $0.priority == .urgent }.count
+        let high = items.filter { $0.priority == .high }.count
+        return GuidanceSummary(total: items.count, urgent: urgent, high: high)
     }
 
     public func peopleDefinitions() -> [PeopleDefinition] {
@@ -659,7 +964,7 @@ public final class GameEngine: ObservableObject {
             ids = Array(basePool)
         }
         let unique = Array(Set(ids))
-        return unique.filter { PixelAssetCatalog.shared.sprite(for: $0) != nil }
+        return unique.filter { !PixelAssetCatalog.shared.isSpriteBanned($0) && PixelAssetCatalog.shared.sprite(for: $0) != nil }
     }
 
     public func metahumanSpriteId(_ meta: MetahumanDefinition) -> String {
@@ -714,52 +1019,75 @@ public final class GameEngine: ObservableObject {
     }
     
     private func tick() {
-        let now = Date()
-        if let clampUntil = state.timeTravelClampUntil, now < clampUntil {
-            state.lastTickAt = now
-            return
+        PerfSignposts.tick {
+            let now = Date()
+            if let clampUntil = state.timeTravelClampUntil, now < clampUntil {
+                state.lastTickAt = now
+                return
+            }
+            let delta = now.timeIntervalSince(state.lastTickAt)
+            guard delta > 0 else { return }
+            mutateUI {
+                advance(by: delta, now: now, isOffline: false)
+            }
         }
-        let delta = now.timeIntervalSince(state.lastTickAt)
-        guard delta > 0 else { return }
-        advance(by: delta, now: now, isOffline: false)
     }
     
     public func reconcileOffline(now: Date) {
-        let elapsed = now.timeIntervalSince(state.lastSavedAt)
-        if elapsed < -60 {
-            state.pendingTimeTravelWarning = true
-            state.timeTravelClampUntil = state.lastSavedAt
-            state.lastTickAt = now
-            return
+        mutateUI {
+            let elapsed = now.timeIntervalSince(state.lastSavedAt)
+            if elapsed < -60 {
+                state.pendingTimeTravelWarning = true
+                state.timeTravelClampUntil = state.lastSavedAt
+                state.lastTickAt = now
+                return
+            }
+            let capSeconds = Double(state.settings.offlineCapDays) * 86_400.0
+            let clamped = min(max(0, elapsed), capSeconds)
+            if elapsed > capSeconds {
+                addEvent(category: "system", title: "Offline Cap Reached", message: "Offline progress capped at \(state.settings.offlineCapDays) days.")
+            }
+            advance(by: clamped, now: now, isOffline: true)
         }
-        let capSeconds = Double(state.settings.offlineCapDays) * 86_400.0
-        let clamped = min(max(0, elapsed), capSeconds)
-        if elapsed > capSeconds {
-            addEvent(category: "system", title: "Offline Cap Reached", message: "Offline progress capped at \(state.settings.offlineCapDays) days.")
-        }
-        advance(by: clamped, now: now, isOffline: true)
     }
     
     private func advance(by seconds: Double, now: Date, isOffline: Bool) {
-        let policy = policyModifiers()
-        updateMarket(now: now)
-        state.logistics = computeLogisticsState(policy: policy)
-        applyProjectProgress(seconds: seconds)
-        applyDispatchProgress(seconds: seconds, now: now)
-        applyContractProgress(seconds: seconds)
-        applyResourceDelta(seconds: seconds, start: state.lastTickAt, end: now, policy: policy)
-        processEvents(seconds: seconds, offline: isOffline)
-        processQueuedProjects()
-        if !isOffline {
-            runAutoPlanner()
-            autoRenewContracts()
-        }
-        state.lastTickAt = now
-        state.risk = computeRiskState(policy: policy)
-        derived = GameEngine.computeDerived(state: state, content: content)
-        evaluateAchievements(now: now)
-        if !isOffline {
-            emitMilestoneAlerts(now: now)
+        PerfSignposts.advance {
+            isAdvancing = true
+            defer { isAdvancing = false }
+
+            let policy = policyModifiers()
+            let grid = BuildingGridIndex(buildings: state.buildings)
+            updateMarket(now: now)
+            state.logistics = computeLogisticsState(policy: policy, grid: grid)
+            applyProjectProgress(seconds: seconds)
+            applyDispatchProgress(seconds: seconds, now: now)
+            applyContractProgress(seconds: seconds)
+            let capsBeforeEvents = computeResourceCaps(policy: policy)
+            applyResourceDelta(seconds: seconds, start: state.lastTickAt, end: now, policy: policy, grid: grid, caps: capsBeforeEvents)
+            updateWorldState(seconds: seconds, policy: policy, now: now, grid: grid, caps: capsBeforeEvents)
+            processEvents(seconds: seconds, offline: isOffline)
+            processQueuedProjects()
+            if !isOffline {
+                runAutoPlanner()
+                autoRenewContracts()
+            }
+            state.lastTickAt = now
+            let caps = computeResourceCaps(policy: policy)
+            state.risk = computeRiskState(policy: policy, caps: caps)
+            let rates = computeResourceRatesPerHour(now: now, policy: policy, grid: grid)
+            let projectSpeedMultiplier = computeProjectSpeedMultiplier(policy: policy)
+            derived = GameEngine.computeDerived(
+                state: state,
+                content: content,
+                caps: caps,
+                ratesPerHour: rates,
+                projectSpeedMultiplier: projectSpeedMultiplier
+            )
+            evaluateAchievements(now: now)
+            if !isOffline {
+                emitMilestoneAlerts(now: now)
+            }
         }
     }
 
@@ -826,6 +1154,20 @@ public final class GameEngine: ObservableObject {
             let alertId = "risk:raid"
             if shouldFire(alertId) {
                 postToast(message: "Raid risk elevated. Consider defenses or pacts.", style: .warning)
+            }
+        }
+
+        if state.cohesion < 0.3 {
+            let alertId = "world:cohesion_low"
+            if shouldFire(alertId) {
+                postToast(message: "Civil unrest rising.", style: .warning)
+            }
+        }
+
+        if state.biosphere < 0.3 {
+            let alertId = "world:biosphere_low"
+            if shouldFire(alertId) {
+                postToast(message: "Ecological strain detected.", style: .warning)
             }
         }
 
@@ -958,7 +1300,7 @@ public final class GameEngine: ObservableObject {
         switch condition.type {
         case "resource_rate":
             guard let resourceId = condition.resourceId, let amount = condition.amount else { return false }
-            let rate = computeResourceRatesPerHour()[resourceId, default: 0]
+            let rate = derived.resourceRatesPerHour[resourceId, default: 0]
             return rate >= amount
         case "resource_total":
             guard let resourceId = condition.resourceId, let amount = condition.amount else { return false }
@@ -972,6 +1314,12 @@ public final class GameEngine: ObservableObject {
             guard let duration = condition.durationHours else { return false }
             let lastRaid = state.stats.lastRaidAt ?? state.lastSavedAt
             return now.timeIntervalSince(lastRaid) >= duration * 3600
+        case "cohesion_threshold":
+            guard let amount = condition.amount else { return false }
+            return state.cohesion >= amount
+        case "biosphere_threshold":
+            guard let amount = condition.amount else { return false }
+            return state.biosphere >= amount
         case "flag":
             guard let flagId = condition.flagId else { return false }
             return state.flags[flagId] == true
@@ -980,14 +1328,16 @@ public final class GameEngine: ObservableObject {
         }
     }
     
-    private func applyResourceDelta(seconds: Double, start: Date, end: Date, policy: PolicyModifiers) {
+    private func applyResourceDelta(seconds: Double, start: Date, end: Date, policy: PolicyModifiers, grid: BuildingGridIndex, caps: [String: Double]) {
         var produced: [String: Double] = [:]
         var consumed: [String: Double] = [:]
         var available: [String: Double] = [:]
+        produced.reserveCapacity(content.pack.resources.count)
+        consumed.reserveCapacity(content.pack.resources.count)
+        available.reserveCapacity(state.resources.count)
         for (resourceId, resource) in state.resources {
             available[resourceId] = resource.amount
         }
-        let caps = computeResourceCaps(policy: policy)
         var efficiencySum = 0.0
         var efficiencyCount = 0.0
         let logisticsFactor = state.logistics.logisticsFactor
@@ -997,72 +1347,85 @@ public final class GameEngine: ObservableObject {
             if activeSeconds <= 0 { continue }
             let secondsFactor = activeSeconds / 3600.0
             let levelMultiplier = pow(1.15, Double(building.level - 1))
-                * adjacencyMultiplier(for: building, definition: def)
-                * districtMultiplier(for: building, definition: def)
-            var buildingProduction: [String: Double] = [:]
-            var buildingConsumption: [String: Double] = [:]
-            for (resource, amount) in def.productionPerHour {
-                buildingProduction[resource, default: 0] += amount * levelMultiplier * secondsFactor
-            }
-            for (resource, amount) in def.consumptionPerHour {
-                buildingConsumption[resource, default: 0] += amount * levelMultiplier * secondsFactor
-            }
-            for (resource, amount) in def.maintenancePerHour {
-                buildingConsumption[resource, default: 0] += amount * secondsFactor
-            }
+                * adjacencyMultiplier(for: building, definition: def, grid: grid)
+                * districtMultiplier(for: building, definition: def, grid: grid)
             var inputFactor = 1.0
-            for (resource, amount) in buildingConsumption where amount > 0 {
-                let availableAmount = available[resource, default: 0]
-                inputFactor = min(inputFactor, availableAmount / amount)
+            for (resourceId, amountPerHour) in def.consumptionPerHour where amountPerHour > 0 {
+                let needed = amountPerHour * levelMultiplier * secondsFactor
+                if needed > 0 {
+                    inputFactor = min(inputFactor, available[resourceId, default: 0] / needed)
+                }
+            }
+            for (resourceId, amountPerHour) in def.maintenancePerHour where amountPerHour > 0 {
+                let needed = amountPerHour * secondsFactor
+                if needed > 0 {
+                    inputFactor = min(inputFactor, available[resourceId, default: 0] / needed)
+                }
             }
             inputFactor = min(1.0, max(0.0, inputFactor))
-            let baseFactor = min(1.0, inputFactor) * logisticsFactor
-            let hasInputs = !buildingConsumption.isEmpty
-            let productionFactor: Double
-            if hasInputs {
-                productionFactor = baseFactor
-            } else {
-                productionFactor = max(def.efficiencyFloor, baseFactor)
+            let baseFactor = inputFactor * logisticsFactor
+            let hasInputs = !def.consumptionPerHour.isEmpty || !def.maintenancePerHour.isEmpty
+            let productionFactor = hasInputs ? baseFactor : max(def.efficiencyFloor, baseFactor)
+
+            if productionFactor > 0 {
+                for (resourceId, amountPerHour) in def.productionPerHour where amountPerHour != 0 {
+                    produced[resourceId, default: 0] += amountPerHour * levelMultiplier * secondsFactor * productionFactor
+                }
             }
-            for (resource, amount) in buildingProduction {
-                produced[resource, default: 0] += amount * productionFactor
-            }
-            for (resource, amount) in buildingConsumption {
-                let total = amount * baseFactor
-                consumed[resource, default: 0] += total
-                available[resource, default: 0] = max(0, available[resource, default: 0] - total)
+
+            if baseFactor > 0 {
+                for (resourceId, amountPerHour) in def.consumptionPerHour where amountPerHour != 0 {
+                    let total = amountPerHour * levelMultiplier * secondsFactor * baseFactor
+                    consumed[resourceId, default: 0] += total
+                    available[resourceId, default: 0] = max(0, available[resourceId, default: 0] - total)
+                }
+                for (resourceId, amountPerHour) in def.maintenancePerHour where amountPerHour != 0 {
+                    let total = amountPerHour * secondsFactor * baseFactor
+                    consumed[resourceId, default: 0] += total
+                    available[resourceId, default: 0] = max(0, available[resourceId, default: 0] - total)
+                }
             }
             efficiencySum += baseFactor
             efficiencyCount += 1
         }
         var contractMultipliers: [String: Double] = [:]
-        for (_, faction) in state.factionStates {
-            for contract in faction.activeContracts {
-                guard let def = content.contractsById[contract.contractId] else { continue }
-                let secondsFactor = seconds / 3600.0
-                let priceIndex = state.market.priceIndexByResource
-                for (resource, amount) in def.effectsPerHour {
-                    let marketMultiplier = priceIndex[resource, default: 1.0] * def.priceIndexMultiplier
-                    produced[resource, default: 0] += amount * secondsFactor * marketMultiplier
-                }
-                for (resource, amount) in def.upkeepPerHour {
-                    consumed[resource, default: 0] += amount * secondsFactor
-                }
-                for (resource, multiplier) in def.multipliers {
-                    contractMultipliers[resource, default: 1.0] *= multiplier
+        contractMultipliers.reserveCapacity(8)
+        let hoursFactor = seconds / 3600.0
+        if hoursFactor > 0 {
+            let priceIndex = state.market.priceIndexByResource
+            for (_, faction) in state.factionStates {
+                for contract in faction.activeContracts {
+                    guard let def = content.contractsById[contract.contractId] else { continue }
+                    for (resourceId, amount) in def.effectsPerHour {
+                        let marketMultiplier = priceIndex[resourceId, default: 1.0] * def.priceIndexMultiplier
+                        produced[resourceId, default: 0] += amount * hoursFactor * marketMultiplier
+                    }
+                    for (resourceId, amount) in def.upkeepPerHour {
+                        consumed[resourceId, default: 0] += amount * hoursFactor
+                    }
+                    for (resourceId, multiplier) in def.multipliers {
+                        contractMultipliers[resourceId, default: 1.0] *= multiplier
+                    }
                 }
             }
         }
-        var productionMultipliers: [String: Double] = [:]
-        for resource in content.pack.resources.map(\.id) {
+
+        let producedKeys = Array(produced.keys)
+        for resourceId in producedKeys {
             var multiplier = state.globalResourceMultiplier * policy.globalMultiplier
-            multiplier *= state.resourceMultipliers[resource, default: 1.0]
-            multiplier *= policy.resourceMultipliers[resource, default: 1.0]
-            multiplier *= contractMultipliers[resource, default: 1.0]
-            productionMultipliers[resource] = multiplier
+            multiplier *= state.resourceMultipliers[resourceId, default: 1.0]
+            multiplier *= policy.resourceMultipliers[resourceId, default: 1.0]
+            multiplier *= contractMultipliers[resourceId, default: 1.0]
+            produced[resourceId, default: 0] *= multiplier
         }
-        for (resource, multiplier) in productionMultipliers {
-            produced[resource, default: 0] *= multiplier
+        let cohesionFactor = 0.9 + (state.cohesion * 0.2)
+        let biosphereFactor = 0.85 + (state.biosphere * 0.3)
+        for resourceId in Array(produced.keys) {
+            var multiplier = cohesionFactor
+            if resourceId == "food" || resourceId == "knowledge" {
+                multiplier *= biosphereFactor
+            }
+            produced[resourceId, default: 0] *= multiplier
         }
         updateCollectorStorage(produced: produced, consumed: consumed, seconds: seconds)
         state.stats.lastEfficiency = efficiencyCount > 0 ? efficiencySum / Double(efficiencyCount) : 1.0
@@ -1088,6 +1451,31 @@ public final class GameEngine: ObservableObject {
                 state.stats.totalWastedByResource[resourceId, default: 0] += waste
             }
         }
+    }
+
+    private func updateWorldState(seconds: Double, policy: PolicyModifiers, now: Date, grid: BuildingGridIndex, caps: [String: Double]) {
+        let hours = seconds / 3600.0
+        guard hours > 0 else { return }
+        let influenceAmount = state.resources["influence"]?.amount ?? 0
+        let influenceCap = max(1, caps["influence", default: 0])
+        let influenceRatio = min(1.0, influenceAmount / influenceCap)
+        var cohesionDeltaPerHour = (influenceRatio - 0.5) * 0.02 + policy.cohesionRate
+        var biosphereDeltaPerHour = policy.biosphereRate
+        for building in state.buildings {
+            guard let def = content.buildingsById[building.buildingId] else { continue }
+            if let disabledUntil = building.disabledUntil, disabledUntil > now {
+                continue
+            }
+            let levelMultiplier = pow(1.15, Double(building.level - 1))
+                * adjacencyMultiplier(for: building, definition: def, grid: grid)
+                * districtMultiplier(for: building, definition: def, grid: grid)
+            cohesionDeltaPerHour += def.cohesionPerHour * levelMultiplier
+            biosphereDeltaPerHour += def.biospherePerHour * levelMultiplier
+        }
+        let nextCohesion = state.cohesion + (cohesionDeltaPerHour * hours)
+        let nextBiosphere = state.biosphere + (biosphereDeltaPerHour * hours)
+        state.cohesion = min(1.0, max(0.0, nextCohesion))
+        state.biosphere = min(1.0, max(0.0, nextBiosphere))
     }
 
     private func activeSecondsForBuilding(_ building: BuildingInstance, start: Date, end: Date) -> Double {
@@ -1149,6 +1537,11 @@ public final class GameEngine: ObservableObject {
         if let minExposure = trigger.minExposure, state.risk.exposure < minExposure { return false }
         if let minSecurity = trigger.minSecurity, state.risk.security < minSecurity { return false }
         if let minHostility = trigger.minHostility, state.risk.hostility < minHostility { return false }
+        if let minCohesion = trigger.minCohesion, state.cohesion < minCohesion { return false }
+        if let maxCohesion = trigger.maxCohesion, state.cohesion > maxCohesion { return false }
+        if let minBiosphere = trigger.minBiosphere, state.biosphere < minBiosphere { return false }
+        if let maxBiosphere = trigger.maxBiosphere, state.biosphere > maxBiosphere { return false }
+        if let minRaidChance = trigger.minRaidChance, state.risk.raidChancePerHour < minRaidChance { return false }
         if let resourceId = trigger.resourceAtCapId {
             guard let resource = state.resources[resourceId] else { return false }
             let cap = computeResourceCaps(policy: policyModifiers())[resourceId, default: resource.cap]
@@ -1169,6 +1562,9 @@ public final class GameEngine: ObservableObject {
         if let flag = trigger.requiresFlag, state.flags[flag] != true {
             return false
         }
+        if let flag = trigger.requiresFlagNotSet, state.flags[flag] == true {
+            return false
+        }
         if let maxLogistics = trigger.requiresLogisticsBelow, state.logistics.logisticsFactor > maxLogistics {
             return false
         }
@@ -1176,36 +1572,40 @@ public final class GameEngine: ObservableObject {
     }
 
     public func resolveEventChoice(chainId: String, choiceId: String) {
-        guard let chain = content.eventChainsById[chainId] else { return }
-        guard let choice = chain.choices.first(where: { $0.id == choiceId }) else { return }
-        applyEffects(choice.effects)
-        addEvent(category: "decision", title: chain.title, message: choice.description)
-        state.eventChains.cooldownsByChainId[chainId] = Date().addingTimeInterval(chain.cooldownSeconds)
-        if let uniqueFlag = chain.uniqueFlagId {
-            state.flags[uniqueFlag] = true
-        }
-        if let nextId = choice.nextId, content.eventChainsById[nextId] != nil {
-            state.eventChains.pendingEventChainId = nextId
-        } else {
-            state.eventChains.pendingEventChainId = nil
+        mutateUI(refreshDerived: true) {
+            guard let chain = content.eventChainsById[chainId] else { return }
+            guard let choice = chain.choices.first(where: { $0.id == choiceId }) else { return }
+            applyEffects(choice.effects)
+            addEvent(category: "decision", title: chain.title, message: choice.description)
+            state.eventChains.cooldownsByChainId[chainId] = Date().addingTimeInterval(chain.cooldownSeconds)
+            if let uniqueFlag = chain.uniqueFlagId {
+                state.flags[uniqueFlag] = true
+            }
+            if let nextId = choice.nextId, content.eventChainsById[nextId] != nil {
+                state.eventChains.pendingEventChainId = nextId
+            } else {
+                state.eventChains.pendingEventChainId = nil
+            }
         }
     }
 
     public func debugTriggerMetahumanEncounter() {
-        guard state.eventChains.pendingEventChainId == nil else { return }
-        let candidates = content.pack.eventChains.filter { $0.id.hasPrefix("meta_") }
-        guard !candidates.isEmpty else { return }
-        let now = Date()
-        let eligible = candidates.filter { chain in
-            let cooldown = state.eventChains.cooldownsByChainId[chain.id] ?? .distantPast
-            return cooldown <= now && eventChainTriggered(chain)
+        mutateUI(refreshDerived: true) {
+            guard state.eventChains.pendingEventChainId == nil else { return }
+            let candidates = content.pack.eventChains.filter { $0.id.hasPrefix("meta_") }
+            guard !candidates.isEmpty else { return }
+            let now = Date()
+            let eligible = candidates.filter { chain in
+                let cooldown = state.eventChains.cooldownsByChainId[chain.id] ?? .distantPast
+                return cooldown <= now && eventChainTriggered(chain)
+            }
+            guard let selected = eligible.randomElement() ?? candidates.randomElement() else { return }
+            state.eventChains.pendingEventChainId = selected.id
+            if !selected.effects.isEmpty {
+                applyEffects(selected.effects)
+            }
+            addEvent(category: "decision", title: selected.title, message: selected.description)
         }
-        guard let selected = eligible.randomElement() ?? candidates.randomElement() else { return }
-        state.eventChains.pendingEventChainId = selected.id
-        if !selected.effects.isEmpty {
-            applyEffects(selected.effects)
-        }
-        addEvent(category: "decision", title: selected.title, message: selected.description)
     }
     
     private func generateRandomEvent() {
@@ -1253,6 +1653,7 @@ public final class GameEngine: ObservableObject {
             return
         }
         state.stats.lastRaidAt = Date()
+        state.cohesion = min(1.0, max(0.0, state.cohesion - 0.03))
         var stolenTotal = 0.0
         for (resourceId, var resource) in state.resources {
             let theft = resource.amount * 0.08 * (1.0 - min(0.7, risk.security))
@@ -1295,9 +1696,13 @@ public final class GameEngine: ObservableObject {
     }
     
     private func computeProjectSpeedMultiplier() -> Double {
+        computeProjectSpeedMultiplier(policy: policyModifiers())
+    }
+
+    private func computeProjectSpeedMultiplier(policy: PolicyModifiers) -> Double {
         let base = 1.0
         var bonus = state.projectSpeedMultiplier
-        bonus += policyModifiers().projectSpeedBonus
+        bonus += policy.projectSpeedBonus
         for building in state.buildings {
             if let def = content.buildingsById[building.buildingId] {
                 bonus += def.projectSpeedBonus * Double(building.level)
@@ -1307,62 +1712,147 @@ public final class GameEngine: ObservableObject {
     }
     
     private func computeResourceRatesPerHour() -> [String: Double] {
-        var rates: [String: Double] = [:]
+        let now = Date()
         let policy = policyModifiers()
+        let grid = BuildingGridIndex(buildings: state.buildings)
+        return computeResourceRatesPerHour(now: now, policy: policy, grid: grid)
+    }
+
+    private func computeResourceRatesPerHour(now: Date, policy: PolicyModifiers, grid: BuildingGridIndex) -> [String: Double] {
+        var produced: [String: Double] = [:]
+        var consumed: [String: Double] = [:]
+        produced.reserveCapacity(content.pack.resources.count)
+        consumed.reserveCapacity(content.pack.resources.count)
+
         let logisticsFactor = state.logistics.logisticsFactor
         for building in state.buildings {
             guard let def = content.buildingsById[building.buildingId] else { continue }
-            if let disabledUntil = building.disabledUntil, disabledUntil > Date() {
+            if let disabledUntil = building.disabledUntil, disabledUntil > now {
                 continue
             }
             let levelMultiplier = pow(1.15, Double(building.level - 1))
-                * adjacencyMultiplier(for: building, definition: def)
-                * districtMultiplier(for: building, definition: def)
-            for (resource, amount) in def.productionPerHour {
-                rates[resource, default: 0] += amount * levelMultiplier * logisticsFactor
+                * adjacencyMultiplier(for: building, definition: def, grid: grid)
+                * districtMultiplier(for: building, definition: def, grid: grid)
+            for (resourceId, amount) in def.productionPerHour {
+                produced[resourceId, default: 0] += amount * levelMultiplier * logisticsFactor
             }
-            for (resource, amount) in def.consumptionPerHour {
-                rates[resource, default: 0] -= amount * levelMultiplier * logisticsFactor
+            for (resourceId, amount) in def.consumptionPerHour {
+                consumed[resourceId, default: 0] += amount * levelMultiplier * logisticsFactor
             }
-            for (resource, amount) in def.maintenancePerHour {
-                rates[resource, default: 0] -= amount
+            for (resourceId, amount) in def.maintenancePerHour {
+                consumed[resourceId, default: 0] += amount
             }
         }
+
         var contractMultipliers: [String: Double] = [:]
+        contractMultipliers.reserveCapacity(8)
         for (_, faction) in state.factionStates {
             for contract in faction.activeContracts {
                 guard let def = content.contractsById[contract.contractId] else { continue }
-                for (resource, amount) in def.effectsPerHour {
-                    let marketMultiplier = state.market.priceIndexByResource[resource, default: 1.0] * def.priceIndexMultiplier
-                    rates[resource, default: 0] += amount * marketMultiplier
+                for (resourceId, amount) in def.effectsPerHour {
+                    let marketMultiplier = state.market.priceIndexByResource[resourceId, default: 1.0] * def.priceIndexMultiplier
+                    produced[resourceId, default: 0] += amount * marketMultiplier
                 }
-                for (resource, amount) in def.upkeepPerHour {
-                    rates[resource, default: 0] -= amount
+                for (resourceId, amount) in def.upkeepPerHour {
+                    consumed[resourceId, default: 0] += amount
                 }
-                for (resource, multiplier) in def.multipliers {
-                    contractMultipliers[resource, default: 1.0] *= multiplier
+                for (resourceId, multiplier) in def.multipliers {
+                    contractMultipliers[resourceId, default: 1.0] *= multiplier
                 }
             }
         }
-        for (resource, multiplier) in contractMultipliers {
-            if rates[resource] != nil {
-                rates[resource]! *= multiplier
-            }
+
+        let producedKeys = Array(produced.keys)
+        for resourceId in producedKeys {
+            var multiplier = state.globalResourceMultiplier * policy.globalMultiplier
+            multiplier *= state.resourceMultipliers[resourceId, default: 1.0]
+            multiplier *= policy.resourceMultipliers[resourceId, default: 1.0]
+            multiplier *= contractMultipliers[resourceId, default: 1.0]
+            produced[resourceId, default: 0] *= multiplier
         }
-        for (resource, multiplier) in state.resourceMultipliers {
-            if rates[resource] != nil {
-                rates[resource]! *= multiplier
+
+        let cohesionFactor = 0.9 + (state.cohesion * 0.2)
+        let biosphereFactor = 0.85 + (state.biosphere * 0.3)
+        for resourceId in Array(produced.keys) {
+            var multiplier = cohesionFactor
+            if resourceId == "food" || resourceId == "knowledge" {
+                multiplier *= biosphereFactor
             }
+            produced[resourceId, default: 0] *= multiplier
         }
-        for (resource, multiplier) in policy.resourceMultipliers {
-            if rates[resource] != nil {
-                rates[resource]! *= multiplier
-            }
-        }
-        for (resourceId, _) in rates {
-            rates[resourceId, default: 0] *= (state.globalResourceMultiplier * policy.globalMultiplier)
+
+        var rates: [String: Double] = [:]
+        rates.reserveCapacity(max(produced.count, consumed.count))
+        let keys = Set(produced.keys).union(consumed.keys)
+        for key in keys {
+            rates[key] = produced[key, default: 0] - consumed[key, default: 0]
         }
         return rates
+    }
+
+    private struct BuildingGridIndex {
+        private let buildings: [BuildingInstance]
+        private var indexByCoord: [UInt64: Int]
+
+        init(buildings: [BuildingInstance]) {
+            self.buildings = buildings
+            self.indexByCoord = Dictionary(minimumCapacity: max(0, buildings.count * 2))
+            for (index, building) in buildings.enumerated() {
+                indexByCoord[Self.coordKey(x: building.x, y: building.y)] = index
+            }
+        }
+
+        func buildingAt(x: Int, y: Int) -> BuildingInstance? {
+            guard let index = indexByCoord[Self.coordKey(x: x, y: y)] else { return nil }
+            guard buildings.indices.contains(index) else { return nil }
+            return buildings[index]
+        }
+
+        private static func coordKey(x: Int, y: Int) -> UInt64 {
+#if DEBUG
+            precondition(x >= Int(Int32.min) && x <= Int(Int32.max))
+            precondition(y >= Int(Int32.min) && y <= Int(Int32.max))
+#endif
+            let ux = UInt32(bitPattern: Int32(x))
+            let uy = UInt32(bitPattern: Int32(y))
+            return (UInt64(ux) << 32) | UInt64(uy)
+        }
+    }
+
+    private func adjacencyMultiplier(for building: BuildingInstance, definition: BuildingDefinition, grid: BuildingGridIndex) -> Double {
+        guard let bonus = definition.adjacencyBonus else { return 1.0 }
+        let neighbors = [
+            (building.x + 1, building.y),
+            (building.x - 1, building.y),
+            (building.x, building.y + 1),
+            (building.x, building.y - 1)
+        ]
+        for (x, y) in neighbors {
+            if let neighbor = grid.buildingAt(x: x, y: y),
+               neighbor.buildingId == bonus.requiresBuildingId {
+                return bonus.multiplier
+            }
+        }
+        return 1.0
+    }
+
+    private func districtMultiplier(for building: BuildingInstance, definition: BuildingDefinition, grid: BuildingGridIndex) -> Double {
+        guard let tag = definition.districtTag, !tag.isEmpty else { return 1.0 }
+        let neighbors = [
+            (building.x + 1, building.y),
+            (building.x - 1, building.y),
+            (building.x, building.y + 1),
+            (building.x, building.y - 1)
+        ]
+        var matches = 0
+        for (x, y) in neighbors {
+            if let neighbor = grid.buildingAt(x: x, y: y),
+               let neighborDef = content.buildingsById[neighbor.buildingId],
+               neighborDef.districtTag == tag {
+                matches += 1
+            }
+        }
+        return matches >= 2 ? definition.districtBonus : 1.0
     }
 
     private func adjacencyMultiplier(for building: BuildingInstance, definition: BuildingDefinition) -> Double {
@@ -1423,15 +1913,15 @@ public final class GameEngine: ObservableObject {
         return caps
     }
     
-    private func computeLogisticsState(policy: PolicyModifiers) -> LogisticsState {
+    private func computeLogisticsState(policy: PolicyModifiers, grid: BuildingGridIndex) -> LogisticsState {
         let baseCapacity = 100.0
         var capacity = baseCapacity + state.logisticsBonus + policy.logisticsBonus
         var demand = 0.0
         for building in state.buildings {
             guard let def = content.buildingsById[building.buildingId] else { continue }
             let levelMultiplier = pow(1.1, Double(building.level - 1))
-                * adjacencyMultiplier(for: building, definition: def)
-                * districtMultiplier(for: building, definition: def)
+                * adjacencyMultiplier(for: building, definition: def, grid: grid)
+                * districtMultiplier(for: building, definition: def, grid: grid)
             capacity += def.logisticsCapAdd * levelMultiplier
             let prod = def.productionPerHour.values.reduce(0, +) * levelMultiplier
             let cons = def.consumptionPerHour.values.reduce(0, +) * levelMultiplier
@@ -1453,7 +1943,10 @@ public final class GameEngine: ObservableObject {
     }
 
     private func computeRiskState(policy: PolicyModifiers) -> RiskState {
-        let caps = computeResourceCaps(policy: policy)
+        computeRiskState(policy: policy, caps: computeResourceCaps(policy: policy))
+    }
+
+    private func computeRiskState(policy: PolicyModifiers, caps: [String: Double]) -> RiskState {
         var exposure = 0.0
         var count = 0.0
         for (resourceId, resource) in state.resources {
@@ -1477,7 +1970,8 @@ public final class GameEngine: ObservableObject {
         }
         security += state.securityBonus + policy.securityBonus
         security = min(1.0, security / 100.0)
-        let hostility = hostilityLevel()
+        let baseHostility = hostilityLevel()
+        let hostility = min(1.0, max(0.1, baseHostility + (0.5 - state.cohesion) * 0.3))
         let baseRate = 0.3
         let value = (exposure - security) * hostility * 4.0
         let raidChance = (1.0 / (1.0 + exp(-value))) * baseRate
@@ -1496,92 +1990,103 @@ public final class GameEngine: ObservableObject {
     }
     
     public func startProject(projectId: String, source: ProjectSource) {
-        guard let project = content.projectsById[projectId] else { return }
-        if let family = content.pack.megaprojectFamilies.first(where: { $0.choices.contains(projectId) }) {
-            if family.exclusive,
-               let chosen = state.chosenMegaprojectFamily[family.familyId],
-               chosen != projectId {
-                return
+        mutateUI(refreshDerived: true) {
+            guard let project = content.projectsById[projectId] else { return }
+            guard state.unlockedProjectIds.contains(projectId) else { return }
+            if let family = content.pack.megaprojectFamilies.first(where: { $0.choices.contains(projectId) }) {
+                if family.exclusive,
+                   let chosen = state.chosenMegaprojectFamily[family.familyId],
+                   chosen != projectId {
+                    return
+                }
+                state.chosenMegaprojectFamily[family.familyId] = projectId
             }
-            state.chosenMegaprojectFamily[family.familyId] = projectId
+            guard availableCrewCount() >= project.crewRequired else { return }
+            guard canAfford(costs: project.costs) else { return }
+            spend(costs: project.costs)
+            state.queuedProjects.removeAll { $0.projectId == projectId }
+            let duration = project.durationSeconds / max(0.1, computeProjectSpeedMultiplier())
+            let instance = ProjectInstance(
+                id: UUID(),
+                projectId: projectId,
+                remainingSeconds: duration,
+                totalSeconds: duration,
+                crewRequired: project.crewRequired,
+                startedAt: Date(),
+                source: source,
+                associatedBuildingId: nil
+            )
+            state.activeProjects.append(instance)
         }
-        guard availableCrewCount() >= project.crewRequired else { return }
-        guard canAfford(costs: project.costs) else { return }
-        spend(costs: project.costs)
-        state.queuedProjects.removeAll { $0.projectId == projectId }
-        let duration = project.durationSeconds / max(0.1, computeProjectSpeedMultiplier())
-        let instance = ProjectInstance(
-            id: UUID(),
-            projectId: projectId,
-            remainingSeconds: duration,
-            totalSeconds: duration,
-            crewRequired: project.crewRequired,
-            startedAt: Date(),
-            source: source,
-            associatedBuildingId: nil
-        )
-        state.activeProjects.append(instance)
     }
 
     public func queueProject(projectId: String, source: ProjectSource) {
-        guard let project = content.projectsById[projectId] else { return }
-        if projectQueueBlockReason(project) != nil {
-            return
+        mutateUI {
+            guard let project = content.projectsById[projectId] else { return }
+            if projectQueueBlockReason(project) != nil {
+                return
+            }
+            let instance = QueuedProject(id: UUID(), projectId: projectId, queuedAt: Date(), source: source)
+            state.queuedProjects.append(instance)
         }
-        let instance = QueuedProject(id: UUID(), projectId: projectId, queuedAt: Date(), source: source)
-        state.queuedProjects.append(instance)
     }
 
     public func unqueueProject(id: UUID) {
-        state.queuedProjects.removeAll { $0.id == id }
+        mutateUI {
+            state.queuedProjects.removeAll { $0.id == id }
+        }
     }
     
     public func startBuilding(buildingId: String, at position: (Int, Int)) {
-        guard let def = content.buildingsById[buildingId] else { return }
-        guard availableCrewCount() >= 1 else { return }
-        guard canAfford(costs: def.baseCost) else { return }
-        spend(costs: def.baseCost)
-        let duration = def.buildTimeSeconds / max(0.1, computeProjectSpeedMultiplier())
-        let completionDate = Date().addingTimeInterval(duration)
-        let instance = ProjectInstance(
-            id: UUID(),
-            projectId: "build:\(buildingId)",
-            remainingSeconds: duration,
-            totalSeconds: duration,
-            crewRequired: 1,
-            startedAt: Date(),
-            source: .buildingConstruction,
-            associatedBuildingId: UUID()
-        )
-        state.activeProjects.append(instance)
-        let building = BuildingInstance(id: instance.associatedBuildingId ?? UUID(), buildingId: buildingId, level: 1, x: position.0, y: position.1, disabledUntil: completionDate)
-        state.buildings.append(building)
-        addEvent(category: "construction", title: "Construction Started", message: "\(def.name) is under construction.")
+        mutateUI(refreshDerived: true) {
+            guard let def = content.buildingsById[buildingId] else { return }
+            guard availableCrewCount() >= 1 else { return }
+            guard canAfford(costs: def.baseCost) else { return }
+            spend(costs: def.baseCost)
+            let duration = def.buildTimeSeconds / max(0.1, computeProjectSpeedMultiplier())
+            let completionDate = Date().addingTimeInterval(duration)
+            let instance = ProjectInstance(
+                id: UUID(),
+                projectId: "build:\(buildingId)",
+                remainingSeconds: duration,
+                totalSeconds: duration,
+                crewRequired: 1,
+                startedAt: Date(),
+                source: .buildingConstruction,
+                associatedBuildingId: UUID()
+            )
+            state.activeProjects.append(instance)
+            let building = BuildingInstance(id: instance.associatedBuildingId ?? UUID(), buildingId: buildingId, level: 1, x: position.0, y: position.1, disabledUntil: completionDate)
+            state.buildings.append(building)
+            addEvent(category: "construction", title: "Construction Started", message: "\(def.name) is under construction.")
+        }
     }
     
     public func upgradeBuilding(_ building: BuildingInstance) {
-        guard let def = content.buildingsById[building.buildingId] else { return }
-        guard building.level < def.maxLevel else { return }
-        guard availableCrewCount() >= 1 else { return }
-        let cost = scaledCost(base: def.baseCost, growth: def.costGrowth, level: building.level + 1)
-        guard canAfford(costs: cost) else { return }
-        spend(costs: cost)
-        let duration = def.buildTimeSeconds * pow(1.3, Double(building.level)) / max(0.1, computeProjectSpeedMultiplier())
-        let instance = ProjectInstance(
-            id: UUID(),
-            projectId: "upgrade:\(building.buildingId)",
-            remainingSeconds: duration,
-            totalSeconds: duration,
-            crewRequired: 1,
-            startedAt: Date(),
-            source: .buildingUpgrade,
-            associatedBuildingId: building.id
-        )
-        state.activeProjects.append(instance)
-        if let index = state.buildings.firstIndex(where: { $0.id == building.id }) {
-            state.buildings[index].disabledUntil = Date().addingTimeInterval(duration)
+        mutateUI(refreshDerived: true) {
+            guard let def = content.buildingsById[building.buildingId] else { return }
+            guard building.level < def.maxLevel else { return }
+            guard availableCrewCount() >= 1 else { return }
+            let cost = scaledCost(base: def.baseCost, growth: def.costGrowth, level: building.level + 1)
+            guard canAfford(costs: cost) else { return }
+            spend(costs: cost)
+            let duration = def.buildTimeSeconds * pow(1.3, Double(building.level)) / max(0.1, computeProjectSpeedMultiplier())
+            let instance = ProjectInstance(
+                id: UUID(),
+                projectId: "upgrade:\(building.buildingId)",
+                remainingSeconds: duration,
+                totalSeconds: duration,
+                crewRequired: 1,
+                startedAt: Date(),
+                source: .buildingUpgrade,
+                associatedBuildingId: building.id
+            )
+            state.activeProjects.append(instance)
+            if let index = state.buildings.firstIndex(where: { $0.id == building.id }) {
+                state.buildings[index].disabledUntil = Date().addingTimeInterval(duration)
+            }
+            addEvent(category: "construction", title: "Upgrade Started", message: "\(def.name) upgrade initiated.")
         }
-        addEvent(category: "construction", title: "Upgrade Started", message: "\(def.name) upgrade initiated.")
     }
     
     private func complete(project: ProjectInstance) {
@@ -1678,9 +2183,21 @@ public final class GameEngine: ObservableObject {
                 if let amount = effect.amount {
                     state.logisticsBonus += amount
                 }
+            case "add_cohesion":
+                if let amount = effect.amount {
+                    state.cohesion = min(1.0, max(0.0, state.cohesion + amount))
+                }
+            case "add_biosphere":
+                if let amount = effect.amount {
+                    state.biosphere = min(1.0, max(0.0, state.biosphere + amount))
+                }
             case "add_offline_cap":
                 if let amount = effect.amount {
                     state.settings.offlineCapDays += Int(amount)
+                }
+            case "add_collector_capacity_hours":
+                if let amount = effect.amount {
+                    state.collector.capacityHours = max(0, state.collector.capacityHours + amount)
                 }
             case "unlock_catalyst":
                 state.catalyst.availableAt = Date()
@@ -1758,28 +2275,34 @@ public final class GameEngine: ObservableObject {
     }
     
     public func activateCatalyst(for projectId: UUID) {
-        guard Date() >= state.catalyst.availableAt else { return }
-        let boostDuration = 3600.0
-        state.catalyst.activeProjectId = projectId
-        state.catalyst.activeUntil = Date().addingTimeInterval(boostDuration)
-        state.catalyst.availableAt = Date().addingTimeInterval(86_400.0 - Double(state.catalyst.level) * 3_600.0)
+        mutateUI {
+            guard Date() >= state.catalyst.availableAt else { return }
+            let boostDuration = 3600.0
+            state.catalyst.activeProjectId = projectId
+            state.catalyst.activeUntil = Date().addingTimeInterval(boostDuration)
+            state.catalyst.availableAt = Date().addingTimeInterval(86_400.0 - Double(state.catalyst.level) * 3_600.0)
+        }
     }
     
     public func useChronoShard(on projectId: UUID) {
-        guard state.chronoShards > 0 else { return }
-        guard let index = state.activeProjects.firstIndex(where: { $0.id == projectId }) else { return }
-        state.activeProjects[index].remainingSeconds = max(0, state.activeProjects[index].remainingSeconds - 3600)
-        state.chronoShards -= 1
+        mutateUI {
+            guard state.chronoShards > 0 else { return }
+            guard let index = state.activeProjects.firstIndex(where: { $0.id == projectId }) else { return }
+            state.activeProjects[index].remainingSeconds = max(0, state.activeProjects[index].remainingSeconds - 3600)
+            state.chronoShards -= 1
+        }
     }
     
     public func startContract(_ contract: ContractDefinition) {
-        guard var faction = state.factionStates[contract.factionId] else { return }
-        guard faction.relationship >= contract.requiredRelationship else { return }
-        guard !faction.activeContracts.contains(where: { $0.contractId == contract.id }) else { return }
-        let instance = ContractInstance(id: UUID(), contractId: contract.id, factionId: contract.factionId, remainingSeconds: contract.durationSeconds, upkeepMissed: false)
-        faction.activeContracts.append(instance)
-        state.factionStates[contract.factionId] = faction
-        addEvent(category: "contract", title: "Contract Initiated", message: contract.name)
+        mutateUI(refreshDerived: true) {
+            guard var faction = state.factionStates[contract.factionId] else { return }
+            guard faction.relationship >= contract.requiredRelationship else { return }
+            guard !faction.activeContracts.contains(where: { $0.contractId == contract.id }) else { return }
+            let instance = ContractInstance(id: UUID(), contractId: contract.id, factionId: contract.factionId, remainingSeconds: contract.durationSeconds, upkeepMissed: false)
+            faction.activeContracts.append(instance)
+            state.factionStates[contract.factionId] = faction
+            addEvent(category: "contract", title: "Contract Initiated", message: contract.name)
+        }
     }
 
     public func dispatchBlockReason(_ dispatch: DispatchDefinition) -> String? {
@@ -1788,6 +2311,12 @@ public final class GameEngine: ObservableObject {
             return "Dispatch locked"
         }
         if currentEra.sortOrder < requiredEra.sortOrder {
+            return "Dispatch locked"
+        }
+        if let flag = dispatch.requiresFlag, state.flags[flag] != true {
+            return "Dispatch locked"
+        }
+        if let flag = dispatch.requiresFlagNotSet, state.flags[flag] == true {
             return "Dispatch locked"
         }
         if availableCrewCount() < dispatch.requiredCrew {
@@ -1800,69 +2329,75 @@ public final class GameEngine: ObservableObject {
     }
 
     public func startDispatch(dispatchId: String) {
-        guard let dispatch = content.dispatchesById[dispatchId] else { return }
-        if dispatchBlockReason(dispatch) != nil {
-            return
+        mutateUI(refreshDerived: true) {
+            guard let dispatch = content.dispatchesById[dispatchId] else { return }
+            if dispatchBlockReason(dispatch) != nil {
+                return
+            }
+            let instance = DispatchInstance(
+                id: UUID(),
+                dispatchId: dispatchId,
+                remainingSeconds: dispatch.durationSeconds,
+                startedAt: Date(),
+                status: .active
+            )
+            state.dispatches.append(instance)
+            addEvent(category: "dispatch", title: "Dispatch Started", message: dispatch.name)
         }
-        let instance = DispatchInstance(
-            id: UUID(),
-            dispatchId: dispatchId,
-            remainingSeconds: dispatch.durationSeconds,
-            startedAt: Date(),
-            status: .active
-        )
-        state.dispatches.append(instance)
-        addEvent(category: "dispatch", title: "Dispatch Started", message: dispatch.name)
     }
 
     public func collectDispatch(id: UUID) {
-        guard let index = state.dispatches.firstIndex(where: { $0.id == id }) else { return }
-        let instance = state.dispatches[index]
-        guard let def = content.dispatchesById[instance.dispatchId] else { return }
-        if instance.status == .ready || instance.status == .failed {
-            let rewardMultiplier = instance.status == .failed ? 0.5 : 1.0
-            for (resourceId, amount) in def.rewards {
-                if var resource = state.resources[resourceId] {
-                    let cap = computeResourceCaps(policy: policyModifiers())[resourceId, default: resource.cap]
-                    let gained = amount * rewardMultiplier
-                    resource.amount = min(cap, resource.amount + gained)
-                    state.resources[resourceId] = resource
-                    state.stats.totalProducedByResource[resourceId, default: 0] += gained
-                    state.stats.dispatchRewardsByResource[resourceId, default: 0] += gained
+        mutateUI(refreshDerived: true) {
+            guard let index = state.dispatches.firstIndex(where: { $0.id == id }) else { return }
+            let instance = state.dispatches[index]
+            guard let def = content.dispatchesById[instance.dispatchId] else { return }
+            if instance.status == .ready || instance.status == .failed {
+                let rewardMultiplier = instance.status == .failed ? 0.5 : 1.0
+                for (resourceId, amount) in def.rewards {
+                    if var resource = state.resources[resourceId] {
+                        let cap = computeResourceCaps(policy: policyModifiers())[resourceId, default: resource.cap]
+                        let gained = amount * rewardMultiplier
+                        resource.amount = min(cap, resource.amount + gained)
+                        state.resources[resourceId] = resource
+                        state.stats.totalProducedByResource[resourceId, default: 0] += gained
+                        state.stats.dispatchRewardsByResource[resourceId, default: 0] += gained
+                    }
                 }
+                if instance.status == .ready {
+                    state.stats.dispatchesCompleted += 1
+                }
+                addEvent(category: "dispatch", title: "Dispatch Collected", message: def.name)
+                state.dispatches.remove(at: index)
             }
-            if instance.status == .ready {
-                state.stats.dispatchesCompleted += 1
-            }
-            addEvent(category: "dispatch", title: "Dispatch Collected", message: def.name)
-            state.dispatches.remove(at: index)
         }
     }
 
     public func collectCache() {
-        let policy = policyModifiers()
-        let caps = computeResourceCaps(policy: policy)
-        var collectedAny = false
-        for (resourceId, stored) in state.collector.storedByResource {
-            guard stored > 0 else { continue }
-            if var resource = state.resources[resourceId] {
-                let cap = caps[resourceId, default: resource.cap]
-                let nextAmount = min(cap, resource.amount + stored)
-                let waste = max(0, resource.amount + stored - cap)
-                resource.amount = nextAmount
-                state.resources[resourceId] = resource
-                if waste > 0 {
-                    state.stats.totalWastedByResource[resourceId, default: 0] += waste
+        mutateUI(refreshDerived: true) {
+            let policy = policyModifiers()
+            let caps = computeResourceCaps(policy: policy)
+            var collectedAny = false
+            for (resourceId, stored) in state.collector.storedByResource {
+                guard stored > 0 else { continue }
+                if var resource = state.resources[resourceId] {
+                    let cap = caps[resourceId, default: resource.cap]
+                    let nextAmount = min(cap, resource.amount + stored)
+                    let waste = max(0, resource.amount + stored - cap)
+                    resource.amount = nextAmount
+                    state.resources[resourceId] = resource
+                    if waste > 0 {
+                        state.stats.totalWastedByResource[resourceId, default: 0] += waste
+                    }
+                    collectedAny = true
                 }
-                collectedAny = true
             }
-        }
-        if collectedAny {
-            state.collector.lastCollectedAt = Date()
-            for key in state.collector.storedByResource.keys {
-                state.collector.storedByResource[key] = 0
+            if collectedAny {
+                state.collector.lastCollectedAt = Date()
+                for key in state.collector.storedByResource.keys {
+                    state.collector.storedByResource[key] = 0
+                }
+                addEvent(category: "system", title: "Cache Collected", message: "Resource cache transferred to storage.")
             }
-            addEvent(category: "system", title: "Cache Collected", message: "Resource cache transferred to storage.")
         }
     }
     
@@ -1924,76 +2459,114 @@ public final class GameEngine: ObservableObject {
     }
 
     public func simulate(seconds: Double, now: Date? = nil, isOffline: Bool = true) {
-        let next = now ?? state.lastTickAt.addingTimeInterval(seconds)
-        advance(by: seconds, now: next, isOffline: isOffline)
+        mutateUI {
+            let next = now ?? state.lastTickAt.addingTimeInterval(seconds)
+            advance(by: seconds, now: next, isOffline: isOffline)
+        }
     }
 
     func debugSetResource(_ id: String, amount: Double, cap: Double? = nil) {
-        if var resource = state.resources[id] {
-            resource.amount = amount
-            if let cap {
-                resource.cap = cap
+        mutateUI {
+            if var resource = state.resources[id] {
+                resource.amount = amount
+                if let cap {
+                    resource.cap = cap
+                }
+                state.resources[id] = resource
             }
-            state.resources[id] = resource
         }
     }
 
     func debugAddBuilding(buildingId: String, x: Int, y: Int, level: Int = 1) {
-        let building = BuildingInstance(id: UUID(), buildingId: buildingId, level: level, x: x, y: y, disabledUntil: nil)
-        state.buildings.append(building)
+        mutateUI {
+            let building = BuildingInstance(id: UUID(), buildingId: buildingId, level: level, x: x, y: y, disabledUntil: nil)
+            state.buildings.append(building)
+        }
     }
 
     func debugSetNextEventInSeconds(_ value: Double) {
-        state.nextEventInSeconds = value
+        mutateUI {
+            state.nextEventInSeconds = value
+        }
     }
 
     func debugSetFactionRelationship(_ id: String, value: Int) {
-        if var faction = state.factionStates[id] {
-            faction.relationship = value
-            state.factionStates[id] = faction
+        mutateUI {
+            if var faction = state.factionStates[id] {
+                faction.relationship = value
+                state.factionStates[id] = faction
+            }
         }
     }
 
     func debugSetFlag(_ id: String, value: Bool) {
-        state.flags[id] = value
+        mutateUI {
+            state.flags[id] = value
+        }
+    }
+
+    func debugUpdateState(_ update: (inout GameState) -> Void) {
+        mutateUI {
+            update(&state)
+            refreshDerived(now: Date())
+        }
+    }
+
+    func debugRunMigration() {
+        mutateUI {
+            migrateIfNeeded()
+            refreshDerived(now: Date())
+        }
     }
 
     func debugCompleteProject(_ id: String) {
-        if !state.completedProjectIds.contains(id) {
-            state.completedProjectIds.append(id)
+        mutateUI {
+            if !state.completedProjectIds.contains(id) {
+                state.completedProjectIds.append(id)
+            }
         }
     }
 
     func debugSetTotalProduced(resourceId: String, amount: Double) {
-        state.stats.totalProducedByResource[resourceId] = amount
+        mutateUI {
+            state.stats.totalProducedByResource[resourceId] = amount
+        }
     }
 
     func debugSetContractRemaining(contractId: String, seconds: Double) {
-        for (factionId, var faction) in state.factionStates {
-            for index in faction.activeContracts.indices {
-                if faction.activeContracts[index].contractId == contractId {
-                    faction.activeContracts[index].remainingSeconds = seconds
+        mutateUI {
+            for (factionId, var faction) in state.factionStates {
+                for index in faction.activeContracts.indices {
+                    if faction.activeContracts[index].contractId == contractId {
+                        faction.activeContracts[index].remainingSeconds = seconds
+                    }
                 }
+                state.factionStates[factionId] = faction
             }
-            state.factionStates[factionId] = faction
         }
     }
 
     func debugUnlockProject(_ id: String) {
-        if !state.unlockedProjectIds.contains(id) {
-            state.unlockedProjectIds.append(id)
+        mutateUI {
+            if !state.unlockedProjectIds.contains(id) {
+                state.unlockedProjectIds.append(id)
+            }
         }
     }
 
     func debugAddDomainPoints(domainId: String, amount: Int) {
-        state.domainState.pointsByDomain[domainId, default: 0] += amount
-        if let domain = content.domainsById[domainId] {
-            unlockDomainTiers(for: domain)
+        mutateUI {
+            state.domainState.pointsByDomain[domainId, default: 0] += amount
+            if let domain = content.domainsById[domainId] {
+                unlockDomainTiers(for: domain)
+            }
         }
     }
 
     func debugSetCollectorStored(resourceId: String, amount: Double) {
-        state.collector.storedByResource[resourceId] = amount
+        mutateUI {
+            state.collector.storedByResource[resourceId] = amount
+        }
     }
     
     private static func defaultState(content: ContentCatalog) -> GameState {
@@ -2051,6 +2624,8 @@ public final class GameEngine: ObservableObject {
             securityBonus: 0,
             logisticsBonus: 0,
             risk: RiskState(exposure: 0, security: 0, hostility: 0.4, raidChancePerHour: 0),
+            cohesion: 0.6,
+            biosphere: 0.6,
             market: MarketState(priceIndexByResource: content.pack.resources.reduce(into: [:]) { $0[$1.id] = 1.0 }, lastUpdatedAt: now),
             logistics: LogisticsState(logisticsCapacity: 100, logisticsDemand: 0, logisticsFactor: 1),
             policyState: PolicyState(activePoliciesBySlot: [:], cooldownsByPolicyId: [:]),
@@ -2070,47 +2645,22 @@ public final class GameEngine: ObservableObject {
             gridSize: 20,
             pendingTimeTravelWarning: false,
             timeTravelClampUntil: nil,
-            settings: SettingsState(offlineCapDays: 7, notificationsEnabled: true, colorblindMode: false, use3DPreviews: true)
+            settings: SettingsState(offlineCapDays: 7, notificationsEnabled: true, colorblindMode: false, use3DPreviews: true, guidanceLevel: .high)
         )
     }
     
-    private static func computeDerived(state: GameState, content: ContentCatalog) -> DerivedState {
-        var caps: [String: Double] = [:]
-        for resource in content.pack.resources {
-            caps[resource.id] = resource.baseCap
-        }
-        var rates: [String: Double] = [:]
-        for building in state.buildings {
-            guard let def = content.buildingsById[building.buildingId] else { continue }
-            let levelMultiplier = pow(1.15, Double(building.level - 1)) * (def.adjacencyBonus == nil ? 1.0 : 1.0)
-            for (resource, amount) in def.productionPerHour {
-                rates[resource, default: 0] += amount * levelMultiplier * state.logistics.logisticsFactor
-            }
-            for (resource, amount) in def.consumptionPerHour {
-                rates[resource, default: 0] -= amount * levelMultiplier * state.logistics.logisticsFactor
-            }
-            for (resource, amount) in def.maintenancePerHour {
-                rates[resource, default: 0] -= amount
-            }
-            for (resource, amount) in def.storageCapAdd {
-                caps[resource, default: 0] += amount * levelMultiplier
-            }
-        }
-        for (resource, amount) in state.storageAdditions {
-            caps[resource, default: 0] += amount
-        }
-        for (resource, multiplier) in state.resourceMultipliers {
-            if rates[resource] != nil {
-                rates[resource]! *= multiplier
-            }
-        }
-        for (resourceId, _) in rates {
-            rates[resourceId, default: 0] *= state.globalResourceMultiplier
-        }
+    private static func computeDerived(
+        state: GameState,
+        content: ContentCatalog,
+        caps: [String: Double],
+        ratesPerHour: [String: Double],
+        projectSpeedMultiplier: Double
+    ) -> DerivedState {
         var timeToCap: [String: Double?] = [:]
+        timeToCap.reserveCapacity(state.resources.count)
         for (resourceId, resource) in state.resources {
             let cap = caps[resourceId, default: resource.cap]
-            let rate = rates[resourceId, default: 0]
+            let rate = ratesPerHour[resourceId, default: 0]
             if rate > 0 {
                 timeToCap[resourceId] = max(0, (cap - resource.amount) / rate)
             } else {
@@ -2125,15 +2675,16 @@ public final class GameEngine: ObservableObject {
         }
         let usedCrew = usedProjects + usedDispatches
         let available = max(0, state.crewCount - usedCrew)
-        let risk = state.risk
         return DerivedState(
-            resourceRatesPerHour: rates,
+            resourceRatesPerHour: ratesPerHour,
             resourceCaps: caps,
             timeToCapHours: timeToCap,
             activeCrewCount: usedCrew,
             availableCrewCount: available,
-            projectSpeedMultiplier: 1.0 + state.projectSpeedMultiplier,
-            risk: risk,
+            projectSpeedMultiplier: projectSpeedMultiplier,
+            risk: state.risk,
+            cohesion: state.cohesion,
+            biosphere: state.biosphere,
             logistics: state.logistics,
             averageEfficiency: state.stats.lastEfficiency,
             marketIndexByResource: state.market.priceIndexByResource

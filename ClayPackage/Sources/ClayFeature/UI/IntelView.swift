@@ -2,6 +2,8 @@ import SwiftUI
 
 struct IntelView: View {
     @EnvironmentObject private var engine: GameEngine
+    @Environment(\.eraTheme) private var eraTheme
+    @State private var activeCategories: Set<String> = []
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -12,29 +14,33 @@ struct IntelView: View {
                     Text("Force Metahuman")
                 }
             }
-            HStack {
-                if let pendingId = engine.state.eventChains.pendingEventChainId,
-                   let chain = engine.content.eventChainsById[pendingId] {
-                    if let meta = metahumanFor(chain: chain) {
-                        MetahumanDecisionPanel(chain: chain, metahuman: meta)
-                            .padding(.horizontal, 12)
-                    } else {
-                        DecisionPanel(chain: chain)
-                            .padding(.horizontal, 12)
-                    }
-                }
-            }
+            IntelAlertBanner()
             HStack(spacing: 12) {
-                RiskCard(title: "Exposure", value: engine.derived.risk.exposure, accent: ClayTheme.accentWarm)
-                RiskCard(title: "Security", value: engine.derived.risk.security, accent: ClayTheme.good)
-                RiskCard(title: "Hostility", value: engine.derived.risk.hostility, accent: ClayTheme.bad)
-                RiskCard(title: "Raid / h", value: engine.derived.risk.raidChancePerHour, accent: ClayTheme.accent)
+                RiskCard(title: "Exposure", value: engine.derived.risk.exposure, accent: eraTheme.accentWarm)
+                RiskCard(title: "Security", value: engine.derived.risk.security, accent: eraTheme.good)
+                RiskCard(title: "Hostility", value: engine.derived.risk.hostility, accent: eraTheme.bad)
+                RiskCard(title: "Raid / h", value: engine.derived.risk.raidChancePerHour, accent: eraTheme.accent)
             }
             .padding(.horizontal, 12)
             HStack(spacing: 12) {
-                MetricCard(title: "Efficiency", value: engine.derived.averageEfficiency, accent: ClayTheme.accent)
-                MetricCard(title: "Logistics", value: engine.derived.logistics.logisticsFactor, accent: ClayTheme.good)
-                MetricCard(title: "Market", value: marketIndex(), accent: ClayTheme.accentWarm)
+                MetricCard(title: "Efficiency", value: engine.derived.averageEfficiency, accent: eraTheme.accent)
+                MetricCard(title: "Logistics", value: engine.derived.logistics.logisticsFactor, accent: eraTheme.good)
+                MetricCard(title: "Market", value: marketIndex(), accent: eraTheme.accentWarm)
+            }
+            .padding(.horizontal, 12)
+            HStack(spacing: 12) {
+                MetricCard(
+                    title: "Cohesion",
+                    value: engine.state.cohesion,
+                    accent: ClayTheme.good,
+                    displayValue: "\(Int(engine.state.cohesion * 100))%"
+                )
+                MetricCard(
+                    title: "Biosphere",
+                    value: engine.state.biosphere,
+                    accent: ClayTheme.accentWarm,
+                    displayValue: "\(Int(engine.state.biosphere * 100))%"
+                )
             }
             .padding(.horizontal, 12)
             ResourceForecastPanel()
@@ -42,7 +48,8 @@ struct IntelView: View {
             Divider()
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(engine.state.events) { event in
+                    IntelCategoryFilter(activeCategories: $activeCategories)
+                    ForEach(filteredEvents()) { event in
                         IntelEventCard(event: event)
                     }
                 }
@@ -62,10 +69,75 @@ struct IntelView: View {
         let id = chain.id.replacingOccurrences(of: "meta_", with: "")
         return engine.content.metahumansById[id]
     }
+
+    private func filteredEvents() -> [EventLogEntry] {
+        guard !activeCategories.isEmpty else { return engine.state.events }
+        return engine.state.events.filter { activeCategories.contains($0.category) }
+    }
+}
+
+private struct IntelAlertBanner: View {
+    @EnvironmentObject private var engine: GameEngine
+
+    var body: some View {
+        if let pendingId = engine.state.eventChains.pendingEventChainId,
+           let chain = engine.content.eventChainsById[pendingId] {
+            if let meta = metahumanFor(chain: chain) {
+                MetahumanDecisionPanel(chain: chain, metahuman: meta)
+                    .padding(.horizontal, 12)
+            } else {
+                DecisionPanel(chain: chain)
+                    .padding(.horizontal, 12)
+            }
+        } else {
+            GuidanceBanner(
+                title: "All Clear",
+                message: "No decisions pending. Keep an eye on risk and market shifts.",
+                priorityColor: ClayTheme.good,
+                actionTitle: nil,
+                action: nil
+            )
+            .padding(.horizontal, 12)
+        }
+    }
+
+    private func metahumanFor(chain: EventChainDefinition) -> MetahumanDefinition? {
+        guard chain.id.hasPrefix("meta_") else { return nil }
+        let id = chain.id.replacingOccurrences(of: "meta_", with: "")
+        return engine.content.metahumansById[id]
+    }
+}
+
+private struct IntelCategoryFilter: View {
+    @Binding var activeCategories: Set<String>
+    private let categories = ["raid", "market", "decision", "construction", "project", "era", "domain", "system", "contract", "dispatch"]
+
+    var body: some View {
+        HStack(spacing: 6) {
+            ClayButton(isEnabled: true, active: activeCategories.isEmpty) {
+                activeCategories.removeAll()
+            } label: {
+                Text("All")
+            }
+            ForEach(categories, id: \.self) { category in
+                let enabled = activeCategories.contains(category)
+                ClayButton(isEnabled: true, active: enabled) {
+                    if enabled {
+                        activeCategories.remove(category)
+                    } else {
+                        activeCategories.insert(category)
+                    }
+                } label: {
+                    Text(category.capitalized)
+                }
+            }
+        }
+    }
 }
 
 private struct IntelEventCard: View {
     @EnvironmentObject private var engine: GameEngine
+    @Environment(\.eraTheme) private var eraTheme
     let event: EventLogEntry
 
     var body: some View {
@@ -117,16 +189,16 @@ private struct IntelEventCard: View {
 
     private func eventAccent(for category: String) -> Color {
         switch category {
-        case "raid": return ClayTheme.bad
-        case "market": return ClayTheme.accentWarm
-        case "decision": return ClayTheme.accent
-        case "construction", "project": return ClayTheme.accent
-        case "era": return ClayTheme.good
-        case "domain": return ClayTheme.accentWarm
-        case "system": return ClayTheme.muted
-        case "contract", "diplomacy": return ClayTheme.accent
-        case "dispatch": return ClayTheme.good
-        default: return ClayTheme.accent
+        case "raid": return eraTheme.bad
+        case "market": return eraTheme.accentWarm
+        case "decision": return eraTheme.accent
+        case "construction", "project": return eraTheme.accent
+        case "era": return eraTheme.good
+        case "domain": return eraTheme.accentWarm
+        case "system": return eraTheme.muted
+        case "contract", "diplomacy": return eraTheme.accent
+        case "dispatch": return eraTheme.good
+        default: return eraTheme.accent
         }
     }
 }
@@ -139,6 +211,7 @@ private struct EventCategoryBadge: View {
         Text(text.uppercased())
             .font(ClayFonts.display(8, weight: .semibold))
             .foregroundColor(tint)
+            .claySingleLine(minScale: 0.6)
             .padding(.vertical, 2)
             .padding(.horizontal, 6)
             .background(
@@ -192,14 +265,17 @@ struct ResourceForecastRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(name)
                     .font(ClayFonts.display(10, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
                 Text("\(formattedRate(rate))/h • \(amount.clayFormatted)/\(cap.clayFormatted)")
                     .font(ClayFonts.data(9))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.75)
             }
             Spacer()
             Text(status)
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(statusColor)
+                .claySingleLine(minScale: 0.75)
         }
     }
     
@@ -243,6 +319,7 @@ struct BottleneckRow: View {
             Text("Bottlenecks".uppercased())
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(ClayTheme.muted)
+                .claySingleLine(minScale: 0.75)
             ForEach(bottlenecks, id: \.self) { resourceId in
                 let def = engine.content.resourcesById[resourceId]
                 HStack(spacing: 4) {
@@ -250,6 +327,7 @@ struct BottleneckRow: View {
                     Text(def?.name ?? resourceId.capitalized)
                         .font(ClayFonts.data(9))
                         .foregroundColor(ClayTheme.text)
+                        .claySingleLine(minScale: 0.75)
                 }
                 .padding(.vertical, 2)
                 .padding(.horizontal, 6)
@@ -277,9 +355,11 @@ struct RiskCard: View {
             Text(title)
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(ClayTheme.muted)
+                .claySingleLine(minScale: 0.75)
             Text(String(format: "%.2f", value))
                 .font(ClayFonts.data(13, weight: .bold))
                 .foregroundColor(accent)
+                .claySingleLine(minScale: 0.75)
             SimpleProgressBar(value: min(1.0, max(0, value)))
         }
         .padding(8)
@@ -298,13 +378,21 @@ struct MetricCard: View {
     let title: String
     let value: Double
     let accent: Color
+    let displayValue: String?
+
+    init(title: String, value: Double, accent: Color, displayValue: String? = nil) {
+        self.title = title
+        self.value = value
+        self.accent = accent
+        self.displayValue = displayValue
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(ClayTheme.muted)
-            Text(String(format: "%.2f", value))
+            Text(displayValue ?? String(format: "%.2f", value))
                 .font(ClayFonts.data(13, weight: .bold))
                 .foregroundColor(accent)
             SimpleProgressBar(value: min(1.0, max(0, value)))
@@ -330,9 +418,11 @@ struct DecisionPanel: View {
             Text(chain.title.uppercased())
                 .font(ClayFonts.display(10, weight: .semibold))
                 .foregroundColor(ClayTheme.accent)
+                .claySingleLine(minScale: 0.8)
             Text(chain.description)
                 .font(ClayFonts.data(10))
                 .foregroundColor(ClayTheme.muted)
+                .clayTwoLines(minScale: 0.9)
             HStack(spacing: 8) {
                 ForEach(chain.choices) { choice in
                     ClayButton(isEnabled: true, active: true) {
@@ -373,9 +463,11 @@ struct MetahumanDecisionPanel: View {
                     Text(metahuman.name.uppercased())
                         .font(ClayFonts.display(12, weight: .bold))
                         .foregroundColor(accentColor)
+                        .claySingleLine(minScale: 0.75)
                     Text(chain.description)
                         .font(ClayFonts.data(10))
                         .foregroundColor(ClayTheme.muted)
+                        .clayTwoLines(minScale: 0.9)
                     HStack(spacing: 6) {
                         MetahumanTag(text: "Encounter", tint: accentColor)
                         MetahumanTag(text: "Decision", tint: ClayTheme.accentWarm)
@@ -405,12 +497,14 @@ struct MetahumanDecisionPanel: View {
                         Text("Active Influence")
                             .font(ClayFonts.display(9, weight: .semibold))
                             .foregroundColor(ClayTheme.muted)
+                            .claySingleLine(minScale: 0.8)
                         HStack(spacing: 6) {
                             ForEach(effects.indices, id: \.self) { index in
                                 let effect = effects[index]
                                 Text(EffectDescriptor.describe(effect, content: engine.content))
                                     .font(ClayFonts.data(8))
                                     .foregroundColor(ClayTheme.text)
+                                    .claySingleLine(minScale: 0.7)
                                     .padding(.vertical, 2)
                                     .padding(.horizontal, 4)
                                     .background(
@@ -430,6 +524,7 @@ struct MetahumanDecisionPanel: View {
                 Text("Choose your approach")
                     .font(ClayFonts.display(9, weight: .semibold))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.8)
                 ForEach(chain.choices) { choice in
                     MetahumanChoiceCard(chainId: chain.id, choice: choice, accent: accentColor)
                 }
@@ -561,6 +656,7 @@ struct MetahumanTag: View {
         Text(text.uppercased())
             .font(ClayFonts.display(8, weight: .semibold))
             .foregroundColor(tint)
+            .claySingleLine(minScale: 0.6)
             .padding(.vertical, 2)
             .padding(.horizontal, 6)
             .background(
@@ -589,9 +685,11 @@ struct MetahumanChoiceCard: View {
                 Text(choice.title)
                     .font(ClayFonts.display(10, weight: .semibold))
                     .foregroundColor(ClayTheme.accentText)
+                    .claySingleLine(minScale: 0.75)
                 Text(choice.description)
                     .font(ClayFonts.data(9))
                     .foregroundColor(ClayTheme.accentText.opacity(0.85))
+                    .clayTwoLines(minScale: 0.9)
                 let effectLines = choice.effects.map { EffectDescriptor.describe($0, content: engine.content) }
                 if !effectLines.isEmpty {
                     HStack(spacing: 6) {
@@ -599,6 +697,7 @@ struct MetahumanChoiceCard: View {
                             Text(line)
                                 .font(ClayFonts.data(8))
                                 .foregroundColor(ClayTheme.accentText)
+                                .claySingleLine(minScale: 0.7)
                                 .padding(.vertical, 2)
                                 .padding(.horizontal, 4)
                                 .background(
@@ -650,6 +749,7 @@ private struct MetahumanDispositionBadge: View {
         return Text(text)
             .font(ClayFonts.display(8, weight: .semibold))
             .foregroundColor(tint)
+            .claySingleLine(minScale: 0.6)
             .padding(.vertical, 2)
             .padding(.horizontal, 6)
             .background(

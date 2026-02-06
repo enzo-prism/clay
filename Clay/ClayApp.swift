@@ -3,6 +3,12 @@ import ClayFeature
 
 @main
 struct ClayApp: App {
+    init() {
+#if DEBUG
+        UncaughtExceptionLogger.install()
+#endif
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()

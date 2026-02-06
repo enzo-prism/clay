@@ -9,10 +9,12 @@ struct ProgressViewScreen: View {
             PageHeader(title: "Progress", subtitle: "A deeper look at eras, keystones, and your next breakthrough.")
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
+                    NextMilestoneCard()
                     EraOverviewSection(expandedEraId: $expandedEraId)
                     EraLadderSection()
                     NextEraFocusSection()
                     KardashevSection()
+                    WorldStatePanel()
                     PoliciesPanel()
                     MetahumansPanel()
                     PrestigePanel()
@@ -21,6 +23,61 @@ struct ProgressViewScreen: View {
                 .padding(.bottom, 24)
             }
         }
+    }
+}
+
+private struct NextMilestoneCard: View {
+    @EnvironmentObject private var engine: GameEngine
+
+    var body: some View {
+        SoftCard(title: "Next Milestone") {
+            if let project = nextMilestoneProject() {
+                HStack(spacing: 10) {
+                    PixelSpriteView(spriteId: "work", size: 16)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(project.name)
+                            .font(ClayFonts.display(11, weight: .semibold))
+                            .claySingleLine(minScale: 0.75)
+                        Text(project.description)
+                            .font(ClayFonts.data(9))
+                            .foregroundColor(ClayTheme.muted)
+                            .clayTwoLines(minScale: 0.9)
+                    }
+                    Spacer(minLength: 0)
+                    ClayButton(isEnabled: true, active: true) {
+                        NotificationCenter.default.post(name: .claySwitchTab, object: ClayTab.projects)
+                    } label: {
+                        Text("Open Projects")
+                    }
+                }
+            } else {
+                Text("You are at the frontier. Focus on megaprojects and legacy upgrades.")
+                    .font(ClayFonts.data(10))
+                    .foregroundColor(ClayTheme.muted)
+            }
+        }
+    }
+
+    private func nextMilestoneProject() -> ProjectDefinition? {
+        let eras = engine.content.pack.eras.sorted { $0.sortOrder < $1.sortOrder }
+        let currentIndex = eras.firstIndex(where: { $0.id == engine.state.eraId }) ?? 0
+        let nextIndex = min(eras.count - 1, currentIndex + 1)
+        let nextEra = eras[safe: nextIndex]
+        let projectIds = nextEra?.keystoneProjectIds ?? (nextEra.map { [$0.keystoneProjectId] } ?? [])
+        for projectId in projectIds {
+            if engine.state.completedProjectIds.contains(projectId) { continue }
+            if let project = engine.content.projectsById[projectId] {
+                return project
+            }
+        }
+        return nil
+    }
+}
+
+private extension Array {
+    subscript(safe index: Int) -> Element? {
+        guard indices.contains(index) else { return nil }
+        return self[index]
     }
 }
 
@@ -67,6 +124,16 @@ private struct NextEraFocusSection: View {
         VStack(alignment: .leading, spacing: 8) {
             SectionTitle(text: "Next Era Focus")
             if let nextEra {
+                if let options = nextEra.keystoneProjectIds, options.count > 1 {
+                    let names = options.compactMap { engine.content.projectsById[$0]?.name }
+                    if !names.isEmpty {
+                        Panel {
+                            Text("Any of: \(names.joined(separator: " / "))")
+                                .font(ClayFonts.data(9))
+                                .foregroundColor(ClayTheme.muted)
+                        }
+                    }
+                }
                 EraFocusCard(era: nextEra)
             } else {
                 Panel {
@@ -138,6 +205,7 @@ private struct EraLadderRow: View {
             Text(era.name)
                 .font(ClayFonts.display(10, weight: .semibold))
                 .foregroundColor(status == .locked ? ClayTheme.muted : ClayTheme.text)
+                .claySingleLine(minScale: 0.75)
             Spacer()
             if index > currentIndex {
                 Text("+\(index - currentIndex)")
@@ -172,6 +240,59 @@ private struct KardashevSection: View {
     }
 }
 
+private struct WorldStatePanel: View {
+    @EnvironmentObject private var engine: GameEngine
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            SectionTitle(text: "World State")
+            Panel {
+                VStack(alignment: .leading, spacing: 8) {
+                    WorldStateRow(
+                        title: "Cohesion",
+                        value: engine.state.cohesion,
+                        description: "Social unity that stabilizes output and reduces unrest.",
+                        tint: ClayTheme.good
+                    )
+                    WorldStateRow(
+                        title: "Biosphere",
+                        value: engine.state.biosphere,
+                        description: "Planet health that boosts Food + Knowledge when protected.",
+                        tint: ClayTheme.accentWarm
+                    )
+                }
+            }
+        }
+    }
+}
+
+private struct WorldStateRow: View {
+    let title: String
+    let value: Double
+    let description: String
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(title)
+                    .font(ClayFonts.display(10, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
+                Spacer()
+                Text("\(Int(value * 100))%")
+                    .font(ClayFonts.display(9, weight: .semibold))
+                    .foregroundColor(tint)
+                    .claySingleLine(minScale: 0.75)
+            }
+            SimpleProgressBar(value: min(1.0, max(0, value)))
+            Text(description)
+                .font(ClayFonts.data(9))
+                .foregroundColor(ClayTheme.muted)
+                .clayTwoLines(minScale: 0.9)
+        }
+    }
+}
+
 private struct SectionTitle: View {
     let text: String
 
@@ -179,6 +300,7 @@ private struct SectionTitle: View {
         Text(text.uppercased())
             .font(ClayFonts.display(10, weight: .semibold))
             .foregroundColor(ClayTheme.accent)
+            .claySingleLine(minScale: 0.8)
     }
 }
 
@@ -188,13 +310,14 @@ private struct EraProgressCard: View {
     let isExpanded: Bool
     let onToggle: () -> Void
 
-    private var keystone: ProjectDefinition? {
-        engine.content.projectsById[era.keystoneProjectId]
+    private var keystoneProjects: [ProjectDefinition] {
+        let ids = era.keystoneProjectIds ?? [era.keystoneProjectId]
+        return ids.compactMap { engine.content.projectsById[$0] }
     }
 
     private var status: EraStatus {
         if engine.state.eraId == era.id { return .current }
-        if engine.state.completedProjectIds.contains(era.keystoneProjectId) { return .completed }
+        if engine.isEraComplete(era) { return .completed }
         return .locked
     }
 
@@ -204,29 +327,49 @@ private struct EraProgressCard: View {
                 HStack {
                     Text(era.name)
                         .font(ClayFonts.display(11, weight: .semibold))
+                        .claySingleLine(minScale: 0.75)
                     Spacer()
                     EraStatusPill(status: status)
                 }
             }
             .buttonStyle(.plain)
 
-            if let keystone {
-                EraProgressBars(project: keystone)
-                    .padding(.top, 2)
+            if !keystoneProjects.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(keystoneProjects) { project in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(project.name)
+                                .font(ClayFonts.display(10, weight: .semibold))
+                                .foregroundColor(ClayTheme.text)
+                                .claySingleLine(minScale: 0.75)
+                            EraProgressBars(project: project)
+                        }
+                        .padding(.top, 2)
+                    }
+                }
             }
 
             if isExpanded {
                 Text(era.description)
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
-                if let keystone {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Keystone: \(keystone.name)")
+                if !keystoneProjects.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(keystoneProjects.count > 1 ? "Keystone Options" : "Keystone")
                             .font(ClayFonts.display(10, weight: .semibold))
-                        Text(keystone.description)
-                            .font(ClayFonts.data(9))
-                            .foregroundColor(ClayTheme.muted)
-                        EraCostList(costs: keystone.costs)
+                            .claySingleLine(minScale: 0.8)
+                        ForEach(keystoneProjects) { project in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(project.name)
+                                    .font(ClayFonts.display(10, weight: .semibold))
+                                    .claySingleLine(minScale: 0.75)
+                                Text(project.description)
+                                    .font(ClayFonts.data(9))
+                                    .foregroundColor(ClayTheme.muted)
+                                    .clayTwoLines(minScale: 0.9)
+                                EraCostList(costs: project.costs)
+                            }
+                        }
                     }
                 }
             }
@@ -247,17 +390,13 @@ private struct EraFocusCard: View {
     @EnvironmentObject private var engine: GameEngine
     let era: EraDefinition
 
-    private var keystone: ProjectDefinition? {
-        engine.content.projectsById[era.keystoneProjectId]
+    private var keystoneProjects: [ProjectDefinition] {
+        let ids = era.keystoneProjectIds ?? [era.keystoneProjectId]
+        return ids.compactMap { engine.content.projectsById[$0] }
     }
 
-    private var activeProject: ProjectInstance? {
-        engine.state.activeProjects.first { $0.projectId == era.keystoneProjectId }
-    }
-
-    private var canStart: Bool {
-        guard let keystone else { return false }
-        return engine.projectBlockReason(keystone) == nil
+    private var activeProjectIds: Set<String> {
+        Set(engine.state.activeProjects.map(\.projectId))
     }
 
     var body: some View {
@@ -266,51 +405,73 @@ private struct EraFocusCard: View {
                 HStack {
                     Text(era.name)
                         .font(ClayFonts.display(12, weight: .bold))
+                        .claySingleLine(minScale: 0.75)
                     Spacer()
-                    if engine.state.completedProjectIds.contains(era.keystoneProjectId) {
+                    if engine.isEraComplete(era) {
                         Text("READY")
                             .font(ClayFonts.display(9, weight: .semibold))
                             .foregroundColor(ClayTheme.good)
+                            .claySingleLine(minScale: 0.7)
                     } else {
                         Text("IN PROGRESS")
                             .font(ClayFonts.display(9, weight: .semibold))
                             .foregroundColor(ClayTheme.accentWarm)
+                            .claySingleLine(minScale: 0.7)
                     }
                 }
                 Text(era.description)
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
-                if let keystone {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Keystone Project")
-                            .font(ClayFonts.display(10, weight: .semibold))
-                        Text(keystone.name)
-                            .font(ClayFonts.display(11, weight: .semibold))
-                        Text(keystone.description)
-                            .font(ClayFonts.data(9))
-                            .foregroundColor(ClayTheme.muted)
-                        EraProgressBars(project: keystone)
-                        EraCostList(costs: keystone.costs)
-                        EraProjectionRow(project: keystone)
-                        EraRecommendationRow(project: keystone)
-                        HStack {
-                            if let activeProject {
-                                Text("Time Remaining: \(activeProject.remainingSeconds.clayTimeString)")
+                if !keystoneProjects.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        if keystoneProjects.count > 1 {
+                            Text("Choose one path to advance:")
+                                .font(ClayFonts.data(9))
+                                .foregroundColor(ClayTheme.muted)
+                        } else {
+                            Text("Keystone Project")
+                                .font(ClayFonts.display(10, weight: .semibold))
+                                .claySingleLine(minScale: 0.8)
+                        }
+                        ForEach(keystoneProjects) { keystone in
+                            let active = activeProjectIds.contains(keystone.id)
+                            let canStart = engine.projectBlockReason(keystone) == nil
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(keystone.name)
+                                    .font(ClayFonts.display(11, weight: .semibold))
+                                    .claySingleLine(minScale: 0.75)
+                                Text(keystone.description)
                                     .font(ClayFonts.data(9))
                                     .foregroundColor(ClayTheme.muted)
-                            } else {
-                                Text("Duration: \(keystone.durationSeconds.clayTimeString)")
-                                    .font(ClayFonts.data(9))
-                                    .foregroundColor(ClayTheme.muted)
-                            }
-                            Spacer()
-                            if !engine.state.completedProjectIds.contains(keystone.id) {
-                                ClayButton(isEnabled: canStart, blockedMessage: engine.projectBlockReason(keystone)) {
-                                    engine.startProject(projectId: keystone.id, source: .research)
-                                } label: {
-                                    Text(activeProject == nil ? "Start Keystone" : "In Progress")
+                                    .clayTwoLines(minScale: 0.9)
+                                EraProgressBars(project: keystone)
+                                EraCostList(costs: keystone.costs)
+                                EraProjectionRow(project: keystone)
+                                EraRecommendationRow(project: keystone)
+                                HStack {
+                                    if let activeProject = engine.state.activeProjects.first(where: { $0.projectId == keystone.id }) {
+                                        Text("Time Remaining: \(activeProject.remainingSeconds.clayTimeString)")
+                                            .font(ClayFonts.data(9))
+                                            .foregroundColor(ClayTheme.muted)
+                                            .monospacedDigit()
+                                            .claySingleLine(minScale: 0.8)
+                                    } else {
+                                        Text("Duration: \(keystone.durationSeconds.clayTimeString)")
+                                            .font(ClayFonts.data(9))
+                                            .foregroundColor(ClayTheme.muted)
+                                            .monospacedDigit()
+                                            .claySingleLine(minScale: 0.8)
+                                    }
+                                    Spacer()
+                                    if !engine.state.completedProjectIds.contains(keystone.id) {
+                                        ClayButton(isEnabled: canStart, blockedMessage: engine.projectBlockReason(keystone)) {
+                                            engine.startProject(projectId: keystone.id, source: .research)
+                                        } label: {
+                                            Text(active ? "In Progress" : "Start Keystone")
+                                        }
+                                        .disabled(active)
+                                    }
                                 }
-                                .disabled(activeProject != nil)
                             }
                         }
                     }
@@ -545,6 +706,7 @@ struct PoliciesPanel: View {
             Text("POLICIES")
                 .font(ClayFonts.display(10, weight: .semibold))
                 .foregroundColor(ClayTheme.accent)
+                .claySingleLine(minScale: 0.8)
             ForEach(slots, id: \.self) { slot in
                 PolicySlotRow(slot: slot)
             }
@@ -563,15 +725,18 @@ struct PolicySlotRow: View {
             HStack {
                 Text(slot.uppercased())
                     .font(ClayFonts.display(9, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
                 Spacer()
                 if activeId != nil {
                     Text("ACTIVE")
                         .font(ClayFonts.display(9, weight: .semibold))
                         .foregroundColor(ClayTheme.good)
+                        .claySingleLine(minScale: 0.75)
                 } else {
                     Text("INACTIVE")
                         .font(ClayFonts.display(9, weight: .semibold))
                         .foregroundColor(ClayTheme.muted)
+                        .claySingleLine(minScale: 0.75)
                 }
             }
             ForEach(policies) { policy in
@@ -585,6 +750,7 @@ struct PolicySlotRow: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(policy.name)
                                 .font(ClayFonts.display(10, weight: .semibold))
+                                .claySingleLine(minScale: 0.75)
                             Text(policy.description)
                                 .font(ClayFonts.data(9))
                                 .foregroundColor(ClayTheme.muted)
@@ -594,6 +760,7 @@ struct PolicySlotRow: View {
                             Text("SELECTED")
                                 .font(ClayFonts.display(9, weight: .semibold))
                                 .foregroundColor(ClayTheme.accent)
+                                .claySingleLine(minScale: 0.75)
                         }
                     }
                 }
@@ -615,6 +782,7 @@ struct PrestigePanel: View {
     @EnvironmentObject private var engine: GameEngine
     
     var body: some View {
+        let breakdown = engine.legacyGainBreakdown()
         VStack(alignment: .leading, spacing: 8) {
             Text("PRESTIGE")
                 .font(ClayFonts.display(10, weight: .semibold))
@@ -629,6 +797,20 @@ struct PrestigePanel: View {
             Text("Gain on Ascend: \(engine.availableLegacyGain())")
                 .font(ClayFonts.data(9))
                 .foregroundColor(ClayTheme.muted)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Breakdown")
+                    .font(ClayFonts.display(9, weight: .semibold))
+                    .foregroundColor(ClayTheme.accent)
+                breakdownRow(label: "Era keystones", value: breakdown.eraPoints)
+                breakdownRow(label: "Domain tiers", value: breakdown.domainBonus)
+                breakdownRow(label: "Achievements", value: breakdown.achievementBonus)
+                breakdownRow(label: "Energy bonus", value: breakdown.energyBonus)
+                if let hint = nextLegacyHint(domainTotal: domainTierTotal(), achievementCount: engine.state.achievementsUnlocked.count) {
+                    Text(hint)
+                        .font(ClayFonts.data(9))
+                        .foregroundColor(ClayTheme.muted)
+                }
+            }
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 6) {
                 ForEach(engine.content.pack.legacyUpgrades) { upgrade in
                     let owned = engine.state.prestige.legacyUpgrades.contains(upgrade.id)
@@ -657,6 +839,33 @@ struct PrestigePanel: View {
             RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
                 .stroke(ClayTheme.stroke.opacity(0.6), lineWidth: 1)
         )
+    }
+
+    private func breakdownRow(label: String, value: Int) -> some View {
+        HStack {
+            Text(label)
+                .font(ClayFonts.data(9))
+                .foregroundColor(ClayTheme.muted)
+            Spacer()
+            Text("\(value)")
+                .font(ClayFonts.data(9, weight: .semibold))
+                .foregroundColor(ClayTheme.text)
+        }
+    }
+
+    private func domainTierTotal() -> Int {
+        engine.state.domainState.unlockedTiersByDomain.values.reduce(0, +)
+    }
+
+    private func nextLegacyHint(domainTotal: Int, achievementCount: Int) -> String? {
+        let domainRemainder = domainTotal % 3
+        let achievementRemainder = achievementCount % 4
+        let nextDomain = domainRemainder == 0 ? 3 : 3 - domainRemainder
+        let nextAchievement = achievementRemainder == 0 ? 4 : 4 - achievementRemainder
+        if nextDomain <= nextAchievement {
+            return "Next bonus in \(nextDomain) domain tier\(nextDomain == 1 ? "" : "s")."
+        }
+        return "Next bonus in \(nextAchievement) achievement\(nextAchievement == 1 ? "" : "s")."
     }
 }
 

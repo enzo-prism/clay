@@ -11,7 +11,6 @@ struct ToastHostView: View {
             }
         }
         .padding(16)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         .allowsHitTesting(false)
         .animation(.easeInOut(duration: 0.2), value: toastCenter.toasts)
     }

@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import ImageIO
 
 struct PixelSpriteSheetDefinition: Codable {
     var path: String
@@ -8,6 +9,7 @@ struct PixelSpriteSheetDefinition: Codable {
     var columns: Int?
     var rows: Int?
     var frameCount: Int?
+    var rowOffset: Int? = nil
 }
 
 struct PixelSpriteDefinition: Codable {
@@ -61,6 +63,21 @@ struct PixelAssetPack: Codable {
 
 @MainActor
 final class PixelAssetCatalog {
+    private struct SheetInfo {
+        let cgImage: CGImage
+        let columns: Int
+        let rows: Int
+        let frameCount: Int
+    }
+
+    private final class FrameArrayBox {
+        let frames: [NSImage]
+
+        init(_ frames: [NSImage]) {
+            self.frames = frames
+        }
+    }
+
     static let shared = PixelAssetCatalog()
 
     private(set) var pack: PixelAssetPack
@@ -68,9 +85,15 @@ final class PixelAssetCatalog {
     private(set) var peoplePackName: String? = nil
     private(set) var peoplePackCredits: String? = nil
     private var colorKeyCache: [String: NSImage] = [:]
+    private var sheetInfoCache: [String: SheetInfo] = [:]
+    private let frameCache = NSCache<NSString, NSImage>()
+    private let spriteFramesCache = NSCache<NSString, FrameArrayBox>()
+    private let bannedSpriteIds: Set<String>
     private let colorKey = NSColor(calibratedRed: 101.0 / 255.0, green: 1.0, blue: 0.0, alpha: 1.0)
 
     private init() {
+        frameCache.totalCostLimit = 250 * 1024 * 1024
+        bannedSpriteIds = Self.loadBannedSprites()
         var basePack: PixelAssetPack = .empty
         if let url = Bundle.module.url(forResource: "pixel_assets", withExtension: "json"),
            let data = try? Data(contentsOf: url),
@@ -85,7 +108,7 @@ final class PixelAssetCatalog {
             for (id, sprite) in peopleResult.sprites {
                 merged.characterSprites[id] = sprite
             }
-            peoplePackSpriteIds = peopleResult.sprites.keys.sorted()
+            peoplePackSpriteIds = peopleResult.sprites.keys.sorted().filter { !bannedSpriteIds.contains($0) }
             peoplePackName = peopleResult.name
             peoplePackCredits = peopleResult.credits
             pack = merged
@@ -128,7 +151,12 @@ final class PixelAssetCatalog {
     }
 
     func sprite(for id: String) -> PixelSpriteDefinition? {
-        pack.actionSprites[id] ?? pack.characterSprites[id]
+        guard !bannedSpriteIds.contains(id) else { return nil }
+        return pack.actionSprites[id] ?? pack.characterSprites[id]
+    }
+
+    func isSpriteBanned(_ id: String) -> Bool {
+        bannedSpriteIds.contains(id)
     }
 
     private static func loadPeoplePackSprites() -> (sprites: [String: PixelSpriteDefinition], name: String?, credits: String?) {
@@ -165,7 +193,7 @@ final class PixelAssetCatalog {
                     frames: [],
                     fps: 8,
                     scale: 1.0,
-                    sheet: PixelSpriteSheetDefinition(path: path, frameWidth: frameSize, frameHeight: frameSize, columns: columns, rows: rows, frameCount: columns)
+                    sheet: PixelSpriteSheetDefinition(path: path, frameWidth: frameSize, frameHeight: frameSize, columns: columns, rows: rows, frameCount: columns, rowOffset: row)
                 )
             }
         }
@@ -177,10 +205,7 @@ final class PixelAssetCatalog {
     }
 
     private static func inferFrameSize(url: URL, fallback: Int) -> Int {
-        guard let image = NSImage(contentsOf: url),
-              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return fallback }
-        let width = cgImage.width
-        let height = cgImage.height
+        guard let (width, height) = imagePixelSize(url: url) else { return fallback }
         let candidates = [64, 48, 32, 24, 16]
         for size in candidates {
             if width % size == 0 && height % size == 0 {
@@ -191,15 +216,41 @@ final class PixelAssetCatalog {
     }
 
     private static func inferColumns(url: URL, frameSize: Int) -> Int {
-        guard let image = NSImage(contentsOf: url),
-              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return 1 }
-        return max(1, cgImage.width / frameSize)
+        guard frameSize > 0, let (width, _) = imagePixelSize(url: url) else { return 1 }
+        return max(1, width / frameSize)
     }
 
     private static func inferRows(url: URL, frameSize: Int) -> Int {
-        guard let image = NSImage(contentsOf: url),
-              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return 1 }
-        return max(1, cgImage.height / frameSize)
+        guard frameSize > 0, let (_, height) = imagePixelSize(url: url) else { return 1 }
+        return max(1, height / frameSize)
+    }
+
+    private static func imagePixelSize(url: URL) -> (width: Int, height: Int)? {
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any] else {
+            return nil
+        }
+        let widthValue = properties[kCGImagePropertyPixelWidth]
+        let heightValue = properties[kCGImagePropertyPixelHeight]
+
+        func int(from value: Any?) -> Int? {
+            switch value {
+            case let number as NSNumber:
+                return number.intValue
+            case let intValue as Int:
+                return intValue
+            case let doubleValue as Double:
+                return Int(doubleValue)
+            default:
+                return nil
+            }
+        }
+        guard let width = int(from: widthValue),
+              let height = int(from: heightValue),
+              width > 0, height > 0 else {
+            return nil
+        }
+        return (width, height)
     }
 
     private static func loadCredits(folder: String) -> String? {
@@ -237,29 +288,54 @@ final class PixelAssetCatalog {
     }
 
     func frameCount(for sheet: PixelSpriteSheetDefinition) -> Int {
-        guard let image = image(for: sheet.path),
-              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return 1 }
-        let columns = sheet.columns ?? max(1, cgImage.width / sheet.frameWidth)
-        let rows = sheet.rows ?? max(1, cgImage.height / sheet.frameHeight)
-        return sheet.frameCount ?? (columns * rows)
+        guard let info = sheetInfo(for: sheet) else { return 1 }
+        return info.frameCount
     }
 
     func frameImage(from sheet: PixelSpriteSheetDefinition, frameIndex: Int) -> NSImage? {
-        guard let image = image(for: sheet.path),
-              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
-        let columns = sheet.columns ?? max(1, cgImage.width / sheet.frameWidth)
-        let rows = sheet.rows ?? max(1, cgImage.height / sheet.frameHeight)
-        let count = sheet.frameCount ?? (columns * rows)
+        let cacheKey = "\(sheetCacheKey(for: sheet))|frame:\(frameIndex)" as NSString
+        if let cached = frameCache.object(forKey: cacheKey) {
+            return cached
+        }
+        guard let info = sheetInfo(for: sheet) else { return nil }
+        let count = info.frameCount
         let index = max(0, min(frameIndex, count - 1))
-        let col = index % columns
-        let row = index / columns
+        let col = index % info.columns
+        let row = (sheet.rowOffset ?? 0) + (index / info.columns)
+        guard row >= 0, row < info.rows else { return nil }
         let x = col * sheet.frameWidth
-        let y = (rows - 1 - row) * sheet.frameHeight
+        let y = (info.rows - 1 - row) * sheet.frameHeight
         let rect = CGRect(x: x, y: y, width: sheet.frameWidth, height: sheet.frameHeight)
-        guard let cropped = cgImage.cropping(to: rect) else { return nil }
+        guard let cropped = info.cgImage.cropping(to: rect) else { return nil }
         let size = NSSize(width: sheet.frameWidth, height: sheet.frameHeight)
         let frame = NSImage(cgImage: cropped, size: size)
-        return applyColorKey(frame)
+        frameCache.setObject(frame, forKey: cacheKey, cost: sheet.frameWidth * sheet.frameHeight * 4)
+        return frame
+    }
+
+    func frames(for spriteId: String, idle: Bool) -> [NSImage] {
+        let cacheKey = "\(spriteId)|\(idle ? "idle" : "active")" as NSString
+        if let cached = spriteFramesCache.object(forKey: cacheKey) {
+            return cached.frames
+        }
+        guard let sprite = sprite(for: spriteId) else { return [] }
+        var resultFrames: [NSImage] = []
+        if idle, let sheet = sprite.idleSheet {
+            resultFrames = frames(from: sheet)
+        } else if let sheet = sprite.sheet {
+            resultFrames = frames(from: sheet)
+        } else {
+            resultFrames = sprite.frames.compactMap { image(for: $0) }
+        }
+        if resultFrames.isEmpty {
+            if let sheet = sprite.sheet {
+                resultFrames = frames(from: sheet)
+            } else {
+                resultFrames = sprite.frames.compactMap { image(for: $0) }
+            }
+        }
+        spriteFramesCache.setObject(FrameArrayBox(resultFrames), forKey: cacheKey)
+        return resultFrames
     }
 
     private func applyColorKey(_ image: NSImage) -> NSImage {
@@ -290,5 +366,53 @@ final class PixelAssetCatalog {
         let b = color.blueComponent
         // Allow a little tolerance around the bright green key.
         return g > 0.9 && r < 0.5 && b < 0.2
+    }
+
+    private func sheetCacheKey(for sheet: PixelSpriteSheetDefinition) -> String {
+        let columns = sheet.columns ?? -1
+        let rows = sheet.rows ?? -1
+        let frameCount = sheet.frameCount ?? -1
+        let rowOffset = sheet.rowOffset ?? 0
+        return "\(sheet.path)|\(sheet.frameWidth)x\(sheet.frameHeight)|\(columns)x\(rows)|\(frameCount)|row:\(rowOffset)"
+    }
+
+    private static func loadBannedSprites() -> Set<String> {
+        guard let url = Bundle.module.url(forResource: "bad_sprites", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
+            return []
+        }
+        let normalized = decoded.map { normalizeSpriteId($0) }
+        return Set(normalized)
+    }
+
+    private func sheetInfo(for sheet: PixelSpriteSheetDefinition) -> SheetInfo? {
+        let key = sheetCacheKey(for: sheet)
+        if let cached = sheetInfoCache[key] {
+            return cached
+        }
+        guard let image = image(for: sheet.path),
+              let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            return nil
+        }
+        let columns = sheet.columns ?? max(1, cgImage.width / sheet.frameWidth)
+        let rows = sheet.rows ?? max(1, cgImage.height / sheet.frameHeight)
+        let frameCount = sheet.frameCount ?? (columns * rows)
+        let info = SheetInfo(cgImage: cgImage, columns: columns, rows: rows, frameCount: frameCount)
+        sheetInfoCache[key] = info
+        return info
+    }
+
+    private func frames(from sheet: PixelSpriteSheetDefinition) -> [NSImage] {
+        let count = frameCount(for: sheet)
+        guard count > 0 else { return [] }
+        var frames: [NSImage] = []
+        frames.reserveCapacity(count)
+        for index in 0..<count {
+            if let image = frameImage(from: sheet, frameIndex: index) {
+                frames.append(image)
+            }
+        }
+        return frames
     }
 }

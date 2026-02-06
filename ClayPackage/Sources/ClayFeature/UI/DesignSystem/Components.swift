@@ -17,10 +17,12 @@ struct PageHeader<Actions: View>: View {
                 Text(title.uppercased())
                     .font(ClayFonts.display(14, weight: .bold))
                     .foregroundColor(ClayTheme.text)
+                    .claySingleLine(minScale: 0.85)
                 if let subtitle {
                     Text(subtitle)
                         .font(ClayFonts.data(10))
                         .foregroundColor(ClayTheme.muted)
+                        .clayTwoLines(minScale: 0.9)
                 }
             }
             Spacer()
@@ -81,6 +83,7 @@ struct HintBanner: View {
 struct Panel<Content: View>: View {
     let title: String?
     let content: Content
+    @Environment(\.eraTheme) private var eraTheme
     
     init(title: String? = nil, @ViewBuilder content: () -> Content) {
         self.title = title
@@ -95,35 +98,39 @@ struct Panel<Content: View>: View {
             content
         }
         .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
-                .fill(ClayTheme.panel)
-        )
+        .background(panelBackground)
         .overlay(
             RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
-                .stroke(ClayTheme.stroke.opacity(0.8), lineWidth: ClayMetrics.borderWidth)
+                .stroke(eraTheme.stroke.opacity(0.8), lineWidth: ClayMetrics.borderWidth)
         )
         .shadow(color: ClayTheme.shadow, radius: 10, x: 0, y: 6)
+    }
+
+    @ViewBuilder
+    private var panelBackground: some View {
+        let shape = RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
+        shape.fill(eraTheme.panel)
     }
 }
 
 struct SectionHeader: View {
     let title: String
+    @Environment(\.eraTheme) private var eraTheme
     
     var body: some View {
         ZStack(alignment: .leading) {
             Rectangle()
-                .fill(ClayTheme.stroke)
+                .fill(eraTheme.stroke)
                 .frame(height: 1)
                 .offset(y: 8)
             HStack(spacing: 8) {
                 Rectangle()
-                    .fill(ClayTheme.accentGradient)
+                    .fill(eraTheme.accent.opacity(0.85))
                     .frame(width: 6, height: 18)
                     .clipShape(RoundedRectangle(cornerRadius: 2))
                 Text(title.uppercased())
                     .font(ClayFonts.display(10, weight: .semibold))
-                    .foregroundColor(ClayTheme.accent)
+                    .foregroundColor(eraTheme.accent)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                     .allowsTightening(true)
@@ -132,6 +139,28 @@ struct SectionHeader: View {
                 Spacer(minLength: 0)
             }
         }
+    }
+}
+
+struct SectionHeaderSoft: View {
+    let title: String
+    @Environment(\.eraTheme) private var eraTheme
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(title.uppercased())
+                .font(ClayFonts.display(10, weight: .semibold))
+                .foregroundColor(eraTheme.accent)
+                .claySingleLine(minScale: 0.75)
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 2)
+        .overlay(
+            Rectangle()
+                .fill(eraTheme.stroke.opacity(0.6))
+                .frame(height: 1),
+            alignment: .bottom
+        )
     }
 }
 
@@ -144,6 +173,7 @@ struct HUDChip: View {
     let resourceId: String?
     var activity: HUDChipActivity = .idle
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.eraTheme) private var eraTheme
     @State private var pulse = false
     @State private var sheenPhase: CGFloat = -1
     
@@ -153,6 +183,7 @@ struct HUDChip: View {
             Text(title.uppercased())
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(color)
+                .claySingleLine(minScale: 0.7)
             HStack(spacing: 6) {
                 if let resourceId {
                     ResourceIconView(resourceId: resourceId, size: 12, tint: color)
@@ -176,10 +207,7 @@ struct HUDChip: View {
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 8)
-        .background(
-            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
-                .fill(ClayTheme.panelElevated)
-        )
+        .background(chipBackground)
         .overlay(
             RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
                 .stroke(borderColor, lineWidth: 1)
@@ -206,12 +234,18 @@ struct HUDChip: View {
     private func activityBorderColor() -> Color {
         switch activity {
         case .warning:
-            return ClayTheme.accentWarm.opacity(pulse ? 0.9 : 0.4)
+            return eraTheme.accentWarm.opacity(pulse ? 0.9 : 0.4)
         case .negative:
-            return ClayTheme.bad.opacity(pulse ? 0.9 : 0.4)
+            return eraTheme.bad.opacity(pulse ? 0.9 : 0.4)
         default:
-            return ClayTheme.stroke.opacity(0.6)
+            return eraTheme.stroke.opacity(0.6)
         }
+    }
+
+    @ViewBuilder
+    private var chipBackground: some View {
+        let shape = RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+        shape.fill(eraTheme.panelElevated)
     }
 
     private func startActivityAnimation() {
@@ -236,6 +270,200 @@ struct HUDChip: View {
         } else {
             sheenPhase = -1
         }
+    }
+}
+
+struct SoftCard<Content: View>: View {
+    let title: String?
+    let content: Content
+    @Environment(\.eraTheme) private var eraTheme
+
+    init(title: String? = nil, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
+        VStack(alignment: .leading, spacing: 10) {
+            if let title {
+                SectionHeaderSoft(title: title)
+            }
+            content
+        }
+        .padding(12)
+        .background(
+            shape
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    shape.fill(eraTheme.panelElevated.opacity(0.78))
+                )
+        )
+        .overlay(
+            shape
+                .stroke(eraTheme.stroke.opacity(0.62), lineWidth: 1)
+        )
+        .overlay(
+            // Subtle "glass" highlight for depth on large surfaces.
+            shape
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.16),
+                            Color.white.opacity(0.04),
+                            Color.clear
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+                .blendMode(.overlay)
+        )
+        .shadow(color: ClayTheme.shadow, radius: 8, x: 0, y: 6)
+    }
+}
+
+struct InlineStatusPill: View {
+    let text: String
+    let tint: Color
+
+    var body: some View {
+        Text(text.uppercased())
+            .font(ClayFonts.display(8, weight: .semibold))
+            .foregroundColor(tint)
+            .claySingleLine(minScale: 0.6)
+            .padding(.vertical, 2)
+            .padding(.horizontal, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(tint.opacity(0.18))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(tint.opacity(0.4), lineWidth: 1)
+            )
+    }
+}
+
+struct EmptyState: View {
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title)
+                .font(ClayFonts.display(11, weight: .semibold))
+                .foregroundColor(ClayTheme.text)
+                .claySingleLine(minScale: 0.8)
+            Text(subtitle)
+                .font(ClayFonts.data(10))
+                .foregroundColor(ClayTheme.muted)
+                .clayTwoLines(minScale: 0.9)
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panelElevated)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(ClayTheme.stroke.opacity(0.6), lineWidth: 1)
+        )
+    }
+}
+
+struct ActionRow: View {
+    let title: String
+    let subtitle: String?
+    let actionTitle: String
+    let action: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(ClayFonts.display(10, weight: .semibold))
+                    .foregroundColor(ClayTheme.text)
+                    .claySingleLine(minScale: 0.8)
+                if let subtitle {
+                    Text(subtitle)
+                        .font(ClayFonts.data(9))
+                        .foregroundColor(ClayTheme.muted)
+                        .clayTwoLines(minScale: 0.9)
+                }
+            }
+            Spacer(minLength: 0)
+            ClayButton(isEnabled: true, active: true, action: action) {
+                Text(actionTitle)
+                    .claySingleLine(minScale: 0.75)
+            }
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panelElevated)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(ClayTheme.stroke.opacity(0.6), lineWidth: 1)
+        )
+    }
+}
+
+struct GuidanceBanner: View {
+    let title: String
+    let message: String
+    let priorityColor: Color
+    let actionTitle: String?
+    let action: (() -> Void)?
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: ClayMetrics.radius, style: .continuous)
+        HStack(alignment: .center, spacing: 12) {
+            Circle()
+                .fill(priorityColor)
+                .frame(width: 8, height: 8)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(ClayFonts.display(11, weight: .semibold))
+                    .foregroundColor(ClayTheme.text)
+                    .claySingleLine(minScale: 0.8)
+                Text(message)
+                    .font(ClayFonts.data(9))
+                    .foregroundColor(ClayTheme.muted)
+                    .clayTwoLines(minScale: 0.9)
+            }
+            Spacer(minLength: 0)
+            if let actionTitle, let action {
+                ClayButton(isEnabled: true, active: true, action: action) {
+                    Text(actionTitle)
+                        .claySingleLine(minScale: 0.75)
+                }
+            }
+        }
+        .padding(10)
+        .background(
+            shape
+                .fill(.ultraThinMaterial)
+                .overlay(shape.fill(ClayTheme.panelElevated.opacity(0.72)))
+        )
+        .overlay(
+            shape
+                .stroke(priorityColor.opacity(0.42), lineWidth: 1)
+        )
+        .overlay(
+            shape
+                .stroke(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.14), Color.white.opacity(0.03), Color.clear],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+                .blendMode(.overlay)
+        )
     }
 }
 
@@ -274,9 +502,11 @@ struct MetricTile: View {
             Text(title.uppercased())
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(ClayTheme.muted)
+                .claySingleLine(minScale: 0.75)
             Text(value)
                 .font(ClayFonts.data(13, weight: .semibold))
                 .foregroundColor(accent)
+                .claySingleLine(minScale: 0.75)
             SimpleProgressBar(value: progressValue)
         }
         .padding(8)
@@ -301,32 +531,40 @@ struct MetricTile: View {
 struct ClayButtonStyle: ButtonStyle {
     let active: Bool
     var hovering: Bool = false
+    @Environment(\.eraTheme) private var eraTheme
     
     func makeBody(configuration: Configuration) -> some View {
-        let base = active ? ClayTheme.accent : ClayTheme.panelElevated
-        let hoverFill = active ? ClayTheme.accent.opacity(0.9) : ClayTheme.panelElevated.opacity(0.9)
-        let pressedFill = active ? ClayTheme.accent.opacity(0.8) : ClayTheme.panelElevated.opacity(0.85)
-        let fill = configuration.isPressed ? pressedFill : (hovering ? hoverFill : base)
-        let textColor = active ? ClayTheme.accentText : ClayTheme.muted
+        let base = active ? eraTheme.accent : eraTheme.panelElevated
+        let hoverFill = active ? eraTheme.accent.opacity(0.9) : eraTheme.panelElevated.opacity(0.9)
+        let pressedFill = active ? eraTheme.accent.opacity(0.8) : eraTheme.panelElevated.opacity(0.85)
+        let fillColor = configuration.isPressed ? pressedFill : (hovering ? hoverFill : base)
+        let textColor = active ? ClayTheme.accentText : eraTheme.muted
         return configuration.label
             .font(ClayFonts.display(10, weight: .semibold))
             .foregroundColor(textColor)
+            // Prevent odd wrapping on narrow layouts (e.g. a single word breaking across multiple lines).
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .minimumScaleFactor(0.75)
             .padding(.vertical, 7)
             .padding(.horizontal, 12)
             .frame(minHeight: 32)
             .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
-            .background(
-                RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
-                    .fill(fill)
-            )
+            .background(buttonBackground(fillColor: fillColor))
             .overlay(
                 RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
-                    .stroke(hovering ? ClayTheme.accent.opacity(0.8) : ClayTheme.stroke.opacity(0.7), lineWidth: 1)
+                    .stroke(hovering ? eraTheme.accent.opacity(0.8) : eraTheme.stroke.opacity(0.7), lineWidth: 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous))
             .contentShape(Rectangle())
             .opacity(active ? 1.0 : 0.8)
+    }
+
+    @ViewBuilder
+    private func buttonBackground(fillColor: Color) -> some View {
+        RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+            .fill(fillColor)
     }
 }
 
@@ -361,6 +599,103 @@ struct ClayButton<Label: View>: View {
         .onHover { hovering = $0 }
         .contentShape(Rectangle())
         .opacity(isEnabled ? 1.0 : 0.6)
+    }
+}
+
+struct SegmentedControl<Segment: Hashable, Label: View>: View {
+    let segments: [Segment]
+    @Binding var selection: Segment
+    var activeTint: Color = ClayTheme.accent
+    let label: (Segment, Bool) -> Label
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(segments, id: \.self) { segment in
+                SegmentedControlSegment(isSelected: selection == segment, activeTint: activeTint) {
+                    selection = segment
+                } label: {
+                    label(segment, selection == segment)
+                }
+            }
+        }
+        .padding(3)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panel.opacity(0.8))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(ClayTheme.stroke.opacity(0.7), lineWidth: 1)
+        )
+    }
+}
+
+private struct SegmentedControlSegment<Label: View>: View {
+    let isSelected: Bool
+    let activeTint: Color
+    let action: () -> Void
+    let label: () -> Label
+    @State private var hovering = false
+
+    var body: some View {
+        let baseFill = isSelected ? activeTint : ClayTheme.panelElevated.opacity(0.85)
+        let hoverFill = isSelected ? activeTint.opacity(0.9) : ClayTheme.panelElevated.opacity(0.95)
+        let fill = hovering ? hoverFill : baseFill
+        let stroke = isSelected ? activeTint.opacity(0.8) : ClayTheme.stroke.opacity(0.6)
+        return Button(action: action) {
+            label()
+                .foregroundColor(isSelected ? ClayTheme.accentText : ClayTheme.muted)
+                // Segments should never wrap: truncate and scale instead.
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .minimumScaleFactor(0.7)
+        }
+        .buttonStyle(.plain)
+        .padding(.vertical, 2)
+        .padding(.horizontal, 2)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(fill)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(hovering ? activeTint.opacity(0.5) : stroke, lineWidth: 1)
+        )
+        .onHover { hovering = $0 }
+        .animation(.easeOut(duration: 0.12), value: hovering)
+    }
+}
+
+struct HUDStatChip: View {
+    let title: String
+    let value: String
+    let tint: Color
+    let iconPath: String?
+
+    var body: some View {
+        HStack(spacing: 6) {
+            if let iconPath {
+                KenneyIconView(path: iconPath, size: 12, tint: tint)
+            }
+            Text(title.uppercased())
+                .font(ClayFonts.display(8, weight: .semibold))
+                .foregroundColor(tint)
+                .claySingleLine(minScale: 0.7)
+            Text(value)
+                .font(ClayFonts.data(10, weight: .medium))
+                .foregroundColor(ClayTheme.text)
+                .claySingleLine(minScale: 0.75)
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .fill(ClayTheme.panelElevated.opacity(0.92))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
+                .stroke(tint.opacity(0.5), lineWidth: 1)
+        )
     }
 }
 

@@ -12,6 +12,7 @@ struct SettingsViewScreen: View {
                     HStack(spacing: 12) {
                         Text("Offline cap")
                             .font(ClayFonts.display(11, weight: .semibold))
+                            .claySingleLine(minScale: 0.85)
                         Spacer()
                         let canDecrease = engine.state.settings.offlineCapDays > 1
                         ClayButton(isEnabled: canDecrease, blockedMessage: "Minimum 1 day") {
@@ -33,6 +34,26 @@ struct SettingsViewScreen: View {
                             Text("+")
                         }
                     }
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Guidance Level")
+                            .font(ClayFonts.display(10, weight: .semibold))
+                            .claySingleLine(minScale: 0.85)
+                        SegmentedControl(
+                            segments: GuidanceLevel.allCases,
+                            selection: Binding(
+                                get: { engine.state.settings.guidanceLevel },
+                                set: { engine.setGuidanceLevel($0) }
+                            ),
+                            activeTint: ClayTheme.accentWarm
+                        ) { level, isSelected in
+                            Text(level.label.uppercased())
+                                .font(ClayFonts.display(8, weight: .semibold))
+                                .foregroundColor(isSelected ? ClayTheme.accentText : ClayTheme.muted)
+                                .claySingleLine(minScale: 0.7)
+                                .padding(.vertical, 2)
+                                .padding(.horizontal, 6)
+                        }
+                    }
                     SimpleToggle(label: "Notifications", isOn: Binding(
                         get: { engine.state.settings.notificationsEnabled },
                         set: { engine.setNotificationsEnabled($0) }
@@ -52,5 +73,15 @@ struct SettingsViewScreen: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .environment(\.colorScheme, .dark)
+    }
+}
+
+private extension GuidanceLevel {
+    var label: String {
+        switch self {
+        case .high: return "High"
+        case .balanced: return "Balanced"
+        case .minimal: return "Minimal"
+        }
     }
 }

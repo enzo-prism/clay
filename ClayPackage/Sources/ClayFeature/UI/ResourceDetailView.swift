@@ -18,14 +18,17 @@ struct ResourceDetailView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(name)
                         .font(ClayFonts.display(16, weight: .bold))
+                        .claySingleLine(minScale: 0.75)
                     Text(resourceId.uppercased())
                         .font(ClayFonts.data(9))
                         .foregroundColor(ClayTheme.muted)
+                        .claySingleLine(minScale: 0.8)
                 }
                 Spacer()
                 Text(status.label.uppercased())
                     .font(ClayFonts.display(9, weight: .semibold))
                     .foregroundColor(status.color)
+                    .claySingleLine(minScale: 0.7)
             }
             
             Panel(title: "Overview") {

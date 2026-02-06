@@ -42,31 +42,38 @@ struct DomainCard: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(domain.name)
                         .font(ClayFonts.display(12, weight: .semibold))
+                        .claySingleLine(minScale: 0.75)
                     Text(domain.description)
                         .font(ClayFonts.data(9))
                         .foregroundColor(ClayTheme.muted)
+                        .clayTwoLines(minScale: 0.9)
                 }
                 Spacer()
+                DomainProgressRing(progress: progressValue, accent: ClayTheme.accentWarm)
                 Text("Tier \(unlockedTier)")
                     .font(ClayFonts.display(9, weight: .semibold))
                     .foregroundColor(ClayTheme.good)
+                    .claySingleLine(minScale: 0.7)
             }
             SimpleProgressBar(value: progressValue)
             if let nextTier {
-                Text("Next: \(points)/\(nextTier.requiredPoints) points")
+                Text("Next Tier: \(points)/\(nextTier.requiredPoints) points")
                     .font(ClayFonts.data(9))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.8)
                 DomainTierEffectRow(tier: nextTier, domain: domain)
             } else {
                 Text("Max tier achieved")
                     .font(ClayFonts.data(9))
                     .foregroundColor(ClayTheme.good)
+                    .claySingleLine(minScale: 0.8)
             }
             if unlockedTier > 0 {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Active Bonuses")
                         .font(ClayFonts.display(9, weight: .semibold))
                         .foregroundColor(ClayTheme.accent)
+                        .claySingleLine(minScale: 0.8)
                     ForEach(domain.tiers.filter { $0.tier <= unlockedTier }, id: \.tier) { tier in
                         ForEach(tier.effects.indices, id: \.self) { index in
                             let effect = tier.effects[index]
@@ -112,6 +119,23 @@ struct DomainCard: View {
     }
 }
 
+private struct DomainProgressRing: View {
+    let progress: Double
+    let accent: Color
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(ClayTheme.stroke.opacity(0.6), lineWidth: 3)
+            Circle()
+                .trim(from: 0, to: max(0.05, min(1.0, progress)))
+                .stroke(accent, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+        }
+        .frame(width: 22, height: 22)
+    }
+}
+
 struct DomainTierEffectRow: View {
     @EnvironmentObject private var engine: GameEngine
     let tier: DomainTierDefinition
@@ -122,6 +146,7 @@ struct DomainTierEffectRow: View {
             Text("Tier \(tier.tier) rewards")
                 .font(ClayFonts.display(9, weight: .semibold))
                 .foregroundColor(ClayTheme.muted)
+                .claySingleLine(minScale: 0.8)
             ForEach(tier.effects.indices, id: \.self) { index in
                 let effect = tier.effects[index]
                 Text("• \(EffectDescriptor.describe(effect, content: engine.content))")

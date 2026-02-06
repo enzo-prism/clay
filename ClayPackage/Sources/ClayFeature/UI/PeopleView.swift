@@ -11,6 +11,31 @@ struct PeopleView: View {
                         Text("Roster \(engine.state.people.recruitedIds.count) / \(engine.state.people.maxRoster)")
                             .font(ClayFonts.data(11, weight: .semibold))
                             .foregroundColor(ClayTheme.accent)
+                            .claySingleLine(minScale: 0.8)
+                    }
+                }
+
+                if !rosterGaps().isEmpty {
+                    SoftCard(title: "Roster Gaps") {
+                        VStack(alignment: .leading, spacing: 6) {
+                            ForEach(rosterGaps(), id: \.self) { gap in
+                                HStack(spacing: 6) {
+                                    Circle()
+                                        .fill(ClayTheme.accentWarm)
+                                        .frame(width: 6, height: 6)
+                                    Text(gap)
+                                        .font(ClayFonts.data(10))
+                                        .foregroundColor(ClayTheme.muted)
+                                        .clayTwoLines(minScale: 0.9)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if let suggestion = suggestedRecruit() {
+                    SoftCard(title: "Suggested Recruit") {
+                        RecruitCard(person: suggestion)
                     }
                 }
 
@@ -65,6 +90,27 @@ struct PeopleView: View {
             return eraA < eraB
         }
     }
+
+    private func rosterGaps() -> [String] {
+        let recruited = engine.state.people.recruitedIds.compactMap { engine.personDefinition(for: $0) }
+        let roles = recruited.map { $0.role.lowercased() }
+        var gaps: [String] = []
+        if !roles.contains(where: { $0.contains("logistics") }) {
+            gaps.append("No logistics specialist recruited.")
+        }
+        if !roles.contains(where: { $0.contains("security") }) {
+            gaps.append("No security specialist recruited.")
+        }
+        if !roles.contains(where: { $0.contains("science") }) {
+            gaps.append("No science specialist recruited.")
+        }
+        return gaps
+    }
+
+    private func suggestedRecruit() -> PeopleDefinition? {
+        let available = engine.availablePeople()
+        return sortedPeople(available).first
+    }
 }
 
 private struct PeopleRosterRow: View {
@@ -77,9 +123,11 @@ private struct PeopleRosterRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(person.name)
                     .font(ClayFonts.display(12, weight: .semibold))
+                    .claySingleLine(minScale: 0.75)
                 Text(person.role)
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.85)
             }
             Spacer(minLength: 0)
             if !person.effects.isEmpty {
@@ -111,28 +159,39 @@ private struct RecruitCard: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(person.name)
                             .font(ClayFonts.display(12, weight: .semibold))
+                            .claySingleLine(minScale: 0.75)
                         Text(person.role)
                             .font(ClayFonts.data(10))
                             .foregroundColor(ClayTheme.muted)
+                            .claySingleLine(minScale: 0.85)
                     }
                     Spacer(minLength: 0)
                     if let rarity = person.rarity {
                         Text(rarity.uppercased())
                             .font(ClayFonts.display(9, weight: .bold))
                             .foregroundColor(ClayTheme.accent)
+                            .claySingleLine(minScale: 0.7)
                     }
                 }
                 Text(person.description)
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
+                    .clayTwoLines(minScale: 0.9)
                 if !person.effects.isEmpty {
                     EffectSummaryList(effects: person.effects)
                 }
-                HStack(spacing: 6) {
-                    ForEach(person.costs.keys.sorted(), id: \.self) { resourceId in
-                        CostPill(resourceId: resourceId, amount: person.costs[resourceId, default: 0])
+                HStack(spacing: 10) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(person.costs.keys.sorted(), id: \.self) { resourceId in
+                                CostPill(resourceId: resourceId, amount: person.costs[resourceId, default: 0])
+                            }
+                        }
+                        .padding(.vertical, 1)
                     }
-                    Spacer(minLength: 0)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .layoutPriority(1)
+
                     let block = engine.personBlockReason(person)
                     ClayButton(isEnabled: block == nil, blockedMessage: block) {
                         engine.recruitPerson(person)
@@ -167,17 +226,21 @@ private struct MetahumanRosterCard: View {
                 HStack {
                     Text(metahuman.name)
                         .font(ClayFonts.display(12, weight: .semibold))
+                        .claySingleLine(minScale: 0.75)
                     Spacer(minLength: 0)
                     Text(disposition.label.uppercased())
                         .font(ClayFonts.display(9, weight: .bold))
                         .foregroundColor(disposition.color)
+                        .claySingleLine(minScale: 0.7)
                 }
                 Text(metahuman.role)
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
+                    .claySingleLine(minScale: 0.85)
                 Text(metahuman.description)
                     .font(ClayFonts.data(10))
                     .foregroundColor(ClayTheme.muted)
+                    .clayTwoLines(minScale: 0.9)
                 if !effects.isEmpty {
                     EffectSummaryList(effects: effects)
                 }
@@ -219,6 +282,7 @@ private struct CostPill: View {
             ResourceIconView(resourceId: resourceId, size: 12, tint: ClayTheme.text)
             Text(amount.clayFormatted)
                 .font(ClayFonts.data(9, weight: .semibold))
+                .claySingleLine(minScale: 0.7)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 3)
