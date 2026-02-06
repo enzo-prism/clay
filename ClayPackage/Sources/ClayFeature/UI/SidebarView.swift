@@ -49,8 +49,6 @@ struct SidebarView: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
 
-            NextActionsPreview()
-
             Divider()
 
             SidebarQuickActions(actions: quickActions)
@@ -441,29 +439,6 @@ private struct DailyBriefingCard: View {
             return ClayTheme.good
         }
         return worst.value < 0 ? ClayTheme.bad : ClayTheme.good
-    }
-}
-
-private struct NextActionsPreview: View {
-    @EnvironmentObject private var engine: GameEngine
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Next Actions".uppercased())
-                .font(ClayFonts.display(9, weight: .semibold))
-                .foregroundColor(ClayTheme.accent)
-                .claySingleLine(minScale: 0.8)
-            GuidanceCenterView(maxItems: 2, showEmpty: false)
-        }
-        .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
-                .fill(ClayTheme.panel)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: ClayMetrics.radiusSmall, style: .continuous)
-                .stroke(ClayTheme.stroke.opacity(0.6), lineWidth: 1)
-        )
     }
 }
 
