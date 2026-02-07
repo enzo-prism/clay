@@ -89,13 +89,6 @@ private struct ActiveDispatchMiniRow: View {
                     .claySingleLine(minScale: 0.75)
             }
             Spacer(minLength: 0)
-            if dispatch.status != .active {
-                ClayButton(isEnabled: true, active: true) {
-                    engine.collectDispatch(id: dispatch.id)
-                } label: {
-                    Text("Collect")
-                }
-            }
         }
         .padding(6)
         .background(

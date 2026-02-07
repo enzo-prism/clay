@@ -231,37 +231,6 @@ struct SidebarView: View {
     private var quickActions: [SidebarQuickAction] {
         var actions: [SidebarQuickAction] = []
 
-        let cacheTotal = engine.state.collector.storedByResource.values.reduce(0, +)
-        if cacheTotal > 0 {
-            actions.append(
-                SidebarQuickAction(
-                    title: "Collect Cache",
-                    subtitle: "\(cacheTotal.clayFormatted) ready",
-                    iconPath: "KenneySelected/Icons/icon_save.png",
-                    tint: ClayTheme.accentWarm
-                ) {
-                    engine.collectCache()
-                }
-            )
-        }
-
-        let collectableDispatches = engine.state.dispatches.filter { $0.status != .active }
-        if !collectableDispatches.isEmpty {
-            actions.append(
-                SidebarQuickAction(
-                    title: "Collect Dispatches",
-                    subtitle: "\(collectableDispatches.count) ready",
-                    iconPath: "KenneySelected/Icons/icon_fastforward.png",
-                    tint: ClayTheme.good
-                ) {
-                    let ids = collectableDispatches.map(\.id)
-                    for id in ids {
-                        engine.collectDispatch(id: id)
-                    }
-                }
-            )
-        }
-
         if engine.state.eventChains.pendingEventChainId != nil {
             actions.append(
                 SidebarQuickAction(

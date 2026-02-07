@@ -197,13 +197,6 @@ private struct GuidanceBannerRow: View {
             break
         case .switchTab(let tab):
             NotificationCenter.default.post(name: .claySwitchTab, object: tab)
-        case .collectCache:
-            engine.collectCache()
-        case .collectDispatches:
-            let collectable = engine.state.dispatches.filter { $0.status != .active }
-            for dispatch in collectable {
-                engine.collectDispatch(id: dispatch.id)
-            }
         case .reviewIntel:
             NotificationCenter.default.post(name: .claySwitchTab, object: ClayTab.intel)
         case .openResource:
@@ -225,10 +218,6 @@ private struct GuidanceBannerRow: View {
             case .people, .domains, .achievements, .progress, .help, .settings:
                 return "Open"
             }
-        case .collectCache:
-            return "Collect"
-        case .collectDispatches:
-            return "Collect"
         case .reviewIntel:
             return "Review"
         case .openResource:

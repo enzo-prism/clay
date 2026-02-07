@@ -8,29 +8,15 @@ struct OperationsView: View {
             PageHeader(title: "Operations", subtitle: "Dispatch crews on timed runs for extra rewards.")
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
-                    Panel(title: "Ready to Collect") {
-                        let ready = engine.state.dispatches.filter { $0.status != .active }
-                        if ready.isEmpty {
-                            Text("No dispatches ready.")
+                    Panel(title: "Dispatch Status") {
+                        let dispatches = engine.state.dispatches
+                        if dispatches.isEmpty {
+                            Text("No dispatches yet.")
                                 .font(ClayFonts.data(10))
                                 .foregroundColor(ClayTheme.muted)
                         } else {
                             VStack(alignment: .leading, spacing: 8) {
-                                ForEach(ready) { dispatch in
-                                    ActiveDispatchRow(dispatch: dispatch)
-                                }
-                            }
-                        }
-                    }
-                    Panel(title: "Active Dispatches") {
-                        let active = engine.state.dispatches.filter { $0.status == .active }
-                        if active.isEmpty {
-                            Text("No active dispatches.")
-                                .font(ClayFonts.data(10))
-                                .foregroundColor(ClayTheme.muted)
-                        } else {
-                            VStack(alignment: .leading, spacing: 8) {
-                                ForEach(active) { dispatch in
+                                ForEach(dispatches) { dispatch in
                                     ActiveDispatchRow(dispatch: dispatch)
                                 }
                             }
@@ -163,17 +149,10 @@ struct ActiveDispatchRow: View {
                     .monospacedDigit()
                     .claySingleLine(minScale: 0.85)
             } else {
-                Text(dispatch.status == .ready ? "Ready to collect" : "Recovery required")
+                Text(dispatch.status == .ready ? "Ready" : "Recovery required")
                     .font(ClayFonts.data(9))
                     .foregroundColor(dispatch.status == .ready ? ClayTheme.good : ClayTheme.accentWarm)
                     .claySingleLine(minScale: 0.85)
-            }
-            if dispatch.status != .active {
-                ClayButton(isEnabled: true, active: true) {
-                    engine.collectDispatch(id: dispatch.id)
-                } label: {
-                    Text(dispatch.status == .ready ? "Collect" : "Recover")
-                }
             }
         }
         .padding(8)
