@@ -800,26 +800,6 @@ public final class GameEngine: ObservableObject {
 
     func guidanceItems() -> [GuidanceItem] {
         var items: [GuidanceItem] = []
-        let cacheTotal = state.collector.storedByResource.values.reduce(0, +)
-        if cacheTotal > 0 {
-            items.append(GuidanceItem(
-                id: "collectCache",
-                title: "Collect Cache",
-                detail: "\(cacheTotal.clayFormatted) ready to claim.",
-                priority: .high,
-                action: .collectCache
-            ))
-        }
-        let readyDispatches = state.dispatches.filter { $0.status != .active }
-        if !readyDispatches.isEmpty {
-            items.append(GuidanceItem(
-                id: "collectDispatches",
-                title: "Collect Dispatches",
-                detail: "\(readyDispatches.count) operations ready.",
-                priority: .high,
-                action: .collectDispatches
-            ))
-        }
         if state.eventChains.pendingEventChainId != nil {
             items.append(GuidanceItem(
                 id: "pendingIntelDecision",

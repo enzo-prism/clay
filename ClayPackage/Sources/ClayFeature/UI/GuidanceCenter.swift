@@ -32,8 +32,6 @@ enum GuidancePriority: Int, Comparable, CaseIterable {
 enum GuidanceAction: Equatable {
     case none
     case switchTab(ClayTab)
-    case collectCache
-    case collectDispatches
     case reviewIntel
     case openResource(String)
 }
@@ -82,13 +80,6 @@ struct GuidanceCenterView: View {
             break
         case .switchTab(let tab):
             NotificationCenter.default.post(name: .claySwitchTab, object: tab)
-        case .collectCache:
-            engine.collectCache()
-        case .collectDispatches:
-            let collectable = engine.state.dispatches.filter { $0.status != .active }
-            for dispatch in collectable {
-                engine.collectDispatch(id: dispatch.id)
-            }
         case .reviewIntel:
             NotificationCenter.default.post(name: .claySwitchTab, object: ClayTab.intel)
         case .openResource(let resourceId):
@@ -156,10 +147,6 @@ private struct GuidanceItemRow: View {
             case .help: return "Help"
             case .settings: return "Settings"
             }
-        case .collectCache:
-            return "Collect"
-        case .collectDispatches:
-            return "Collect"
         case .reviewIntel:
             return "Review"
         case .openResource:
